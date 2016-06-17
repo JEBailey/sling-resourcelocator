@@ -16,31 +16,42 @@ limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.apache.sling</groupId>
-		<artifactId>sling</artifactId>
-		<version>23</version>
-	</parent>
+<modelVersion>4.0.0</modelVersion>
+<parent>
+	<groupId>org.apache.sling</groupId>
+	<artifactId>sling</artifactId>
+	<version>23</version>
+</parent>
 	
-	<artifactId>com.sas.sling.resourcequery</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>bundle</packaging>
-	
-	<name>Apache Sling Resource Query</name>
-	<description>Object based query utility</description>
+<artifactId>com.sas.sling.resourcequery</artifactId>
+<version>0.0.1-SNAPSHOT</version>
+<packaging>bundle</packaging>
 
-	<properties>
-		<sling.java.version>8</sling.java.version>
-	</properties>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-			</plugin>
+<name>Apache Sling Resource Query</name>
+<description>Object based query utility</description>
+
+<properties>
+	<sling.java.version>8</sling.java.version>
+</properties>
+
+<build>
+	<resources>
+		<resource>
+			<directory>src/main/java</directory>
+		</resource>
+		<resource>
+			<directory>src/main/resources</directory>
+		</resource>
+		<resource>
+			<directory>src/test/java</directory>
+		</resource>
+	</resources>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>maven-bundle-plugin</artifactId>
+			<extensions>true</extensions>
+		</plugin>
 	</build>
 	<dependencies>
 	</dependencies>
