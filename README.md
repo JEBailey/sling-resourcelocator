@@ -1,2 +1,2 @@
-# resourcequery
-Apache Sling Resource Query Tool
+# Resource Query Utility
+Apache Sling Resource Query Utility
