@@ -1,109 +1,128 @@
-package com.sas.aem.resourcequery;
+package com.sas.sling.resourcequery;
 
+/*
+ * Copyright 2016 Jason E Bailey
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import java.lang.reflect.Array;
 import java.util.Date;
+import java.util.function.Predicate;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
 
 /**
- * Provides a set of constructors for property based predicates
+ * Provides property based predicates. The method follows the following
+ * conventions
+ * 
+ * <br>
+ * is = equal to argument<br>
+ * isNot = not equal to argument<br>
+ * isIn = property is a single value which matches one of the arguments passed in
+ * for comparison<br>
+ * contains = property is an array which contains all of the arguments passed in<br>
  * 
  * @author J.E. Bailey
  *
  */
-public class PropertyPredicate {
+public class PropertyPredicates {
 
 	// key value to be used against the provided resource object
 	private final String key;
 
-	private PropertyPredicate(String name) {
+	private PropertyPredicates(String name) {
 		this.key = name;
 	}
 
 	/**
-	 * Method used to set the value of the property in the underlying map
+	 * Used to define which value in the underlying map will we be used.
 	 * 
-	 * @param name
-	 * @return new constructor for property evaluations
+	 * @param name key value of the property
+	 * @return PropertyPredicate instance
 	 */
-	static public PropertyPredicate property(String name) {
-		return new PropertyPredicate(name);
+	static public PropertyPredicates property(String name) {
+		return new PropertyPredicates(name);
 	}
 
 	/**
 	 * Equivalence matching against a String
 	 * 
-	 * @param string
+	 * @param string to match against
 	 * @return predicate matcher
 	 */
-	public Predicate is(String string) {
+	public Predicate<Resource> is(String string) {
 		return genericIs(string);
 	}
 
 	/**
 	 * Equivalence matching against a Number (long)
 	 * 
-	 * @param number
+	 * @param number to be compared against
 	 * @return predicate matcher
 	 */
-	public Predicate is(Long number) {
+	public Predicate<Resource> is(Long number) {
 		return genericIs(number);
 	}
 
 	/**
 	 * Equivalence rejection for a String
 	 * 
-	 * @param string
+	 * @param string to be compared against
 	 * @return predicate matcher
 	 */
-	public Predicate isNot(String string) {
+	public Predicate<Resource> isNot(String string) {
 		return genericIsNot(string);
 	}
 
 	/**
 	 * Equivalence rejection for a number (Long)
 	 * 
-	 * @param number
+	 * @param number to be compared against
 	 * @return predicate matcher
 	 */
-	public Predicate isNot(Long number) {
+	public Predicate<Resource> isNot(Long number) {
 		return genericIs(number);
 	}
 
 	/**
 	 * Equivalence matching against one or more strings
 	 * 
-	 * @param strings
+	 * @param strings to be compared with
 	 * @return predicate matcher
 	 */
-	public Predicate isIn(String... strings) {
+	public Predicate<Resource> isIn(String... strings) {
 		return genericIsIn(strings);
 	}
 
 	/**
 	 * Equivalence matching against one or more numbers (Long)
 	 * 
-	 * @param numbers
+	 * @param numbers to match against
 	 * @return predicate matcher
 	 */
-	public Predicate isIn(Long... numbers) {
+	public Predicate<Resource> isIn(Long... numbers) {
 		return genericIsIn(numbers);
-	}
-
-	public Predicate isNot(final Predicate predicate) {
-		return predicate;
 	}
 
 	/**
 	 * Assumes that the referenced property value is an array of Strings and
 	 * attempts to validate that all provided strings against that reference
 	 * 
-	 * @param strings
+	 * @param strings to match against
 	 * @return matcher
 	 */
-	public Predicate contains(String... strings) {
+	public Predicate<Resource> contains(String... strings) {
 		return genericContains(strings);
 	}
 
@@ -111,10 +130,10 @@ public class PropertyPredicate {
 	 * Assumes that the referenced property value is an array of numbers and
 	 * attempts to validate that all provided numbers against that reference
 	 * 
-	 * @param strings
-	 * @return matcher
+	 * @param numbers to match against
+	 * @return predicate which will perform the matching
 	 */
-	public Predicate contains(Long... numbers) {
+	public Predicate<Resource> contains(Long... numbers) {
 		return genericContains(numbers);
 	}
 
@@ -122,10 +141,10 @@ public class PropertyPredicate {
 	 * Assumes that the referenced property value is a date and that this date
 	 * is earlier in the epoch than the one being tested
 	 * 
-	 * @param when
-	 * @return matcher
+	 * @param when latest acceptable time
+	 * @return predicate which will perform the matching
 	 */
-	public Predicate isEarlierThan(final Date when) {
+	public Predicate<Resource> isBefore(Date when) {
 		if (when == null) {
 			throw new IllegalArgumentException("value may not be null");
 		}
@@ -142,10 +161,10 @@ public class PropertyPredicate {
 	 * Assumes that the referenced property value is a date and that this date
 	 * is later in the epoch than the one being tested
 	 * 
-	 * @param when
+	 * @param when earliest acceptable value
 	 * @return predicate
 	 */
-	public Predicate isLaterThan(final Date when) {
+	public Predicate<Resource> isAfter(Date when) {
 		if (when == null) {
 			throw new IllegalArgumentException("value may not be null");
 		}
@@ -158,7 +177,11 @@ public class PropertyPredicate {
 		};
 	}
 
-	private <T> Predicate genericIs(final T type) {
+	/*
+	 * Generic equalities method that is accessed via public methods that have
+	 * specific types
+	 */
+	private <T> Predicate<Resource> genericIs(T type) {
 		if (type == null) {
 			throw new IllegalArgumentException("value may not be null");
 		}
@@ -171,23 +194,16 @@ public class PropertyPredicate {
 
 	}
 
-	private <T> Predicate genericIsNot(final T type) {
+	private <T> Predicate<Resource> genericIsNot(final T type) {
 		if (type == null) {
 			throw new IllegalArgumentException("value may not be null");
 		}
-		return new Predicate() {
-			public boolean accepts(Resource resource) {
-				@SuppressWarnings("unchecked")
-				T propValue = (T) resource.adaptTo(ValueMap.class).get(key,
-						type.getClass());
-				return !type.equals(propValue);
-			}
-		};
-
+		return p -> !p.adaptTo(ValueMap.class).get(key, type.getClass())
+				.equals(type);
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> Predicate genericContains(final T[] values) {
+	private <T> Predicate<Resource> genericContains(final T[] values) {
 		if (values == null) {
 			throw new IllegalArgumentException("value may not be null");
 		}
@@ -229,7 +245,7 @@ public class PropertyPredicate {
 
 	}
 
-	private <T> Predicate genericIsIn(final T[] values) {
+	private <T> Predicate<Resource> genericIsIn(final T[] values) {
 		if (values == null) {
 			throw new IllegalArgumentException("value may not be null");
 		}
@@ -249,51 +265,34 @@ public class PropertyPredicate {
 	}
 
 	/**
-	 * 
+	 * property value is not null
 	 * 
 	 * @return a predicate that determines existence of the value
 	 */
-	public Predicate exists() {
-		return new Predicate() {
-
-			public boolean accepts(Resource resource) {
-				Object value = resource.adaptTo(ValueMap.class).get(key);
-				return value != null;
-			}
-		};
+	public Predicate<Resource> exists() {
+		return resource -> resource.adaptTo(ValueMap.class).get(key) != null;
 	}
 
-	public Predicate doesNotExist() {
+	/**
+	 * property value is null
+	 * 
+	 * @return a predicate that determines existence of the value
+	 */
+	public Predicate<Resource> doesNotExist() {
+		return exists().negate();
+	}
+
+	public Predicate<Resource> isNotIn(final Object... objects) {
 		return resource -> {
 			Object value = resource.adaptTo(ValueMap.class).get(key);
-			return value == null;
-		};
-	}
 
-	public Predicate isNotEmpty() {
-		return new Predicate() {
-
-			public boolean accepts(Resource resource) {
-				Object value = resource.adaptTo(ValueMap.class).get(key);
-				return value != null
-						&& StringUtils.isNotEmpty(value.toString());
-			}
-		};
-	}
-
-	public Predicate isNotIn(final Object... objects) {
-		return new Predicate() {
-
-			public boolean accepts(Resource resource) {
-				Object value = resource.adaptTo(ValueMap.class).get(key);
-
-				for (Object object : objects) {
-					if (object.equals(value)) {
-						return false;
-					}
+			for (Object object : objects) {
+				if (object.equals(value)) {
+					return false;
 				}
-				return true;
 			}
+			return true;
+
 		};
 	}
 }
