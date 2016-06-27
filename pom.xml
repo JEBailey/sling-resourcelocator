@@ -20,7 +20,7 @@
 	<packaging>bundle</packaging>
 
 	<name>Apache Sling Resource Query</name>
-	<description>Object based query utility</description>
+	<description>Object based resource filter utility</description>
 
 	<properties>
 		<sling.java.version>8</sling.java.version>
@@ -44,6 +44,10 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.sling</groupId>
+				<artifactId>maven-sling-plugin</artifactId>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -59,4 +63,25 @@
 		</dependency>
 	</dependencies>
 	<groupId>com.sas</groupId>
+	<profiles>
+		<profile>
+			<id>autoInstall</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.sling</groupId>
+						<artifactId>maven-sling-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>install-bundle</id>
+								<goals>
+									<goal>install</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

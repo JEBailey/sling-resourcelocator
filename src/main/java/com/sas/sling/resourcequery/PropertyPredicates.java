@@ -292,7 +292,6 @@ public class PropertyPredicates {
 				}
 			}
 			return true;
-
 		};
 	}
 }

@@ -17,8 +17,6 @@ package com.sas.sling.resourcequery;
  */
 import java.util.function.Predicate;
 
-import org.apache.sling.api.resource.Resource;
-
 /**
  * A collection of terms to assist in building a fluent api. These terms may not
  * have functionality other than providing syntax sugar over existing features,
@@ -36,7 +34,7 @@ public class Conditions {
 	 *            to be wrapped
 	 * @return the predicate that was passed in
 	 */
-	public static Predicate<Resource> where(Predicate<Resource> predicate) {
+	public static <T> Predicate<T> where(Predicate<T> predicate) {
 		return predicate;
 	}
 
@@ -47,7 +45,7 @@ public class Conditions {
 	 *            to be wrapped
 	 * @return the predicate that was passed in
 	 */
-	public static Predicate<Resource> when(Predicate<Resource> predicate) {
+	public static <T> Predicate<T> when(Predicate<T> predicate) {
 		return predicate;
 	}
 
@@ -61,9 +59,9 @@ public class Conditions {
 	 *            evaluated if firstPredicate returns false
 	 * @return a new predicate which wraps the or method on the firstPredicate
 	 */
-	public static Predicate<Resource> either(
-			final Predicate<Resource> firstPredicate,
-			final Predicate<Resource> secondPredicate) {
+	public static <T> Predicate<T> either(
+			final Predicate<T> firstPredicate,
+			final Predicate<T> secondPredicate) {
 		return firstPredicate.or(secondPredicate);
 	}
 

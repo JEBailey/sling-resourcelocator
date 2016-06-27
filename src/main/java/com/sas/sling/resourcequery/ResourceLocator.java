@@ -41,8 +41,6 @@ public class ResourceLocator {
 
 	private Optional<Predicate<Resource>> traversalControl = Optional.empty();
 
-	Deque<Resource> resourcesToCheck = new ArrayDeque<>();
-
 	/**
 	 * Starting point to locate resources. resources of the start resource.
 	 * 
@@ -105,27 +103,23 @@ public class ResourceLocator {
 	 */
 	public List<Resource> locateResources(Predicate<Resource> condition) {
 		List<Resource> resourcesToReturn = new LinkedList<>();
-		addChildResourcesToCheckList(resource);
+		Deque<Resource> resourcesToCheck = new ArrayDeque<>();
+		
+		resourcesToCheck.add(resource);
+		
 
 		while (!resourcesToCheck.isEmpty()) {
 			Resource current = resourcesToCheck.pop();
 			if (condition.test(current)) {
 				callback.orElse(e -> resourcesToReturn.add(e)).accept(current);
 			}
-			addChildResourcesToCheckList(current);
+			resource.listChildren().forEachRemaining(child -> {
+				if (traversalControl.orElse(e -> true).test(child)) {
+					resourcesToCheck.push(child);
+				}
+			});
 		}
 		return resourcesToReturn;
-	}
-
-	/*
-	 * Used to add child resources to the list of items to process
-	 */
-	private void addChildResourcesToCheckList(Resource resource) {
-		resource.listChildren().forEachRemaining(child -> {
-			if (traversalControl.orElse(e -> true).test(child)) {
-				resourcesToCheck.push(child);
-			}
-		});
 	}
 
 }
