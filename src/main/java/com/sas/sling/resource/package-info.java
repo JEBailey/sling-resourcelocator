@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 @aQute.bnd.annotation.Version("0.0.1")
-package com.sas.sling.resourcequery;
+package com.sas.sling.resource;

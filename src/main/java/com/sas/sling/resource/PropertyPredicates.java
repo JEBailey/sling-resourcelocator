@@ -1,4 +1,4 @@
-package com.sas.sling.resourcequery;
+package com.sas.sling.resource;
 
 /*
  * Copyright 2016 Jason E Bailey

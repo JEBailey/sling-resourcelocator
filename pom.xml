@@ -15,15 +15,16 @@
 		<version>26</version>
 	</parent>
 
-	<artifactId>com.sas.sling.resourcequery</artifactId>
+	<artifactId>com.sas.sling.resourcelocator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
-	<name>Apache Sling Resource Query</name>
+	<name>Apache Sling Resource Locator</name>
 	<description>Object based resource filter utility</description>
 
 	<properties>
 		<sling.java.version>8</sling.java.version>
+		<service.vendor>SAS Institute</service.vendor>
 	</properties>
 
 	<build>
@@ -79,9 +80,18 @@
 								</goals>
 							</execution>
 						</executions>
+						<configuration>
+							<slingUrl>http://localhost:4502/system/console</slingUrl>
+							<user>admin</user>
+							<password>admin</password>
+							<failOnError>true</failOnError>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
 		</profile>
 	</profiles>
+	<organization>
+		<name>SAS Institute</name>
+	</organization>
 </project>
