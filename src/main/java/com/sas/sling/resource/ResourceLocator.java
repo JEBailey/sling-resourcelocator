@@ -26,8 +26,8 @@ import java.util.function.Predicate;
 import org.apache.sling.api.resource.Resource;
 
 /**
- * Base class from which the fluent api is constructed to 
- * locate resources which we are interested in.
+ * Base class from which the fluent api is constructed to locate resources which
+ * we are interested in.
  * 
  * @author JE Bailey
  *
@@ -40,6 +40,10 @@ public class ResourceLocator {
 	private Optional<Consumer<Resource>> callback = Optional.empty();
 
 	private Optional<Predicate<Resource>> traversalControl = Optional.empty();
+
+	private long limit;
+
+	private long startOfRange;
 
 	/**
 	 * Starting point to locate resources. resources of the start resource.
@@ -83,11 +87,48 @@ public class ResourceLocator {
 	 * This can be used to limit the possible options beneath a specific
 	 * resource
 	 * 
-	 * @param condition used to approve child resource for traversal
+	 * @param condition
+	 *            used to approve child resource for traversal
 	 * @return this locator
 	 */
 	public ResourceLocator traversalControl(Predicate<Resource> condition) {
 		this.traversalControl = Optional.ofNullable(condition);
+		return this;
+	}
+
+	/**
+	 * Sets the maximum number of items to be returned or processed. Starting
+	 * from the first matching resource. This method is mutually exclusive to
+	 * the range method
+	 * 
+	 * @param number
+	 *            maximum number of items to be returned
+	 * @return
+	 */
+	public ResourceLocator limit(long number) {
+		if (number < 0) {
+			throw new IllegalArgumentException("value may not be negative");
+		}
+		this.startOfRange = 0;
+		this.limit = number;
+		return this;
+	}
+
+	/**
+	 * Sets the maximum number of items to be returned or processed. Starting
+	 * from the nth identified resource as set by the startOfRange. This method
+	 * is mutually exclusive to the limit method
+	 * 
+	 * @param startOfRange
+	 * @param limit
+	 * @return
+	 */
+	public ResourceLocator range(long startOfRange, long limit) {
+		if (startOfRange < 0 || limit < 0) {
+			throw new IllegalArgumentException("value may not be negative");
+		}
+		this.startOfRange = startOfRange;
+		this.limit = limit;
 		return this;
 	}
 
@@ -104,20 +145,33 @@ public class ResourceLocator {
 	public List<Resource> locateResources(Predicate<Resource> condition) {
 		List<Resource> resourcesToReturn = new LinkedList<>();
 		Deque<Resource> resourcesToCheck = new ArrayDeque<>();
-		
+
 		resourcesToCheck.add(resource);
-		
+
+		long count = 0;
+		long max = startOfRange + limit;
+
+		if (max < 0) {
+			max = Long.MAX_VALUE;
+		}
 
 		while (!resourcesToCheck.isEmpty()) {
 			Resource current = resourcesToCheck.pop();
 			if (condition.test(current)) {
-				callback.orElse(e -> resourcesToReturn.add(e)).accept(current);
+				++count;
+				if (count > startOfRange) {
+					callback.orElse(e -> resourcesToReturn.add(e)).accept(
+							current);
+				}
 			}
 			resource.listChildren().forEachRemaining(child -> {
 				if (traversalControl.orElse(e -> true).test(child)) {
 					resourcesToCheck.push(child);
 				}
 			});
+			if (count > max) {
+				break;
+			}
 		}
 		return resourcesToReturn;
 	}

@@ -74,6 +74,16 @@ public class PropertyPredicates {
 	public Predicate<Resource> is(Long number) {
 		return genericIs(number);
 	}
+	
+	/**
+	 * Equivalence matching against a Boolean
+	 * 
+	 * @param number to be compared against
+	 * @return predicate matcher
+	 */
+	public Predicate<Resource> is(Boolean bool) {
+		return genericIs(bool);
+	}
 
 	/**
 	 * Equivalence rejection for a String
@@ -195,11 +205,7 @@ public class PropertyPredicates {
 	}
 
 	private <T> Predicate<Resource> genericIsNot(final T type) {
-		if (type == null) {
-			throw new IllegalArgumentException("value may not be null");
-		}
-		return p -> !p.adaptTo(ValueMap.class).get(key, type.getClass())
-				.equals(type);
+		return genericIs(type).negate();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -276,12 +282,13 @@ public class PropertyPredicates {
 	/**
 	 * property value is null
 	 * 
-	 * @return a predicate that determines existence of the value
+	 * @return a predicate that determines non existence of the value
 	 */
 	public Predicate<Resource> doesNotExist() {
 		return exists().negate();
 	}
 
+	
 	public Predicate<Resource> isNotIn(final Object... objects) {
 		return resource -> {
 			Object value = resource.adaptTo(ValueMap.class).get(key);
