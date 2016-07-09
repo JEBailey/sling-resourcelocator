@@ -41,7 +41,7 @@ public class ResourceLocator {
 
 	private Optional<Predicate<Resource>> traversalControl = Optional.empty();
 
-	private long limit;
+	private long limit = Long.MAX_VALUE;
 
 	private long startOfRange;
 
@@ -56,7 +56,8 @@ public class ResourceLocator {
 		return new ResourceLocator(resource);
 	}
 
-	/**
+	/*
+	 * Constructor to establish the starting resource
 	 * 
 	 * @param resource
 	 */
@@ -67,9 +68,9 @@ public class ResourceLocator {
 	/**
 	 * When a matching resource is located, pass that resource to the callback
 	 * handler. This is used when the handling of the resources needs to be done
-	 * as those resources are identified. This replaces the default function of
-	 * returning the located items as a List. Do not use if ordering or a range
-	 * is set
+	 * as those resources are identified. This replaces the default
+	 * <code>Consumer</code> that appends the resource to the internal list returned
+	 * will be returned.
 	 * 
 	 * @param callback
 	 *            Consumer that processes the located resource
@@ -84,8 +85,8 @@ public class ResourceLocator {
 	 * When iterating over the child resources, this is used as a validation
 	 * that a specific child resource should be traversed
 	 * 
-	 * This can be used to limit the possible options beneath a specific
-	 * resource
+	 * This can be used to limit the possible branching options beneath a
+	 * resource tree
 	 * 
 	 * @param condition
 	 *            used to approve child resource for traversal
@@ -103,7 +104,7 @@ public class ResourceLocator {
 	 * 
 	 * @param number
 	 *            maximum number of items to be returned
-	 * @return
+	 * @return this locator
 	 */
 	public ResourceLocator limit(long number) {
 		if (number < 0) {
