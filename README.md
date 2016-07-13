@@ -1,7 +1,8 @@
 # Resource Locator Utility
-Resource Locator Utility for Apache Sling 
 
-Fluent interface for filtering of a resource tree.
+* Resource Locator Utility for Apache Sling 
+* Fluent interface for filtering of a resource tree.
+* Predefined predicates for Resources and Properties
 
 Example of a traversal using a callback to print out located 
 
