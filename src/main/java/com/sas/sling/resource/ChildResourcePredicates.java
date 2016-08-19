@@ -1,5 +1,6 @@
 package com.sas.sling.resource;
 
+import java.util.Objects;
 /*
  * Copyright 2016 Jason E Bailey
  *
@@ -30,7 +31,7 @@ public class ChildResourcePredicates {
 	private final String name;
 
 	private ChildResourcePredicates(String name) {
-		this.name = name;
+		this.name = Objects.requireNonNull(name, "name value may not be null");;
 	}
 
 	/**
@@ -54,6 +55,7 @@ public class ChildResourcePredicates {
 	 * @return Predicate which will apply the given predicate
 	 */
 	public Predicate<Resource> has(Predicate<Resource> predicate) {
+		Objects.requireNonNull(predicate, "predicate may not be null");
 		return resource -> {
 			Resource child = resource.getChild(name);
 			if (child != null) {

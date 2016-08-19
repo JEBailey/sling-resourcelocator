@@ -1,5 +1,6 @@
 package com.sas.sling.resource;
 
+import java.util.Objects;
 /*
  * Copyright 2016 Jason E Bailey
  *
@@ -62,6 +63,8 @@ public class Conditions {
 	public static <T> Predicate<T> either(
 			final Predicate<T> firstPredicate,
 			final Predicate<T> secondPredicate) {
+		Objects.requireNonNull(firstPredicate, "predicate may not be null");
+		Objects.requireNonNull(secondPredicate, "predicate may not be null");
 		return firstPredicate.or(secondPredicate);
 	}
 

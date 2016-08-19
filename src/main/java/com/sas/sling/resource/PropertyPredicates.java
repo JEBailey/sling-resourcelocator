@@ -17,6 +17,7 @@ package com.sas.sling.resource;
  */
 import java.lang.reflect.Array;
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.apache.sling.api.resource.Resource;
@@ -42,7 +43,7 @@ public class PropertyPredicates {
 	private final String key;
 
 	private PropertyPredicates(String name) {
-		this.key = name;
+		this.key = Objects.requireNonNull(name, "value may not be null");;
 	}
 
 	/**
@@ -155,9 +156,7 @@ public class PropertyPredicates {
 	 * @return predicate which will perform the matching
 	 */
 	public Predicate<Resource> isBefore(Date when) {
-		if (when == null) {
-			throw new IllegalArgumentException("value may not be null");
-		}
+		Objects.requireNonNull(when, "value may not be null");
 		return value -> {
 			Date then = value.adaptTo(ValueMap.class).get(key, Date.class);
 			if (then != null) {
@@ -175,9 +174,7 @@ public class PropertyPredicates {
 	 * @return predicate
 	 */
 	public Predicate<Resource> isAfter(Date when) {
-		if (when == null) {
-			throw new IllegalArgumentException("value may not be null");
-		}
+		Objects.requireNonNull(when, "value may not be null");
 		return value -> {
 			Date then = value.adaptTo(ValueMap.class).get(key, Date.class);
 			if (then != null) {
@@ -192,9 +189,7 @@ public class PropertyPredicates {
 	 * specific types
 	 */
 	private <T> Predicate<Resource> genericIs(T type) {
-		if (type == null) {
-			throw new IllegalArgumentException("value may not be null");
-		}
+		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			@SuppressWarnings("unchecked")
 			T propValue = (T) resource.adaptTo(ValueMap.class).get(key,
@@ -210,9 +205,7 @@ public class PropertyPredicates {
 
 	@SuppressWarnings("unchecked")
 	private <T> Predicate<Resource> genericContains(final T[] values) {
-		if (values == null) {
-			throw new IllegalArgumentException("value may not be null");
-		}
+		Objects.requireNonNull(values, "value may not be null");
 		return resource -> {
 			T[] propValues = (T[]) resource.adaptTo(ValueMap.class).get(key,
 					values.getClass());

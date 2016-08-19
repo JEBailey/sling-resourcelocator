@@ -17,11 +17,16 @@ package com.sas.sling.resource;
  */
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.sling.api.resource.Resource;
 
@@ -69,8 +74,8 @@ public class ResourceLocator {
 	 * When a matching resource is located, pass that resource to the callback
 	 * handler. This is used when the handling of the resources needs to be done
 	 * as those resources are identified. This replaces the default
-	 * <code>Consumer</code> that appends the resource to the internal list returned
-	 * will be returned.
+	 * <code>Consumer</code> that appends the resource to the internal list
+	 * returned will be returned.
 	 * 
 	 * @param callback
 	 *            Consumer that processes the located resource
@@ -161,8 +166,7 @@ public class ResourceLocator {
 			if (condition.test(current)) {
 				++count;
 				if (count > startOfRange) {
-					callback.orElse(e -> resourcesToReturn.add(e)).accept(
-							current);
+					callback.orElse(e -> resourcesToReturn.add(e)).accept(current);
 				}
 			}
 			resource.listChildren().forEachRemaining(child -> {
@@ -175,6 +179,39 @@ public class ResourceLocator {
 			}
 		}
 		return resourcesToReturn;
+	}
+
+	/**
+	 * Provides a stream of resources starting from the initiator resource and traversing through it's descendants
+	 * The only fluent api check it performs is of the traversal predicate.
+	 * 
+	 * @return self closing {@code Stream<Resource>} of unknown size. 
+	 */
+	public Stream<Resource> stream(){
+		 return StreamSupport.stream(Spliterators.spliteratorUnknownSize(new Iterator<Resource>() {
+			
+			Deque<Resource> resourcesToCheck = new ArrayDeque<>();
+			
+			{
+				resourcesToCheck.addFirst(resource);
+			}
+			
+			@Override
+			public boolean hasNext() {
+				return !resourcesToCheck.isEmpty();
+			}
+
+			@Override
+			public Resource next() {
+				Resource current = resourcesToCheck.removeFirst();
+				resource.listChildren().forEachRemaining(child -> {
+					if (traversalControl.orElse(e -> true).test(child)) {
+						resourcesToCheck.addFirst(child);
+					}
+				});
+				return current;
+			}
+		}, Spliterator.ORDERED | Spliterator.IMMUTABLE),false);
 	}
 
 }
