@@ -245,9 +245,7 @@ public class PropertyPredicates {
 	}
 
 	private <T> Predicate<Resource> genericIsIn(final T[] values) {
-		if (values == null) {
-			throw new IllegalArgumentException("value may not be null");
-		}
+		Objects.requireNonNull(values, "values may not be null");
 		return resource -> {
 			Object propValue = resource.adaptTo(ValueMap.class).get(key,
 					values.getClass().getComponentType());
@@ -283,6 +281,7 @@ public class PropertyPredicates {
 
 	
 	public Predicate<Resource> isNotIn(final Object... objects) {
+		Objects.requireNonNull(objects, "objects may not be null");
 		return resource -> {
 			Object value = resource.adaptTo(ValueMap.class).get(key);
 
