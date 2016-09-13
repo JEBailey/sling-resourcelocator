@@ -169,7 +169,7 @@ public class ResourceLocator {
 					callback.orElse(e -> resourcesToReturn.add(e)).accept(current);
 				}
 			}
-			resource.listChildren().forEachRemaining(child -> {
+			current.listChildren().forEachRemaining(child -> {
 				if (traversalControl.orElse(e -> true).test(child)) {
 					resourcesToCheck.push(child);
 				}

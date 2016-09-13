@@ -48,5 +48,15 @@ public class ResourcePredicates {
 	public static Predicate<Resource> isResourceType(final String resourceType) {
 		return resource -> resource.isResourceType(resourceType);
 	}
+	
+	/**
+	 * 
+	 * 
+	 * @param resourceType
+	 * @return predicate which evaluates 
+	 */
+	public static Predicate<Resource> depthIsLessThan(final int depth) {
+		return resource -> resource.getPath().split("/").length < depth;
+	}
 
 }
