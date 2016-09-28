@@ -35,9 +35,6 @@ import org.apache.sling.api.resource.Resource;
  * limitations under the License.
  */
 public class ResourcePredicates {
-
-	private ResourcePredicates(){
-	}
 	
 	/**
 	 * 

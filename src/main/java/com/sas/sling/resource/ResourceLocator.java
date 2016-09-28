@@ -94,7 +94,7 @@ public class ResourceLocator {
 	 * resource tree
 	 * 
 	 * @param condition
-	 *            used to approve child resource for traversal
+	 *            Add child resource if 'true'
 	 * @return this locator
 	 */
 	public ResourceLocator traversalControl(Predicate<Resource> condition) {
@@ -204,7 +204,7 @@ public class ResourceLocator {
 			@Override
 			public Resource next() {
 				Resource current = resourcesToCheck.removeFirst();
-				resource.listChildren().forEachRemaining(child -> {
+				current.listChildren().forEachRemaining(child -> {
 					if (traversalControl.orElse(e -> true).test(child)) {
 						resourcesToCheck.addFirst(child);
 					}
