@@ -182,20 +182,21 @@ public class ResourceLocator {
 	}
 
 	/**
-	 * Provides a stream of resources starting from the initiator resource and traversing through it's descendants
-	 * The only fluent api check it performs is of the traversal predicate.
+	 * Provides a stream of resources starting from the initiator resource and
+	 * traversing through it's descendants The only fluent api check it performs
+	 * is of the traversal predicate.
 	 * 
-	 * @return self closing {@code Stream<Resource>} of unknown size. 
+	 * @return self closing {@code Stream<Resource>} of unknown size.
 	 */
-	public Stream<Resource> stream(){
-		 return StreamSupport.stream(Spliterators.spliteratorUnknownSize(new Iterator<Resource>() {
-			
+	public Stream<Resource> stream() {
+		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(new Iterator<Resource>() {
+
 			Deque<Resource> resourcesToCheck = new ArrayDeque<>();
-			
+
 			{
 				resourcesToCheck.addFirst(resource);
 			}
-			
+
 			@Override
 			public boolean hasNext() {
 				return !resourcesToCheck.isEmpty();
@@ -211,7 +212,19 @@ public class ResourceLocator {
 				});
 				return current;
 			}
-		}, Spliterator.ORDERED | Spliterator.IMMUTABLE),false);
+		}, Spliterator.ORDERED | Spliterator.IMMUTABLE), false);
+	}
+	
+	/**
+	 * Provides a stream of resources starting from the initiator resource and
+	 * traversing through it's descendants The only fluent api check it performs
+	 * is of the traversal predicate.
+	 * 
+	 * @return self closing {@code Stream<Resource>} of unknown size.
+	 */
+	public Stream<Resource> stream(Predicate<Resource> traversalConstraint) {
+		this.traversalControl = Optional.of(traversalConstraint);
+		return stream();
 	}
 
 }
