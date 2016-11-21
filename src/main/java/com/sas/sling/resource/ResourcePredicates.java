@@ -1,5 +1,6 @@
 package com.sas.sling.resource;
 
+import java.util.Map;
 /*
  * Copyright 2016 Jason E Bailey
  *
@@ -35,22 +36,22 @@ import org.apache.sling.api.resource.Resource;
  * limitations under the License.
  */
 public class ResourcePredicates {
-	
+
 	/**
-	 * 
+	 * Convenience method to wrap the resources method 'isResourceType'
 	 * 
 	 * @param resourceType
-	 * @return predicate which evaluates 
+	 * @return predicate which evaluates
 	 */
 	public static Predicate<Resource> isResourceType(final String resourceType) {
 		return resource -> resource.isResourceType(resourceType);
 	}
-	
+
 	/**
-	 * 
+	 * Convenience method to determine depth of resource via the name pattern
 	 * 
 	 * @param resourceType
-	 * @return predicate which evaluates 
+	 * @return predicate which evaluates
 	 */
 	public static Predicate<Resource> depthIsLessThan(final int depth) {
 		return resource -> resource.getPath().split("/").length < depth;

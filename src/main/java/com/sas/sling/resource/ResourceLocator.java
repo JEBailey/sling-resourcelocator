@@ -74,8 +74,10 @@ public class ResourceLocator {
 	 * When a matching resource is located, pass that resource to the callback
 	 * handler. This is used when the handling of the resources needs to be done
 	 * as those resources are identified. This replaces the default
-	 * <code>Consumer</code> that appends the resource to the internal list
+	 * Consumer that appends the resource to the internal list
 	 * returned will be returned.
+	 * 
+	 * This is equivalent of a .forEach in the stream api
 	 * 
 	 * @param callback
 	 *            Consumer that processes the located resource
@@ -93,6 +95,10 @@ public class ResourceLocator {
 	 * This can be used to limit the possible branching options beneath a
 	 * resource tree
 	 * 
+	 * As the Stream API provides an inherent depth first Resource stream this provides
+	 * the ability to limit the children which are acceptable.
+	 * 
+	 * 
 	 * @param condition
 	 *            Add child resource if 'true'
 	 * @return this locator
@@ -106,6 +112,8 @@ public class ResourceLocator {
 	 * Sets the maximum number of items to be returned or processed. Starting
 	 * from the first matching resource. This method is mutually exclusive to
 	 * the range method
+	 * 
+	 * This performs the same form of limitation as a limit on a Stream
 	 * 
 	 * @param number
 	 *            maximum number of items to be returned
@@ -124,6 +132,8 @@ public class ResourceLocator {
 	 * Sets the maximum number of items to be returned or processed. Starting
 	 * from the nth identified resource as set by the startOfRange. This method
 	 * is mutually exclusive to the limit method
+	 * 
+	 * This can be achieved on a Stream by performing a a filter operation
 	 * 
 	 * @param startOfRange
 	 * @param limit

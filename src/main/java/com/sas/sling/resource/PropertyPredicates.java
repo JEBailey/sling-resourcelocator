@@ -60,7 +60,7 @@ public class PropertyPredicates {
 	 * Equivalence matching against a String
 	 * 
 	 * @param string to match against
-	 * @return predicate matcher
+	 * @return true if Strings are equivalent
 	 */
 	public Predicate<Resource> is(String string) {
 		return genericIs(string);
@@ -70,7 +70,7 @@ public class PropertyPredicates {
 	 * Equivalence matching against a Number (long)
 	 * 
 	 * @param number to be compared against
-	 * @return predicate matcher
+	 * @return true if numbers are equivalent
 	 */
 	public Predicate<Resource> is(Long number) {
 		return genericIs(number);
@@ -80,37 +80,37 @@ public class PropertyPredicates {
 	 * Equivalence matching against a Boolean
 	 * 
 	 * @param number to be compared against
-	 * @return predicate matcher
+	 * @return true if booleans are equivalent
 	 */
 	public Predicate<Resource> is(Boolean bool) {
 		return genericIs(bool);
 	}
 
 	/**
-	 * Equivalence rejection for a String
+	 * Equivalence negation for a String
 	 * 
 	 * @param string to be compared against
-	 * @return predicate matcher
+	 * @return true if string is different
 	 */
 	public Predicate<Resource> isNot(String string) {
 		return genericIsNot(string);
 	}
 
 	/**
-	 * Equivalence rejection for a number (Long)
+	 * Equivalence negation for a number (Long)
 	 * 
 	 * @param number to be compared against
-	 * @return predicate matcher
+	 * @return true if the numbers are not equal
 	 */
 	public Predicate<Resource> isNot(Long number) {
-		return genericIs(number);
+		return genericIsNot(number);
 	}
 
 	/**
 	 * Equivalence matching against one or more strings
 	 * 
 	 * @param strings to be compared with
-	 * @return predicate matcher
+	 * @return true if property matches one of the provided Strings
 	 */
 	public Predicate<Resource> isIn(String... strings) {
 		return genericIsIn(strings);
