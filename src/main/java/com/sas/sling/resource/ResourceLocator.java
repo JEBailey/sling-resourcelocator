@@ -20,6 +20,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -67,6 +68,7 @@ public class ResourceLocator {
 	 * @param resource
 	 */
 	private ResourceLocator(Resource resource) {
+		Objects.nonNull(resource);
 		this.resource = resource;
 	}
 
