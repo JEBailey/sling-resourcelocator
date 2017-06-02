@@ -14,7 +14,7 @@ public class RqlQueryHandler {
 	
 	//TODO - not anywhere close to done.
 	public List<Resource> parseRqlQuery(Resource resource, String query){
-		Node rootNode = new RSQLParser().parse("firstName!=john");
+		Node rootNode = new RSQLParser().parse(query);
 		Predicate<Resource> predicate = rootNode.accept(new CustomRqlVisitor());
 		return ResourceLocator.startFrom(resource).locateResources(predicate);
 	}
