@@ -181,7 +181,8 @@ public class ResourceLocator {
 					callback.orElse(e -> resourcesToReturn.add(e)).accept(current);
 				}
 			}
-			current.listChildren().forEachRemaining(child -> {
+			Iterator<Resource> childs = current.listChildren();
+			childs.forEachRemaining(child -> {
 				if (traversalControl.orElse(e -> true).test(child)) {
 					resourcesToCheck.push(child);
 				}
