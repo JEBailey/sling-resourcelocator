@@ -109,6 +109,24 @@ public class ResourceLocator {
 		this.traversalControl = Optional.ofNullable(condition);
 		return this;
 	}
+	
+	/**
+	 * Rests the starting path for the query to be the 
+	 * This can be used to limit the possible branching options beneath a
+	 * resource tree
+	 * 
+	 * As the Stream API provides an inherent depth first Resource stream this provides
+	 * the ability to limit the children which are acceptable.
+	 * 
+	 * 
+	 * @param path
+	 *            resets resource to path
+	 * @return this locator
+	 */
+	public ResourceLocator startingPath(String path) {
+		this.resource = resource.getResourceResolver().getResource(path);
+		return this;
+	}
 
 	/**
 	 * Sets the maximum number of items to be returned or processed. Starting
