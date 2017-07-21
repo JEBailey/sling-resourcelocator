@@ -1,63 +1,91 @@
 package com.sas.sling.resource.query;
 
+/*
+ * Copyright 2016 Jason E Bailey
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.sling.api.resource.Resource;
 
 import com.sas.sling.resource.PropertyPredicates;
 import com.sas.sling.resource.ResourceLocator;
-
-import cz.jirutka.rsql.parser.ast.node.AbstractNode;
-import cz.jirutka.rsql.parser.ast.node.ComparisonNode;
+import com.sas.sling.resource.parser.node.Node;
 
 public class GenericRsqlSpecification {
 
-	public static Predicate<Resource> toPredicate(AbstractNode node, Object operand, List<Object> arguments) {
-		
-		PropertyPredicates propPredicates = PropertyPredicates.property(operand.toString());
+	public static Predicate<Resource> toPredicate(Node node, Function<Resource, String> operand,
+			List<Function<Resource, String>> arguments) {
+		// this is where the problem currently is
+		// rather than the operand being a value. It's a Function which returns
+		// a string
 
-		Optional<RqlSearchOperation> op = RqlSearchOperation.getSimpleOperator(((ComparisonNode)node).getOperator());
+		Optional<RqlSearchOperation> op = RqlSearchOperation.getSimpleOperator(node.getValue());
 
-		String argument = (String)arguments.get(0);
-		
+		Function<Resource, String> argument = arguments.get(0);
+
 		switch (op.get()) {
 
 		case EQUAL: {
-			return propPredicates.is(argument);
+			return resource -> {
+				return PropertyPredicates.property(operand.apply(resource)).is(argument.apply(resource)).test(resource);
+			};
 		}
 		case NOT_EQUAL: {
-			return propPredicates.is(argument).negate();
+			return resource -> {
+				return PropertyPredicates.property(operand.apply(resource)).is(argument.apply(resource)).negate().test(resource);
+			};
 		}
 		case GREATER_THAN: {
-			return propPredicates.gt(argument);
+			return resource -> {
+				return PropertyPredicates.property(operand.apply(resource)).gt(argument.apply(resource)).test(resource);
+			};
 		}
 		case GREATER_THAN_OR_EQUAL: {
-			return propPredicates.gte(argument);
+			return resource -> {
+				return PropertyPredicates.property(operand.apply(resource)).gte(argument.apply(resource)).test(resource);
+			};
 		}
 		case LESS_THAN: {
-			return propPredicates.lt(argument);
+			return resource -> {
+				return PropertyPredicates.property(operand.apply(resource)).lt(argument.apply(resource)).test(resource);
+			};
 		}
 		case LESS_THAN_OR_EQUAL: {
-			return propPredicates.lte(argument);
+			return resource -> {
+				return PropertyPredicates.property(operand.apply(resource)).lte(argument.apply(resource)).test(resource);
+			};
 		}
 		case IN:
-			return propPredicates.isIn(arguments.toArray(new String[arguments.size()]));
+			return null;//propPredicates.isIn(arguments.toArray(new String[arguments.size()]));
 		case NOT_IN:
-			return propPredicates.isIn(arguments.toArray(new String[arguments.size()])).negate();
+			return null;//propPredicates.isIn(arguments.toArray(new String[arguments.size()])).negate();
 		}
 
 		System.out.println(argument + "has been found");
 		return null;
 	}
 
-	//creates function predicate
+	// creates function predicate
 	public static Predicate<Resource> toPredicate(String property, List<Object> arguments,
 			final ResourceLocator locator) {
 		switch (property) {
 		case "path": {
-			String path = (String)arguments.get(0);
+			String path = (String) arguments.get(0);
 			return resource -> {
 				locator.startingPath(path);
 				return true;
