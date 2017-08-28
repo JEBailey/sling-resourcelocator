@@ -29,12 +29,12 @@ options
 
 PARSER_BEGIN(Parser)
 package com.sas.sling.resource.parser;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.sas.sling.resource.parser.node.*;
+import com.sas.sling.resource.parser.predicates.*;
 
 public final class Parser
 {
@@ -85,16 +85,7 @@ TOKEN :
 
 TOKEN :
 {
-  < UNRESERVED_STR : (~[ "\"", "'", "(", ")", ";", ",", "=", "<", ">", "!", "~", " " ])+ >
-| < SINGLE_QUOTED_STR :
-    (
-      "'"
-      (
-        < ESCAPED_CHAR >
-      | ~[ "'", "\\" ]
-      )*
-      "'"
-    ) >
+  < UNRESERVED_STR : (~[ "\"", "'", "(", ")", ";", ",", "=", "<", ">", "!", "~", " ", "[", "]" ])+ >
 | < DOUBLE_QUOTED_STR :
     (
       "\""
@@ -120,20 +111,15 @@ TOKEN :
     ) >
 | < LPAREN : "(" >
 | < RPAREN : ")" >
-| < COMP_FIQL :
-    (
-      (
-        "=" (< ALPHA >)*
-      )
-    | "!"
-    )
-    "=" >
+| < LBRACKET : "[" >
+| < RBRACKET : "]" >
 | < COMP_ALT :
     (
       ">"
     | "<"
-    )
-    ("=")? >
+    | "="
+    | "!"
+    )+ >
 }
 
 Node Input() :
@@ -224,21 +210,17 @@ Node Comparison() :
 }
 {
   sel = Argument() 
-  op = Operator()
+  op = Operator() 
   args = Arguments()
   {
     return factory.createComparisonNode(op, sel, args);
   }
 }
 
-
 String Operator() :
 {}
 {
-  (
-    token = < COMP_FIQL >
-  | token = < COMP_ALT >
-  )
+  token = < COMP_ALT >
   {
     return token.image;
   }
@@ -250,7 +232,7 @@ List < Node > Arguments() :
 }
 {
   (
-    < LPAREN > [value = CommaSepArguments()] < RPAREN >
+    < LPAREN > [ value = CommaSepArguments() ] < RPAREN >
   )
   {
     return (List) value;
@@ -273,7 +255,6 @@ List < Node > CommaSepArguments() :
     list.add(arg);
   }
   (
-    LOOKAHEAD(< OR >)
     < OR > 
     arg = Argument()
     {
@@ -288,23 +269,35 @@ List < Node > CommaSepArguments() :
 Node Argument() :
 {
   Node selector = null;
-  List<Node> children = null;
+  List < Node > children = null;
 }
 {
   (
     token = < UNRESERVED_STR >
   | token = < DOUBLE_QUOTED_STR >
-  | token = < SINGLE_QUOTED_STR >
-  ) {
+  )
+  {
     selector = factory.createArgument(token.kind, token.image);
   }
-  [children = Arguments() ]
+  [ children = Arguments() ]
   {
-    if (children == null) {
-          return selector;
-    } else {
-       return factory.createFunction(selector,children);
+    if (children == null)
+    {
+      return selector;
     }
-    
+    else
+    {
+      return factory.createFunction(selector, children);
+    }
+  }
+}
+
+Node Property() :
+{
+}
+{
+  < LBRACKET >
+  {
+    return null;
   }
 }

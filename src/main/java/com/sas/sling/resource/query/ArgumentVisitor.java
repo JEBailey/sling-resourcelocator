@@ -19,9 +19,9 @@ import java.util.function.Function;
 import org.apache.sling.api.resource.Resource;
 
 import com.sas.sling.resource.ResourceLocator;
-import com.sas.sling.resource.parser.Visitor;
 import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.node.NodeType;
+import com.sas.sling.resource.parser.node.Visitor;
 
 
 public class ArgumentVisitor implements Visitor<Function<Resource,String>, ResourceLocator> {

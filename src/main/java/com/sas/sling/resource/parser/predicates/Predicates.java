@@ -1,4 +1,4 @@
-package com.sas.sling.resource.parser;
+package com.sas.sling.resource.parser.predicates;
 
 /*
  * Copyright 2016 Jason E Bailey

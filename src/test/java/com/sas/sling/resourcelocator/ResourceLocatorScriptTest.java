@@ -57,7 +57,7 @@ public class ResourceLocatorScriptTest {
 	@Test
 	public void testMatchingNameScript() {
 		Resource resource = context.resourceResolver().getResource("/content/sample/en");
-		List<Resource> found = RqlQueryHandler.parseRqlQuery(resource, "name() == 'testpage1'");
+		List<Resource> found = RqlQueryHandler.parseRqlQuery(resource, "name() == \"testpage1\"");
 		assertEquals(1, found.size());
 	}
 	

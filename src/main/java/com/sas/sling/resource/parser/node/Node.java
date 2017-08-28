@@ -23,8 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.sas.sling.resource.parser.Visitor;
-
 /**
  * Common interface of the AST nodes. Implementations must be immutable.
  */

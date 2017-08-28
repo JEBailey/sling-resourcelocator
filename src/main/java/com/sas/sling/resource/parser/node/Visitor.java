@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sas.sling.resource.parser;
-
-import com.sas.sling.resource.parser.node.Node;
+package com.sas.sling.resource.parser.node;
 
 /**
  * An interface for visiting AST nodes of the RSQL.

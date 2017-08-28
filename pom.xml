@@ -68,7 +68,7 @@
 						<configuration>
 							<jdkVersion>1.8</jdkVersion>
 							<javadocFriendlyComments>true</javadocFriendlyComments>
-							<outputDirectory>target/generated-sources/javacc</outputDirectory>
+							<outputDirectory>src/main/java</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -93,6 +93,12 @@
 			<artifactId>org.apache.sling.testing.sling-mock</artifactId>
 			<version>2.2.10</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jackrabbit</groupId>
+			<artifactId>jackrabbit-jcr-commons</artifactId>
+			<version>2.15.5</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<groupId>com.sas</groupId>

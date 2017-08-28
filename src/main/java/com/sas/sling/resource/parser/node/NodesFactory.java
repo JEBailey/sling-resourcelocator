@@ -16,8 +16,8 @@ package com.sas.sling.resource.parser.node;
  */
 import java.util.List;
 
-import com.sas.sling.resource.parser.UnknownOperatorException;
 import com.sas.sling.resource.parser.ParserConstants;
+import com.sas.sling.resource.parser.predicates.UnknownOperatorException;
 
 
 
@@ -72,7 +72,7 @@ public class NodesFactory implements ParserConstants {
     }
     
     public Node createArgument(int kind,String literal) {
-    	if (kind == ParserConstants.SINGLE_QUOTED_STR || kind == DOUBLE_QUOTED_STR){
+    	if (kind == DOUBLE_QUOTED_STR){
     		literal = literal.substring(1, literal.length() -1);
     	}
     	return new Node(literal);
