@@ -17,6 +17,7 @@ package com.sas.sling.resource.query;
 import java.util.function.Function;
 
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ValueMap;
 
 import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.node.Node;
@@ -24,10 +25,16 @@ import com.sas.sling.resource.parser.node.NodeType;
 import com.sas.sling.resource.parser.node.Visitor;
 
 
-public class ArgumentVisitor implements Visitor<Function<Resource,String>, ResourceLocator> {
+public class ArgumentVisitor implements Visitor<Function<Resource,Object>, ResourceLocator> {
 
 	@Override
-	public Function<Resource,String> visit(Node node, ResourceLocator param) {
+	public Function<Resource,Object> visit(Node node, ResourceLocator param) {
+		if (node.getType() == NodeType.STRING){
+			return resource -> node.getValue();
+		}
+		if (node.getType() == NodeType.PROPERTY){
+			return resource -> resource.adaptTo(ValueMap.class).get(node.getValue());
+		}
 		if (node.getType() != NodeType.FUNCTION){
 			return resource -> node.getValue();
 		}

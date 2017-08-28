@@ -16,6 +16,6 @@ package com.sas.sling.resource.parser.node;
  */
 public enum NodeType {
 
-	STRING, NUMBER, FUNCTION, AND, OR, COMPARISON, SELECTOR
+	STRING, NUMBER, FUNCTION, AND, OR, COMPARISON, SELECTOR, PROPERTY
 
 }

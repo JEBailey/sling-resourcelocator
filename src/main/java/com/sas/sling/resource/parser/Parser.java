@@ -98,8 +98,8 @@ public final class Parser implements ParserConstants {
       node = Group();
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case UNRESERVED_STR:
       case DOUBLE_QUOTED_STR:
+      case LBRACKET:
         node = Comparison();
         break;
       default:
@@ -144,8 +144,8 @@ public final class Parser implements ParserConstants {
     case LPAREN:
       jj_consume_token(LPAREN);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case UNRESERVED_STR:
       case DOUBLE_QUOTED_STR:
+      case LBRACKET:
         value = CommaSepArguments();
         break;
       default:
@@ -155,8 +155,8 @@ public final class Parser implements ParserConstants {
       jj_consume_token(RPAREN);
     {if (true) return (List) value;}
       break;
-    case UNRESERVED_STR:
     case DOUBLE_QUOTED_STR:
+    case LBRACKET:
       value = Argument();
     {if (true) return Arrays.asList((Node) value);}
       break;
@@ -195,22 +195,22 @@ public final class Parser implements ParserConstants {
   Node selector = null;
   List < Node > children = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case UNRESERVED_STR:
-      token = jj_consume_token(UNRESERVED_STR);
-      break;
     case DOUBLE_QUOTED_STR:
-      token = jj_consume_token(DOUBLE_QUOTED_STR);
+      selector = Literal();
+      break;
+    case LBRACKET:
+      selector = Property();
       break;
     default:
       jj_la1[6] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-    selector = factory.createArgument(token.kind, token.image);
+    {if (true) return selector;}
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case UNRESERVED_STR:
     case DOUBLE_QUOTED_STR:
     case LPAREN:
+    case LBRACKET:
       children = Arguments();
       break;
     default:
@@ -228,9 +228,18 @@ public final class Parser implements ParserConstants {
     throw new Error("Missing return statement in function");
   }
 
+  final public Node Literal() throws ParseException {
+    jj_consume_token(DOUBLE_QUOTED_STR);
+    {if (true) return factory.createArgument(token.kind, token.image);}
+    throw new Error("Missing return statement in function");
+  }
+
   final public Node Property() throws ParseException {
+  Token string = null;
     jj_consume_token(LBRACKET);
-    {if (true) return null;}
+    string = jj_consume_token(UNRESERVED_STR);
+    jj_consume_token(RBRACKET);
+    {if (true) return factory.createPropertySelector(string.image);}
     throw new Error("Missing return statement in function");
   }
 
@@ -263,7 +272,7 @@ public final class Parser implements ParserConstants {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x100,0x80,0x60,0x60,0x260,0x100,0x60,0x260,};
+      jj_la1_0 = new int[] {0x100,0x80,0x840,0x840,0xa40,0x100,0x840,0xa40,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[1];
   private boolean jj_rescan = false;

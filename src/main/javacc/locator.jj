@@ -85,7 +85,7 @@ TOKEN :
 
 TOKEN :
 {
-  < UNRESERVED_STR : (~[ "\"", "'", "(", ")", ";", ",", "=", "<", ">", "!", "~", " ", "[", "]" ])+ >
+  < UNRESERVED_STR : (~[ "\"", "'", "(", ")", ",", "=", "<", ">", " ", "[", "]" ])+ >
 | < DOUBLE_QUOTED_STR :
     (
       "\""
@@ -273,11 +273,11 @@ Node Argument() :
 }
 {
   (
-    token = < UNRESERVED_STR >
-  | token = < DOUBLE_QUOTED_STR >
+    selector = Literal()
+  | selector = Property()
   )
   {
-    selector = factory.createArgument(token.kind, token.image);
+    return selector;
   }
   [ children = Arguments() ]
   {
@@ -292,12 +292,23 @@ Node Argument() :
   }
 }
 
-Node Property() :
+Node Literal() :
 {
 }
 {
-  < LBRACKET >
+  < DOUBLE_QUOTED_STR >
   {
-    return null;
+    return factory.createArgument(token.kind, token.image);
+  }
+}
+
+Node Property() :
+{
+  Token string = null;
+}
+{
+  < LBRACKET > string = < UNRESERVED_STR > < RBRACKET >
+  {
+    return factory.createPropertySelector(string.image);
   }
 }

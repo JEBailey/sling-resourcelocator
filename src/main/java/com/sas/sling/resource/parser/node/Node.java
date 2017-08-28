@@ -33,9 +33,25 @@ public class Node implements Iterable<Node> {
 	private Node left;
 	private String value;
 
+	/**
+	 * creates a node which represents a String Literal value
+	 * 
+	 * @param value
+	 */
 	public Node(String value) {
 		this.value = value;
 		this.type = NodeType.STRING;
+	}
+	
+	/**
+	 * creates a node which represents a property in the resource that will be provided
+	 * 
+	 * @param value
+	 */
+	public static Node propertyNode(String value) {
+		Node reply = new Node(value);
+		reply.type = NodeType.PROPERTY;
+		return reply;
 	}
 
 	public Node(NodeType type, String identifier, List<Node> children) {
@@ -48,7 +64,7 @@ public class Node implements Iterable<Node> {
 	}
 
 	public Node(NodeType type, List<Node> children) {
-		this.children = new ArrayList<>(children);
+		this.children = unmodifiableList(new ArrayList<>(children));
 		this.type = type;
 	}
 

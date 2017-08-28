@@ -81,4 +81,8 @@ public class NodesFactory implements ParserConstants {
 	public Node createFunction(Node functionName, List<Node> args) {
 		return new Node(NodeType.FUNCTION,functionName.getValue(), args);
 	}
+
+	public Node createPropertySelector(String image) {
+		return Node.propertyNode(image);
+	}
 }

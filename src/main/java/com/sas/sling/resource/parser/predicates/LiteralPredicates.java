@@ -45,7 +45,7 @@ public class LiteralPredicates {
 	private final Object key;
 
 	private LiteralPredicates(Object name) {
-		this.key = Objects.requireNonNull(name, "value may not be null");;
+		this.key = name;
 	}
 
 	/**
@@ -97,6 +97,9 @@ public class LiteralPredicates {
 
 	public <T> Predicate<Resource> is(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
+		if (key == null){
+			return resource -> false;
+		}
 		return resource -> {
 			if (key.equals(type)) {
 				return true;
@@ -152,7 +155,7 @@ public class LiteralPredicates {
 	 * specific types
 	 */
 	@SuppressWarnings("unchecked")
-	private <T> Predicate<Resource> lt(T type) {
+	public <T> Predicate<Resource> lt(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			T propValue = (T) ConverterImpl.adapt(key, type.getClass());

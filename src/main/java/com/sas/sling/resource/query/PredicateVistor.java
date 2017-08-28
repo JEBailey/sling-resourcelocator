@@ -30,7 +30,7 @@ public class PredicateVistor implements Visitor<Predicate<Resource>, ResourceLoc
 
 	@Override
 	public Predicate<Resource> visit(Node node, ResourceLocator locator) {
-		List<Function<Resource,String>> arguments = Collections.emptyList();
+		List<Function<Resource,Object>> arguments = Collections.emptyList();
 		switch (node.getType()){
 		case AND:
 			return createAndPredicate(node, locator);
@@ -67,8 +67,8 @@ public class PredicateVistor implements Visitor<Predicate<Resource>, ResourceLoc
 		});
 	}
 	
-	private Predicate<Resource> createComparisonPredicate(Node comparisonNode, List<Function<Resource, String>> arguments, ResourceLocator locator) {
-		Function<Resource, String> operand = comparisonNode.getLeftOperand().accept(new ArgumentVisitor(),locator);
+	private Predicate<Resource> createComparisonPredicate(Node comparisonNode, List<Function<Resource, Object>> arguments, ResourceLocator locator) {
+		Function<Resource, Object> operand = comparisonNode.getLeftOperand().accept(new ArgumentVisitor(),locator);
 		return GenericRsqlSpecification.toPredicate(comparisonNode, operand, arguments);
 	}
 

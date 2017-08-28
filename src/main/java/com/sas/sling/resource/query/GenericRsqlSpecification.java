@@ -25,49 +25,50 @@ import org.apache.sling.api.resource.Resource;
 import com.sas.sling.resource.PropertyPredicates;
 import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.node.Node;
+import com.sas.sling.resource.parser.predicates.LiteralPredicates;
 
 public class GenericRsqlSpecification {
 
-	public static Predicate<Resource> toPredicate(Node node, Function<Resource, String> operand,
-			List<Function<Resource, String>> arguments) {
+	public static Predicate<Resource> toPredicate(Node node, Function<Resource, Object> operand,
+			List<Function<Resource, Object>> arguments) {
 		// this is where the problem currently is
 		// rather than the operand being a value. It's a Function which returns
 		// a string
 
 		Optional<RqlSearchOperation> op = RqlSearchOperation.getSimpleOperator(node.getValue());
 
-		Function<Resource, String> argument = arguments.get(0);
+		Function<Resource, Object> argument = arguments.get(0);
 
 		switch (op.get()) {
 
 		case EQUAL: {
 			return resource -> {
-				return PropertyPredicates.property(operand.apply(resource)).is(argument.apply(resource)).test(resource);
+				return LiteralPredicates.literalValue(operand.apply(resource)).is(argument.apply(resource)).test(resource);
 			};
 		}
 		case NOT_EQUAL: {
 			return resource -> {
-				return PropertyPredicates.property(operand.apply(resource)).is(argument.apply(resource)).negate().test(resource);
+				return LiteralPredicates.literalValue(operand.apply(resource)).is(argument.apply(resource)).negate().test(resource);
 			};
 		}
 		case GREATER_THAN: {
 			return resource -> {
-				return PropertyPredicates.property(operand.apply(resource)).gt(argument.apply(resource)).test(resource);
+				return LiteralPredicates.literalValue(operand.apply(resource)).gt(argument.apply(resource)).test(resource);
 			};
 		}
 		case GREATER_THAN_OR_EQUAL: {
 			return resource -> {
-				return PropertyPredicates.property(operand.apply(resource)).gte(argument.apply(resource)).test(resource);
+				return LiteralPredicates.literalValue(operand.apply(resource)).gte(argument.apply(resource)).test(resource);
 			};
 		}
 		case LESS_THAN: {
 			return resource -> {
-				return PropertyPredicates.property(operand.apply(resource)).lt(argument.apply(resource)).test(resource);
+				return LiteralPredicates.literalValue(operand.apply(resource)).lt(argument.apply(resource)).test(resource);
 			};
 		}
 		case LESS_THAN_OR_EQUAL: {
 			return resource -> {
-				return PropertyPredicates.property(operand.apply(resource)).lte(argument.apply(resource)).test(resource);
+				return LiteralPredicates.literalValue(operand.apply(resource)).lte(argument.apply(resource)).test(resource);
 			};
 		}
 		case IN:

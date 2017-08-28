@@ -54,17 +54,24 @@ public class ResourceLocatorScriptTest {
 	}
 
 
-	@Test
+	@Test @Ignore
 	public void testMatchingNameScript() {
 		Resource resource = context.resourceResolver().getResource("/content/sample/en");
-		List<Resource> found = RqlQueryHandler.parseRqlQuery(resource, "name() == \"testpage1\"");
+		List<Resource> found = RqlQueryHandler.parseRqlQuery(resource, "name() == 'testpage1'");
+		assertEquals(1, found.size());
+	}
+	
+	@Test
+	public void testMatchingPropertyScript() {
+		Resource resource = context.resourceResolver().getResource("/content/sample/en");
+		List<Resource> found = RqlQueryHandler.parseRqlQuery(resource, "[jcr:content/jcr:title] == \"English\"");
 		assertEquals(1, found.size());
 	}
 	
 	@Test @Ignore
 	public void testBeforeMidDateScript() {
 		Resource resource = context.resourceResolver().getResource("/content/sample/en");
-		String query = String.format(" jcr:content/created < '%s' ", DATE_STRING);
+		String query = String.format(" [jcr:content/created] < '%s' ", DATE_STRING);
 		List<Resource> found = RqlQueryHandler.parseRqlQuery(resource, query);
 		assertEquals(5, found.size());
 	}
