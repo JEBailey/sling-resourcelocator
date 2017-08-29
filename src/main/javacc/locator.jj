@@ -278,26 +278,31 @@ List < Node > CommaSepArguments() :
 Node Argument() :
 {
   Node selector = null;
-  List < Node > children = null;
 }
 {
   (
     selector = Literal()
   | selector = Property()
+  | selector = Function()
   )
   {
     return selector;
   }
-  [ children = Arguments() ]
+}
+
+Node Function() :
+{
+  Node selector = null;
+  List < Node > children = null;
+}
+{
+  < UNRESERVED_STR >
   {
-    if (children == null)
-    {
-      return selector;
-    }
-    else
-    {
+	selector = factory.createArgument(token.kind, token.image);
+  }
+  children = Arguments()
+  {
       return factory.createFunction(selector, children);
-    }
   }
 }
 
@@ -305,7 +310,10 @@ Node Literal() :
 {
 }
 {
-  (    < DOUBLE_QUOTED_STR > | < SINGLE_QUOTED_STR > )
+  (
+    < DOUBLE_QUOTED_STR >
+  | < SINGLE_QUOTED_STR >
+  )
   {
     return factory.createArgument(token.kind, token.image);
   }
