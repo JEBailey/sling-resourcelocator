@@ -16,7 +16,7 @@ package com.sas.sling.resource.query;
  */
 import java.util.Optional;
 
-public enum RqlSearchOperation {
+public enum Operations {
     EQUAL("=="), 
     NOT_EQUAL("!="), 
     GREATER_THAN(">"), 
@@ -28,12 +28,12 @@ public enum RqlSearchOperation {
  
     private String operator;
  
-    private RqlSearchOperation(String operator) {
+    private Operations(String operator) {
         this.operator = operator;
     }
  
-    public static Optional<RqlSearchOperation> getSimpleOperator(String operation) {
-    	for (RqlSearchOperation value:RqlSearchOperation.values()){
+    public static Optional<Operations> getSimpleOperator(String operation) {
+    	for (Operations value:Operations.values()){
     		if (operation.equals(value.operator)){
     			return Optional.of(value);
     		}

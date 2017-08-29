@@ -16,10 +16,11 @@ package com.sas.sling.resourcelocator;
  */
 import static org.junit.Assert.assertEquals;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
@@ -28,52 +29,66 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
-import com.sas.sling.resource.query.RqlQueryHandler;
+import com.sas.sling.resource.ResourceLocator;
+import com.sas.sling.resource.parser.ParseException;
+import com.sas.sling.resource.query.ScriptHandler;
 
 public class ResourceLocatorScriptTest {
 
 	@Rule
 	public final SlingContext context = new SlingContext();
 	
+	private static String START_PATH = "/content/sample/en";
 	private Date midPoint;
 	
 	private static String DATE_STRING = "Thu Aug 07 2013 16:32:59 GMT+0200";
-	
+	private static String NEW_DATE = "2013-08-08T16:32:59.000+02:00";
 	private static String DATE_FORMAT = "EEE MMM dd yyyy HH:mm:ss 'GMT'Z";
 
 	@Before
-	public void setUp() throws ParseException {
+	public void setUp() throws ParseException, java.text.ParseException {
 		context.load().json("/data.json", "/content/sample/en");
 		midPoint = new SimpleDateFormat(DATE_FORMAT).parse(DATE_STRING);
 	}
 
-	@Test @Ignore
-	public void testObtainResourceFromContext() {
-		Resource resource = context.resourceResolver().getResource("/content/sample/en");
-		assertEquals("en", resource.getName());
-	}
-
-
-	@Test @Ignore
-	public void testMatchingNameScript() {
-		Resource resource = context.resourceResolver().getResource("/content/sample/en");
-		List<Resource> found = RqlQueryHandler.parseRqlQuery(resource, "name() == 'testpage1'");
+	@Test 
+	public void testNameFunctionIs() throws ParseException {
+		String query = "name() == 'testpage1'";
+		List<Resource> found = handle(START_PATH, query);
 		assertEquals(1, found.size());
 	}
 	
 	@Test
-	public void testMatchingPropertyScript() {
-		Resource resource = context.resourceResolver().getResource("/content/sample/en");
-		List<Resource> found = RqlQueryHandler.parseRqlQuery(resource, "[jcr:content/jcr:title] == \"English\"");
-		assertEquals(1, found.size());
+	public void testPropertyIs() throws ParseException {
+		String query = "[jcr:content/jcr:title] == 'English'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(4, found.size());
 	}
 	
-	@Test @Ignore
-	public void testBeforeMidDateScript() {
-		Resource resource = context.resourceResolver().getResource("/content/sample/en");
-		String query = String.format(" [jcr:content/created] < '%s' ", DATE_STRING);
-		List<Resource> found = RqlQueryHandler.parseRqlQuery(resource, query);
-		assertEquals(5, found.size());
+	@Test
+	public void testDateBeforeValue() throws ParseException {
+		String query = "[jcr:content/created] < '2013-08-08T16:32:59.000+02:00'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(3, found.size());
 	}
 	
+	@Test
+	public void testDateAndProperty() throws ParseException {
+		String query = "[jcr:content/created] < '2013-08-08T16:32:59.000+02:00' and [jcr:content/jcr:title] == 'English'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(3, found.size());
+	}
+	
+	@Test
+	public void testDateOrProperty() throws ParseException {
+		String query = "[jcr:content/created] < '2013-08-08T16:32:59.000+02:00' or [jcr:content/jcr:title] == 'Mongolian'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(4, found.size());
+	}
+	
+	private List<Resource> handle(String path, String filter) throws ParseException {
+		Resource resource = context.resourceResolver().getResource(path);
+		Predicate<Resource> predicate =  ScriptHandler.parseRqlQuery(filter);
+		return ResourceLocator.startFrom(resource).stream().filter(predicate).collect(Collectors.toList());
+	}
 }

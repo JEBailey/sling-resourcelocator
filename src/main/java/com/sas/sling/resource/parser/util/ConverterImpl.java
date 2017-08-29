@@ -45,6 +45,6 @@ public class ConverterImpl {
 			return new CalendarConverter((Calendar) value);
 		}
 		// default string based
-		return new StringConverter(value);
+		return new StringConverter(value.toString());
 	}
 }

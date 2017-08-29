@@ -1,28 +1,14 @@
 package com.sas.sling.resource.parser.predicates;
 
-/*
- * Copyright 2016 Jason E Bailey
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ValueMap;
 
+import com.sas.sling.resource.parser.node.Null;
 import com.sas.sling.resource.parser.util.ConverterImpl;
 
 /**
@@ -39,13 +25,13 @@ import com.sas.sling.resource.parser.util.ConverterImpl;
  * @author J.E. Bailey
  *
  */
-public class LiteralPredicates {
+public class ScriptPredicates {
 
 	// key value to be used against the provided resource object
-	private final Object key;
+	private final Function<Resource,Object> lhs;
 
-	private LiteralPredicates(Object name) {
-		this.key = name;
+	private ScriptPredicates(Function<Resource,Object> value) {
+		this.lhs = value;
 	}
 
 	/**
@@ -54,8 +40,8 @@ public class LiteralPredicates {
 	 * @param name key value of the property
 	 * @return PropertyPredicate instance
 	 */
-	static public LiteralPredicates literalValue(Object name) {
-		return new LiteralPredicates(name);
+	static public ScriptPredicates leftSide(Function<Resource,Object> value) {
+		return new ScriptPredicates(value);
 	}
 
 	/**
@@ -68,7 +54,7 @@ public class LiteralPredicates {
 	public Predicate<Resource> isBefore(Date when) {
 		Objects.requireNonNull(when, "value may not be null");
 		return value -> {
-			Date then = ConverterImpl.adapt(key, Date.class);
+			Date then = ConverterImpl.adapt(lhs, Date.class);
 			if (then != null) {
 				return then.before(when);
 			}
@@ -86,7 +72,7 @@ public class LiteralPredicates {
 	public Predicate<Resource> isAfter(Date when) {
 		Objects.requireNonNull(when, "value may not be null");
 		return value -> {
-			Date then = ConverterImpl.adapt(key, Date.class);
+			Date then = ConverterImpl.adapt(lhs, Date.class);
 			if (then != null) {
 				return then.after(when);
 			}
@@ -95,20 +81,19 @@ public class LiteralPredicates {
 	}
 
 
-	public <T> Predicate<Resource> is(T type) {
-		Objects.requireNonNull(type, "type value may not be null");
-		if (key == null){
-			return resource -> false;
-		}
+	public <T> Predicate<Resource> is(Function<Resource,Object> rhs) {
+		Objects.requireNonNull(rhs, "type value may not be null");
 		return resource -> {
-			if (key.equals(type)) {
-				return true;
+			Object lhValue = lhs.apply(resource);
+			Object rhValue = rhs.apply(resource);
+			if (lhValue == null || rhValue == null){
+				return false;
 			}
-			return ConverterImpl.adapt(key, type.getClass()).equals(type);
+			return ConverterImpl.adapt(rhValue, lhValue.getClass()).equals(lhValue);
 		};
 
 	}
-	
+
 	/*
 	 * Generic greater then method that is accessed via public methods that have
 	 * specific types
@@ -117,13 +102,13 @@ public class LiteralPredicates {
 	public <T> Predicate<Resource> gt(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
-			T propValue = (T) ConverterImpl.adapt(key, type.getClass());
+			T propValue = (T) ConverterImpl.adapt(lhs, type.getClass());
 			if (propValue == null){
 				return false;
 			}
-			if (key instanceof Comparable){
-				if (type.getClass().isInstance(key)){
-					return ((Comparable<T>)key).compareTo(type) > 0;
+			if (lhs instanceof Comparable){
+				if (type.getClass().isInstance(lhs)){
+					return ((Comparable<T>)lhs).compareTo(type) > 0;
 				}
 			}
 			return false;
@@ -136,13 +121,13 @@ public class LiteralPredicates {
 	public <T> Predicate<Resource> gte(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
-			T propValue = (T) ConverterImpl.adapt(key, type.getClass());
+			T propValue = (T) ConverterImpl.adapt(lhs, type.getClass());
 			if (propValue == null){
 				return false;
 			}
-			if (key instanceof Comparable){
-				if (type.getClass().isInstance(key)){
-					return ((Comparable<T>)key).compareTo(type) >= 0;
+			if (lhs instanceof Comparable){
+				if (type.getClass().isInstance(lhs)){
+					return ((Comparable<T>)lhs).compareTo(type) >= 0;
 				}
 			}
 			return false;
@@ -155,16 +140,21 @@ public class LiteralPredicates {
 	 * specific types
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> lt(T type) {
-		Objects.requireNonNull(type, "type value may not be null");
+	public <T> Predicate<Resource> lt(Function<Resource,Object> rhs) {
+		Objects.requireNonNull(rhs, "type value may not be null");
 		return resource -> {
-			T propValue = (T) ConverterImpl.adapt(key, type.getClass());
+			Object lhValue = lhs.apply(resource);
+			Object rhValue = rhs.apply(resource);
+			if (lhValue == null || rhValue == null){
+				return false;
+			}
+			T propValue = (T) ConverterImpl.adapt(rhValue, lhValue.getClass());
 			if (propValue == null){
 				return false;
 			}
-			if (key instanceof Comparable){
-				if (type.getClass().isInstance(key)){
-					return ((Comparable<T>)key).compareTo(type) < 0;
+			if (lhValue instanceof Comparable){
+				if (propValue.getClass().isInstance(lhValue)){
+					return ((Comparable<T>)lhValue).compareTo(propValue) < 0;
 				}
 			}
 			return false;
@@ -180,13 +170,13 @@ public class LiteralPredicates {
 	public <T> Predicate<Resource> lte(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
-			T propValue = (T) ConverterImpl.adapt(key, type.getClass());
+			T propValue = (T) ConverterImpl.adapt(lhs, type.getClass());
 			if (propValue == null){
 				return false;
 			}
-			if (key instanceof Comparable){
-				if (type.getClass().isInstance(key)){
-					return ((Comparable<T>)key).compareTo(type) <= 0;
+			if (lhs instanceof Comparable){
+				if (type.getClass().isInstance(lhs)){
+					return ((Comparable<T>)lhs).compareTo(type) <= 0;
 				}
 			}
 			return false;
@@ -194,7 +184,7 @@ public class LiteralPredicates {
 
 	}
 
-	public <T> Predicate<Resource> isNot(final T type) {
+	public <T> Predicate<Resource> isNot(final Function<Resource,Object> type) {
 		return is(type).negate();
 	}
 

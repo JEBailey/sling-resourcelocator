@@ -28,7 +28,7 @@ import com.sas.sling.resource.parser.node.Visitor;
 public class ArgumentVisitor implements Visitor<Function<Resource,Object>, ResourceLocator> {
 
 	@Override
-	public Function<Resource,Object> visit(Node node, ResourceLocator param) {
+	public Function<Resource,Object> visit(Node node, ResourceLocator locator) {
 		if (node.getType() == NodeType.STRING){
 			return resource -> node.getValue();
 		}

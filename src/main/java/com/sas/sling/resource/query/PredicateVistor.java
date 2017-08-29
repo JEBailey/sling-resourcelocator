@@ -47,10 +47,10 @@ public class PredicateVistor implements Visitor<Predicate<Resource>, ResourceLoc
 	
 	private Predicate<Resource> createAndPredicate(Node node, ResourceLocator locator) {
 		return node.getRightOperands().stream().map(child -> {
-			return visit(node,locator);
+			return visit(child,locator);
 		}).reduce(null, (predicate, accumulator) -> {
-			if (accumulator == null) {
-				return predicate;
+			if (predicate == null) {
+				return accumulator;
 			}
 			return accumulator.and(predicate);
 		});
@@ -58,10 +58,10 @@ public class PredicateVistor implements Visitor<Predicate<Resource>, ResourceLoc
 
 	private Predicate<Resource> createOrPredicate(Node node, ResourceLocator locator) {
 		return node.getRightOperands().stream().map(child -> {
-			return visit(node,locator);
+			return visit(child,locator);
 		}).reduce(null, (predicate, accumulator) -> {
-			if (accumulator == null) {
-				return predicate;
+			if (predicate == null) {
+				return accumulator;
 			}
 			return accumulator.or(predicate);
 		});

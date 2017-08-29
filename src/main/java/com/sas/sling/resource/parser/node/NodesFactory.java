@@ -72,7 +72,7 @@ public class NodesFactory implements ParserConstants {
     }
     
     public Node createArgument(int kind,String literal) {
-    	if (kind == DOUBLE_QUOTED_STR){
+    	if (kind == DOUBLE_QUOTED_STR || kind == SINGLE_QUOTED_STR){
     		literal = literal.substring(1, literal.length() -1);
     	}
     	return new Node(literal);

@@ -38,7 +38,7 @@ public class CalendarConverter extends NumberConverter implements Converter {
 	@Override
 	public <T> T adaptTo(Class<T> klass) {
 		switch (ConverstionTypes.valueOf(klass.getSimpleName())){
-		case Calendar:
+		case GregorianCalendar:
 	        return (T) this.value;
 		case Date:
 			return (T) this.value.getTime();

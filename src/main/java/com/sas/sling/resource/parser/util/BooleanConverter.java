@@ -42,7 +42,7 @@ public class BooleanConverter implements Converter {
 			return (T) this.value;
 		case Byte:
 			return (T) Byte.valueOf(this.getNumber().byteValue());
-		case Calendar:
+		case GregorianCalendar:
 	        Calendar cal = Calendar.getInstance();
 	        cal.setTimeInMillis(this.getNumber().longValue());
 	        return (T) cal;

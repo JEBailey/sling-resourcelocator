@@ -41,7 +41,7 @@ public class NumberConverter implements Converter {
 			return (T) Boolean.FALSE;
 		case Byte:
 			 return (T) Byte.valueOf(this.value.byteValue());
-		case Calendar:
+		case GregorianCalendar:
 	        final Calendar cal = Calendar.getInstance();
 	        cal.setTimeInMillis(this.value.longValue());
 	        return (T) cal;

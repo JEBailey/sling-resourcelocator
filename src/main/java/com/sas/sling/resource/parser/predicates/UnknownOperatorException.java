@@ -16,4 +16,9 @@ package com.sas.sling.resource.parser.predicates;
  */
 public class UnknownOperatorException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 }

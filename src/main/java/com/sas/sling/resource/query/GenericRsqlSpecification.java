@@ -25,59 +25,52 @@ import org.apache.sling.api.resource.Resource;
 import com.sas.sling.resource.PropertyPredicates;
 import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.node.Node;
-import com.sas.sling.resource.parser.predicates.LiteralPredicates;
+import com.sas.sling.resource.parser.predicates.ScriptPredicates;
 
 public class GenericRsqlSpecification {
 
 	public static Predicate<Resource> toPredicate(Node node, Function<Resource, Object> operand,
 			List<Function<Resource, Object>> arguments) {
-		// this is where the problem currently is
-		// rather than the operand being a value. It's a Function which returns
-		// a string
 
-		Optional<RqlSearchOperation> op = RqlSearchOperation.getSimpleOperator(node.getValue());
+		Optional<Operations> op = Operations.getSimpleOperator(node.getValue());
 
-		Function<Resource, Object> argument = arguments.get(0);
+		Function<Resource, Object> firstArgument = arguments.get(0);
 
 		switch (op.get()) {
 
 		case EQUAL: {
-			return resource -> {
-				return LiteralPredicates.literalValue(operand.apply(resource)).is(argument.apply(resource)).test(resource);
-			};
+			return ScriptPredicates.leftSide(operand).is(firstArgument);
 		}
 		case NOT_EQUAL: {
-			return resource -> {
-				return LiteralPredicates.literalValue(operand.apply(resource)).is(argument.apply(resource)).negate().test(resource);
-			};
+			return ScriptPredicates.leftSide(operand).is(firstArgument).negate();
 		}
 		case GREATER_THAN: {
 			return resource -> {
-				return LiteralPredicates.literalValue(operand.apply(resource)).gt(argument.apply(resource)).test(resource);
+				return ScriptPredicates.leftSide(operand).gt(firstArgument.apply(resource)).test(resource);
 			};
 		}
 		case GREATER_THAN_OR_EQUAL: {
 			return resource -> {
-				return LiteralPredicates.literalValue(operand.apply(resource)).gte(argument.apply(resource)).test(resource);
+				return ScriptPredicates.leftSide(operand).gte(firstArgument.apply(resource)).test(resource);
 			};
 		}
 		case LESS_THAN: {
-			return resource -> {
-				return LiteralPredicates.literalValue(operand.apply(resource)).lt(argument.apply(resource)).test(resource);
-			};
+			return ScriptPredicates.leftSide(operand).lt(firstArgument);
 		}
 		case LESS_THAN_OR_EQUAL: {
 			return resource -> {
-				return LiteralPredicates.literalValue(operand.apply(resource)).lte(argument.apply(resource)).test(resource);
+				return ScriptPredicates.leftSide(operand).lte(firstArgument.apply(resource)).test(resource);
 			};
 		}
 		case IN:
-			return null;//propPredicates.isIn(arguments.toArray(new String[arguments.size()]));
+			return null;// propPredicates.isIn(arguments.toArray(new
+						// String[arguments.size()]));
 		case NOT_IN:
-			return null;//propPredicates.isIn(arguments.toArray(new String[arguments.size()])).negate();
+			return null;// propPredicates.isIn(arguments.toArray(new
+						// String[arguments.size()])).negate();
 		}
 
-		System.out.println(argument + "has been found");
+		System.out.println(firstArgument + "has been found");
 		return null;
 	}
 

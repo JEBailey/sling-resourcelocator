@@ -17,21 +17,23 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int UNRESERVED_STR = 5;
   /** RegularExpression Id. */
-  int DOUBLE_QUOTED_STR = 6;
+  int SINGLE_QUOTED_STR = 6;
   /** RegularExpression Id. */
-  int AND = 7;
+  int DOUBLE_QUOTED_STR = 7;
   /** RegularExpression Id. */
-  int OR = 8;
+  int AND = 8;
   /** RegularExpression Id. */
-  int LPAREN = 9;
+  int OR = 9;
   /** RegularExpression Id. */
-  int RPAREN = 10;
+  int LPAREN = 10;
   /** RegularExpression Id. */
-  int LBRACKET = 11;
+  int RPAREN = 11;
   /** RegularExpression Id. */
-  int RBRACKET = 12;
+  int LBRACKET = 12;
   /** RegularExpression Id. */
-  int COMP_ALT = 13;
+  int RBRACKET = 13;
+  /** RegularExpression Id. */
+  int COMP_ALT = 14;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -44,6 +46,7 @@ public interface ParserConstants {
     "<ALPHA>",
     "<ESCAPED_CHAR>",
     "<UNRESERVED_STR>",
+    "<SINGLE_QUOTED_STR>",
     "<DOUBLE_QUOTED_STR>",
     "<AND>",
     "<OR>",

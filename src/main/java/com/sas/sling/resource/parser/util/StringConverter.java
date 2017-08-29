@@ -15,7 +15,6 @@ package com.sas.sling.resource.parser.util;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Date;
 
 import org.apache.jackrabbit.util.ISO8601;
 
@@ -24,98 +23,46 @@ import org.apache.jackrabbit.util.ISO8601;
  */
 public class StringConverter implements Converter {
 
-    private final Object value;
+	private final String value;
 
-    public StringConverter(final Object val) {
-        this.value = val;
-    }
+	public StringConverter(final String val) {
+		this.value = val;
+	}
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return this.value.toString();
-    }
-
-    /**
-     * @see org.apache.sling.jcr.resource.internal.helper.Converter#toLong()
-     */
-    public Long toLong() {
-        return Long.parseLong(this.toString());
-    }
-
-    /**
-     * @see org.apache.sling.jcr.resource.internal.helper.Converter#toByte()
-     */
-    public Byte toByte() {
-        return Byte.parseByte(this.toString());
-    }
-
-    /**
-     * @see org.apache.sling.jcr.resource.internal.helper.Converter#toShort()
-     */
-    public Short toShort() {
-        return Short.parseShort(this.toString());
-    }
-
-    /**
-     * @see org.apache.sling.jcr.resource.internal.helper.Converter#toInteger()
-     */
-    public Integer toInteger() {
-        return Integer.parseInt(this.toString());
-    }
-
-    /**
-     * @see org.apache.sling.jcr.resource.internal.helper.Converter#toDouble()
-     */
-    public Double toDouble() {
-        return Double.parseDouble(this.toString());
-    }
-
-    /**
-     * @see org.apache.sling.jcr.resource.internal.helper.Converter#toFloat()
-     */
-    public Float toFloat() {
-        return Float.parseFloat(this.toString());
-    }
-
-    /**
-     * @see org.apache.sling.jcr.resource.internal.helper.Converter#toCalendar()
-     */
-    public Calendar toCalendar() {
-        final Calendar c = ISO8601.parse(toString());
-        if (c == null) {
-            throw new IllegalArgumentException("Not a date string: " + toString());
-        }
-        return c;
-    }
-
-    /**
-     * @see org.apache.sling.jcr.resource.internal.helper.Converter#toDate()
-     */
-    public Date toDate() {
-        final Calendar c = this.toCalendar();
-        return c.getTime();
-    }
-
-    /**
-     * @see org.apache.sling.jcr.resource.internal.helper.Converter#toBoolean()
-     */
-    public Boolean toBoolean() {
-        return Boolean.valueOf(this.toString());
-    }
-
-    /**
-     * @see org.apache.sling.jcr.resource.internal.helper.Converter#toBigDecimal()
-     */
-    public BigDecimal toBigDecimal() {
-        return new BigDecimal(this.toString());
-    }
-
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T adaptTo(Class<T> klass) {
-		// TODO Auto-generated method stub
+		switch (ConverstionTypes.valueOf(klass.getSimpleName())) {
+		case BigDecimal:
+			return (T) new BigDecimal(value);
+		case Boolean:
+			return (T) Boolean.valueOf(value);
+		case Byte:
+			return (T) Byte.valueOf(Byte.parseByte(value));
+		case GregorianCalendar:
+			final Calendar c = ISO8601.parse(value);
+			if (c == null) {
+				throw new IllegalArgumentException("Not a date string: " + value);
+			}
+			return (T) c;
+		case Date:
+			final Calendar cal = ISO8601.parse(value);
+			return (T) cal.getTime();
+		case Double:
+			return (T) Double.valueOf(Double.parseDouble(value));
+		case Float:
+			return (T) Float.valueOf(Float.parseFloat(value));
+		case Integer:
+			return (T) Integer.valueOf(Integer.parseInt(value));
+		case Long:
+			return (T) Long.valueOf(Long.parseLong(value));
+		case Short:
+			return (T) Short.valueOf(Short.parseShort(value));
+		case String:
+			return (T) value;
+		default:
+			break;
+		}
 		return null;
 	}
 }

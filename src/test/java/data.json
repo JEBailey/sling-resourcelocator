@@ -81,7 +81,7 @@
 		"jcr:primaryType": "app:Page",
 		"jcr:content": {
 			"jcr:primaryType": "app:PageContent",
-			"jcr:title": "English",
+			"jcr:title": "Mongolian",
 			"app:template": "/apps/sample/templates/homepage",
 			"sling:resourceType": "sample/components/homepage",
 			"jcr:createdBy": "admin",
