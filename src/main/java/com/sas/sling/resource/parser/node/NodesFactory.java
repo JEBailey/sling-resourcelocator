@@ -1,7 +1,4 @@
-package com.sas.sling.resource.parser.node;
 /*
- * Copyright 2016 Jason E Bailey
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,13 +11,13 @@ package com.sas.sling.resource.parser.node;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.sas.sling.resource.parser.node;
+
+import java.util.Collections;
 import java.util.List;
 
 import com.sas.sling.resource.parser.ParserConstants;
 import com.sas.sling.resource.parser.predicates.UnknownOperatorException;
-
-
-
 
 /**
  * Factory that creates {@link Node} instances for the parser.
@@ -29,12 +26,12 @@ public class NodesFactory implements ParserConstants {
 
 
     /**
-     * Creates a specific {@link LogicalNode} instance for the specified operator and with the
+     * Creates a specific {@link Node} instance for the specified operator and with the
      * given children nodes.
      *
      * @param operator The logical operator to create a node for.
      * @param children Children nodes, i.e. operands.
-     * @return A subclass of the {@link LogicalNode} according to the specified operator.
+     * @return A subclass of the {@link Node} according to the specified operator.
      */
     public Node createOrNode(List<Node> children) {
     	return new Node(NodeType.OR,children);
@@ -46,14 +43,14 @@ public class NodesFactory implements ParserConstants {
      *
      * @param operator The logical operator to create a node for.
      * @param children Children nodes, i.e. operands.
-     * @return A subclass of the {@link LogicalNode} according to the specified operator.
+     * @return A subclass of the {@link Node} according to the specified operator.
      */
     public Node createAndNode(List<Node> children) {
     	return new Node(NodeType.AND,children);
     }
 
     /**
-     * Creates a {@link ComparisonNode} instance with the given parameters.
+     * Creates a {@link Node} instance with the given parameters.
      *
      * @param operatorToken A textual representation of the comparison operator to be found in the
      *                      set of supported {@linkplain ComparisonOperator operators}.
@@ -74,6 +71,9 @@ public class NodesFactory implements ParserConstants {
     public Node createArgument(int kind,String literal) {
     	if (kind == DOUBLE_QUOTED_STR || kind == SINGLE_QUOTED_STR){
     		literal = literal.substring(1, literal.length() -1);
+    	}
+    	if (kind == NULL) {
+    		return new Node(NodeType.NULL,literal,Collections.emptyList());
     	}
     	return new Node(literal);
     }

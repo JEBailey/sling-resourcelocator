@@ -1,8 +1,4 @@
-package com.sas.sling.resource.parser.node;
-
 /*
- * Copyright 2016 Jason E Bailey
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,13 +11,16 @@ package com.sas.sling.resource.parser.node;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import static java.util.Collections.unmodifiableList;
+package com.sas.sling.resource.parser.node;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import com.sas.sling.resource.parser.Token;
 
 /**
  * Common interface of the AST nodes. Implementations must be immutable.
@@ -33,6 +32,9 @@ public class Node implements Iterable<Node> {
 	private Node left;
 	private String value;
 
+	public Node() {
+	}
+	
 	/**
 	 * creates a node which represents a String Literal value
 	 * 
@@ -55,23 +57,20 @@ public class Node implements Iterable<Node> {
 	}
 
 	public Node(NodeType type, String identifier, List<Node> children) {
-		assert identifier != null : "operator must not be null";
-		assert children != null : "children must not be null";
-
-		this.value = identifier;
-		this.children = unmodifiableList(new ArrayList<>(children));
+		this.value = Objects.requireNonNull(identifier,"identifier must not be null");
+		this.children =  Objects.requireNonNull(children, "children must not be null" );
 		this.type = type;
 	}
 
 	public Node(NodeType type, List<Node> children) {
-		this.children = unmodifiableList(new ArrayList<>(children));
+		this.children = Objects.requireNonNull(children, "children must not be null" );
 		this.type = type;
 	}
 
 	public Node(String operatorToken, Node selector, List<Node> children) {
 		this.value = operatorToken;
 		this.left = selector;
-		this.children = new ArrayList<>(children);
+		this.children = Objects.requireNonNull(children, "children must not be null" );
 		this.type = NodeType.COMPARISON;
 	}
 
@@ -120,7 +119,7 @@ public class Node implements Iterable<Node> {
 	}
 
 	/**
-	 * Iterate over children nodes. The underlying collection is unmodifiable!
+	 * Iterate over children nodes
 	 */
 	public Iterator<Node> iterator() {
 		return children.iterator();
@@ -160,6 +159,10 @@ public class Node implements Iterable<Node> {
 
 	public NodeType getType() {
 		return type;
+	}
+	
+	public void setType(NodeType type) {
+		this.type = type;
 	}
 
 	public Node getLeftOperand() {

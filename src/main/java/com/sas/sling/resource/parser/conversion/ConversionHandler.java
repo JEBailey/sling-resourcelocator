@@ -11,12 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sas.sling.resource.parser.util;
+package com.sas.sling.resource.parser.conversion;
 
 import java.util.Calendar;
 import java.util.Date;
 
-public class ConverterImpl {
+public class ConversionHandler {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T adapt(final Object initialValue, final Class<T> type) {
@@ -24,7 +24,7 @@ public class ConverterImpl {
 			return (T) initialValue;
 		}
 
-		return (T) getConverter(initialValue).adaptTo(type);
+		return getConverter(initialValue).adaptTo(type);
 	}
 
 	/**

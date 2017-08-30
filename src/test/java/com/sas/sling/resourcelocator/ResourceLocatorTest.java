@@ -1,7 +1,4 @@
-package com.sas.sling.resourcelocator;
 /*
- * Copyright 2016 Jason E Bailey
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +11,8 @@ package com.sas.sling.resourcelocator;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.sas.sling.resourcelocator;
+
 import static com.sas.sling.resource.ChildResourcePredicates.aChildResource;
 import static com.sas.sling.resource.PropertyPredicates.property;
 import static org.junit.Assert.assertEquals;
@@ -105,7 +104,7 @@ public class ResourceLocatorTest {
 	public void testBeforeMidDateScript() throws com.sas.sling.resource.parser.ParseException {
 		Resource resource = context.resourceResolver().getResource("/content/sample/en");
 		String query = String.format(" jcr:content/created < '%s' ", DATE_STRING);
-		Predicate<Resource> predicate = ScriptHandler.parseRqlQuery(query);
+		Predicate<Resource> predicate = ScriptHandler.parseQuery(query);
 		List<Resource> found = ResourceLocator.startFrom(resource).stream().filter(predicate).collect(Collectors.toList());
 		assertEquals(5, found.size());
 	}

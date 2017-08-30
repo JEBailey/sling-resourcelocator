@@ -25,7 +25,7 @@ import com.sas.sling.resource.parser.node.NodesFactory;
 public class ScriptHandler {
 
 	// TODO - not anywhere close to done.
-	public static Predicate<Resource> parseRqlQuery(String query) throws ParseException {
+	public static Predicate<Resource> parseQuery(String query) throws ParseException {
 		Node rootNode = new Parser(new ByteArrayInputStream(query.getBytes()), "UTF-8", new NodesFactory()).Input();
 		return rootNode.accept(new PredicateVistor(),null);
 	}

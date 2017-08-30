@@ -15,14 +15,13 @@ package com.sas.sling.resource.parser.predicates;
 
 import java.util.Date;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.sling.api.resource.Resource;
 
-
-import com.sas.sling.resource.parser.util.ConverterImpl;
+import com.sas.sling.resource.parser.conversion.ConversionHandler;
+import com.sas.sling.resource.parser.conversion.Null;
 
 /**
  * Provides property based predicates. The method follows the following
@@ -57,52 +56,16 @@ public class ScriptPredicates {
 		return new ScriptPredicates(value);
 	}
 
-	/**
-	 * Assumes that the referenced property value is a date and that this date
-	 * is earlier in the epoch than the one being tested
-	 * 
-	 * @param when latest acceptable time
-	 * @return predicate which will perform the matching
-	 */
-	public Predicate<Resource> isBefore(Date when) {
-		Objects.requireNonNull(when, "value may not be null");
-		return value -> {
-			Date then = ConverterImpl.adapt(lhs, Date.class);
-			if (then != null) {
-				return then.before(when);
-			}
-			return false;
-		};
-	}
-
-	/**
-	 * Assumes that the referenced property value is a date and that this date
-	 * is later in the epoch than the one being tested
-	 * 
-	 * @param when earliest acceptable value
-	 * @return predicate
-	 */
-	public Predicate<Resource> isAfter(Date when) {
-		Objects.requireNonNull(when, "value may not be null");
-		return value -> {
-			Date then = ConverterImpl.adapt(lhs, Date.class);
-			if (then != null) {
-				return then.after(when);
-			}
-			return false;
-		};
-	}
-
 
 	public <T> Predicate<Resource> is(Function<Resource,Object> rhs) {
 		Objects.requireNonNull(rhs, "type value may not be null");
 		return resource -> {
 			Object lhValue = lhs.apply(resource);
 			Object rhValue = rhs.apply(resource);
-			if (lhValue == null || rhValue == null){
-				return false;
+			if (lhValue == null || rhValue == null){ 
+				return (lhValue instanceof Null || rhValue instanceof Null);
 			}
-			return ConverterImpl.adapt(rhValue, lhValue.getClass()).equals(lhValue);
+			return ConversionHandler.adapt(rhValue, lhValue.getClass()).equals(lhValue);
 		};
 
 	}
@@ -115,7 +78,7 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> gt(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
-			T propValue = (T) ConverterImpl.adapt(lhs, type.getClass());
+			T propValue = (T) ConversionHandler.adapt(lhs, type.getClass());
 			if (propValue == null){
 				return false;
 			}
@@ -134,7 +97,7 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> gte(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
-			T propValue = (T) ConverterImpl.adapt(lhs, type.getClass());
+			T propValue = (T) ConversionHandler.adapt(lhs, type.getClass());
 			if (propValue == null){
 				return false;
 			}
@@ -161,7 +124,7 @@ public class ScriptPredicates {
 			if (lhValue == null || rhValue == null){
 				return false;
 			}
-			T propValue = (T) ConverterImpl.adapt(rhValue, lhValue.getClass());
+			T propValue = (T) ConversionHandler.adapt(rhValue, lhValue.getClass());
 			if (propValue == null){
 				return false;
 			}
@@ -183,7 +146,7 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> lte(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
-			T propValue = (T) ConverterImpl.adapt(lhs, type.getClass());
+			T propValue = (T) ConversionHandler.adapt(lhs, type.getClass());
 			if (propValue == null){
 				return false;
 			}

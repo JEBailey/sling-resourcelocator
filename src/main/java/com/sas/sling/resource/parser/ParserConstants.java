@@ -25,15 +25,17 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int OR = 9;
   /** RegularExpression Id. */
-  int LPAREN = 10;
+  int NULL = 10;
   /** RegularExpression Id. */
-  int RPAREN = 11;
+  int LPAREN = 11;
   /** RegularExpression Id. */
-  int LBRACKET = 12;
+  int RPAREN = 12;
   /** RegularExpression Id. */
-  int RBRACKET = 13;
+  int LBRACKET = 13;
   /** RegularExpression Id. */
-  int COMP_ALT = 14;
+  int RBRACKET = 14;
+  /** RegularExpression Id. */
+  int COMP_ALT = 15;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -50,6 +52,7 @@ public interface ParserConstants {
     "<DOUBLE_QUOTED_STR>",
     "<AND>",
     "<OR>",
+    "\" null \"",
     "\"(\"",
     "\")\"",
     "\"[\"",

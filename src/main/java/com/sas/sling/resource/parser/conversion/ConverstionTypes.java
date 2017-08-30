@@ -11,14 +11,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sas.sling.resource.parser.util;
+package com.sas.sling.resource.parser.conversion;
 
-/**
- * A converter converts a value to a specific target type.
- */
-public interface Converter {
-
-    <T> T adaptTo(Class<T> klass);
-
-
+public enum ConverstionTypes {
+	String,Long,Byte,Short,Integer,Double,Float,GregorianCalendar,Date,Boolean,BigDecimal
 }

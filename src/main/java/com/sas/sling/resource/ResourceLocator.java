@@ -31,6 +31,9 @@ import java.util.stream.StreamSupport;
 
 import org.apache.sling.api.resource.Resource;
 
+import com.sas.sling.resource.parser.ParseException;
+import com.sas.sling.resource.query.ScriptHandler;
+
 /**
  * Base class from which the fluent api is constructed to locate resources which
  * we are interested in.
@@ -107,6 +110,27 @@ public class ResourceLocator {
 	 */
 	public ResourceLocator traversalControl(Predicate<Resource> condition) {
 		this.traversalControl = Optional.ofNullable(condition);
+		return this;
+	}
+	
+	/**
+	 * When iterating over the child resources, this is used as a validation
+	 * that a specific child resource should be traversed
+	 * 
+	 * This can be used to limit the possible branching options beneath a
+	 * resource tree
+	 * 
+	 * As the Stream API provides an inherent depth first Resource stream this provides
+	 * the ability to limit the children which are acceptable.
+	 * 
+	 * 
+	 * @param condition
+	 *            Add child resource to the traversal path if condition is 'true'
+	 * @return this locator
+	 * @throws ParseException 
+	 */
+	public ResourceLocator traversalControl(String condition) throws ParseException {
+		this.traversalControl = Optional.of(ScriptHandler.parseQuery(condition));
 		return this;
 	}
 	
@@ -210,6 +234,22 @@ public class ResourceLocator {
 			}
 		}
 		return resourcesToReturn;
+	}
+	
+	/**
+	 * Recursively descends through the available resources and locates
+	 * resources that match the provided filter lan. Additional restrictions can
+	 * be set to limit the paths that the traversal takes, and how the located
+	 * resources are handled.
+	 * 
+	 * @param condition
+	 *            predicate to be used against all matching child resources
+	 * @return List of matching resource or empty list if callback is enabled
+	 * @throws ParseException 
+	 */
+	public List<Resource> locateResources(String condition) throws ParseException {
+		Predicate<Resource> predicate =  ScriptHandler.parseQuery(condition);
+		return locateResources(predicate);
 	}
 
 	/**

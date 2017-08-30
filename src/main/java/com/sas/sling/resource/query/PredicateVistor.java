@@ -1,7 +1,4 @@
-package com.sas.sling.resource.query;
 /*
- * Copyright 2016 Jason E Bailey
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +11,8 @@ package com.sas.sling.resource.query;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.sas.sling.resource.query;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -21,15 +20,14 @@ import java.util.function.Predicate;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.node.Visitor;
 
 
-public class PredicateVistor implements Visitor<Predicate<Resource>, ResourceLocator> {
+public class PredicateVistor implements Visitor<Predicate<Resource>, Void> {
 
 	@Override
-	public Predicate<Resource> visit(Node node, ResourceLocator locator) {
+	public Predicate<Resource> visit(Node node, Void locator) {
 		List<Function<Resource,Object>> arguments = Collections.emptyList();
 		switch (node.getType()){
 		case AND:
@@ -37,7 +35,7 @@ public class PredicateVistor implements Visitor<Predicate<Resource>, ResourceLoc
 		case OR:
 			return createOrPredicate(node, locator);
 		case COMPARISON:
-			arguments = node.visitChildren(new ArgumentVisitor(), locator);
+			arguments = node.visitChildren(new ValueVisitor(), locator);
 			return createComparisonPredicate(node,arguments, locator);
 		default:
 			//no action
@@ -45,7 +43,7 @@ public class PredicateVistor implements Visitor<Predicate<Resource>, ResourceLoc
 		return null;
 	}
 	
-	private Predicate<Resource> createAndPredicate(Node node, ResourceLocator locator) {
+	private Predicate<Resource> createAndPredicate(Node node, Void locator) {
 		return node.getRightOperands().stream().map(child -> {
 			return visit(child,locator);
 		}).reduce(null, (predicate, accumulator) -> {
@@ -56,9 +54,9 @@ public class PredicateVistor implements Visitor<Predicate<Resource>, ResourceLoc
 		});
 	}
 
-	private Predicate<Resource> createOrPredicate(Node node, ResourceLocator locator) {
+	private Predicate<Resource> createOrPredicate(Node node, Void param) {
 		return node.getRightOperands().stream().map(child -> {
-			return visit(child,locator);
+			return visit(child,param);
 		}).reduce(null, (predicate, accumulator) -> {
 			if (predicate == null) {
 				return accumulator;
@@ -67,9 +65,9 @@ public class PredicateVistor implements Visitor<Predicate<Resource>, ResourceLoc
 		});
 	}
 	
-	private Predicate<Resource> createComparisonPredicate(Node comparisonNode, List<Function<Resource, Object>> arguments, ResourceLocator locator) {
-		Function<Resource, Object> operand = comparisonNode.getLeftOperand().accept(new ArgumentVisitor(),locator);
-		return GenericRsqlSpecification.toPredicate(comparisonNode, operand, arguments);
+	private Predicate<Resource> createComparisonPredicate(Node comparisonNode, List<Function<Resource, Object>> arguments, Void locator) {
+		Function<Resource, Object> operand = comparisonNode.getLeftOperand().accept(new ValueVisitor(),locator);
+		return PredicateFactory.toPredicate(comparisonNode, operand, arguments);
 	}
 
 }

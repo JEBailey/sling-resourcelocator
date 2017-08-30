@@ -11,38 +11,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sas.sling.resource.parser.util;
+package com.sas.sling.resource.parser.conversion;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import org.apache.jackrabbit.util.ISO8601;
 
 /**
- * A converter for Date
+ * A converter for Calendar
  */
-public class DateConverter extends NumberConverter implements Converter {
+public class CalendarConverter extends NumberConverter implements Converter {
 
-    private final Date value;
+    private final Calendar value;
 
-    public DateConverter(final Date val) {
-        super(val.getTime());
+    public CalendarConverter(final Calendar val) {
+        super(val.getTimeInMillis());
         this.value = val;
     }
 
     @Override
     public String toString() {
-        return ISO8601.format(adaptTo(Calendar.class));
+        return ISO8601.format(this.value);
     }
     
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T adaptTo(Class<T> klass) {
 		switch (ConverstionTypes.valueOf(klass.getSimpleName())){
+		case GregorianCalendar:
+	        return (T) this.value;
 		case Date:
-			return (T) this.value;
+			return (T) this.value.getTime();
 		default:
 			return super.adaptTo(klass);
 		}
 	}
+	
 }

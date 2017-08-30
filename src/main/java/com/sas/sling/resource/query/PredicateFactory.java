@@ -1,8 +1,4 @@
-package com.sas.sling.resource.query;
-
 /*
- * Copyright 2016 Jason E Bailey
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +11,8 @@ package com.sas.sling.resource.query;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.sas.sling.resource.query;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -27,7 +25,7 @@ import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.predicates.ScriptPredicates;
 
-public class GenericRsqlSpecification {
+public class PredicateFactory {
 
 	public static Predicate<Resource> toPredicate(Node node, Function<Resource, Object> operand,
 			List<Function<Resource, Object>> arguments) {

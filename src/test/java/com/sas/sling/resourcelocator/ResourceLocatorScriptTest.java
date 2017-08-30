@@ -1,7 +1,4 @@
-package com.sas.sling.resourcelocator;
 /*
- * Copyright 2016 Jason E Bailey
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +11,8 @@ package com.sas.sling.resourcelocator;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.sas.sling.resourcelocator;
+
 import static org.junit.Assert.assertEquals;
 
 import java.text.SimpleDateFormat;
@@ -70,6 +69,8 @@ public class ResourceLocatorScriptTest {
 		String query = "[jcr:content/created] < '2013-08-08T16:32:59.000+02:00'";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(3, found.size());
+		found = handle2(START_PATH, query);
+		assertEquals(3, found.size());
 	}
 	
 	@Test
@@ -86,9 +87,28 @@ public class ResourceLocatorScriptTest {
 		assertEquals(4, found.size());
 	}
 	
+	@Test
+	public void testNullProperty() throws ParseException {
+		String query = "[jcr:content/foo] == null ";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(20, found.size());
+	}
+	
+	@Test
+	public void testNotNullProperty() throws ParseException {
+		String query = "[layout] != null ";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(5, found.size());
+	}
+	
 	private List<Resource> handle(String path, String filter) throws ParseException {
 		Resource resource = context.resourceResolver().getResource(path);
-		Predicate<Resource> predicate =  ScriptHandler.parseRqlQuery(filter);
+		Predicate<Resource> predicate =  ScriptHandler.parseQuery(filter);
 		return ResourceLocator.startFrom(resource).stream().filter(predicate).collect(Collectors.toList());
+	}
+	
+	private List<Resource> handle2(String path, String filter) throws ParseException {
+		Resource resource = context.resourceResolver().getResource(path);
+		return ResourceLocator.startFrom(resource).locateResources(filter);
 	}
 }

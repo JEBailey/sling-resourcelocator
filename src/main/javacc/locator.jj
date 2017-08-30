@@ -118,6 +118,7 @@ TOKEN :
       ","
     | " or "
     ) >
+| < NULL : " null " > 
 | < LPAREN : "(" >
 | < RPAREN : ")" >
 | < LBRACKET : "[" >
@@ -190,7 +191,6 @@ Node Constraint() :
 }
 {
   (
-    LOOKAHEAD(< LPAREN >)
     node = Group()
   | 
     node = Comparison()
@@ -229,7 +229,7 @@ Node Comparison() :
 String Operator() :
 {}
 {
-  token = < COMP_ALT >
+  < COMP_ALT >
   {
     return token.image;
   }
@@ -313,6 +313,7 @@ Node Literal() :
   (
     < DOUBLE_QUOTED_STR >
   | < SINGLE_QUOTED_STR >
+  | < NULL >
   )
   {
     return factory.createArgument(token.kind, token.image);
