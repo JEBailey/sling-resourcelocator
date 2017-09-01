@@ -32,6 +32,7 @@ public class StringConverter implements Converter {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T adaptTo(Class<T> klass) {
+		
 		switch (ConverstionTypes.valueOf(klass.getSimpleName())) {
 		case BigDecimal:
 			return (T) new BigDecimal(value);
@@ -60,6 +61,8 @@ public class StringConverter implements Converter {
 			return (T) Short.valueOf(Short.parseShort(value));
 		case String:
 			return (T) value;
+		case Null:
+			return (T) new Null();
 		default:
 			break;
 		}

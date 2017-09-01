@@ -45,6 +45,8 @@ public class ValueVisitor implements Visitor<Function<Resource,Object>, Void> {
 		switch (node.getValue()){
 		case "name":
 			return resource -> resource.getName();
+		case "child":
+			return resource -> resource.getChild(node.getRightOperands().get(0).getValue());
 		default:
 		}
 		return null;

@@ -58,14 +58,14 @@ public class ScriptPredicates {
 
 
 	public <T> Predicate<Resource> is(Function<Resource,Object> rhs) {
-		Objects.requireNonNull(rhs, "type value may not be null");
+		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
 			Object lhValue = lhs.apply(resource);
 			Object rhValue = rhs.apply(resource);
 			if (lhValue == null || rhValue == null){ 
 				return (lhValue instanceof Null || rhValue instanceof Null);
 			}
-			return ConversionHandler.adapt(rhValue, lhValue.getClass()).equals(lhValue);
+			return ConversionHandler.adapt(lhValue, rhValue.getClass()).equals(rhValue);
 		};
 
 	}
@@ -75,16 +75,18 @@ public class ScriptPredicates {
 	 * specific types
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> gt(T type) {
-		Objects.requireNonNull(type, "type value may not be null");
+	public <T> Predicate<Resource> gt(Function<Resource,Object> rhs) {
+		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
-			T propValue = (T) ConversionHandler.adapt(lhs, type.getClass());
-			if (propValue == null){
-				return false;
+			Object lhValue = lhs.apply(resource);
+			Object rhValue = rhs.apply(resource);
+			lhValue = (T) ConversionHandler.adapt(lhValue, rhValue.getClass());
+			if (lhValue == null || rhValue == null){ 
+				return (lhValue instanceof Null || rhValue instanceof Null);
 			}
-			if (lhs instanceof Comparable){
-				if (type.getClass().isInstance(lhs)){
-					return ((Comparable<T>)lhs).compareTo(type) > 0;
+			if (lhValue instanceof Comparable){
+				if (lhValue.getClass().isInstance(lhs)){
+					return ((Comparable<T>)lhValue).compareTo((T)rhValue) > 0;
 				}
 			}
 			return false;
@@ -94,21 +96,22 @@ public class ScriptPredicates {
 	
 
 	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> gte(T type) {
-		Objects.requireNonNull(type, "type value may not be null");
+	public <T> Predicate<Resource> gte(Function<Resource,Object> rhs) {
+		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
-			T propValue = (T) ConversionHandler.adapt(lhs, type.getClass());
-			if (propValue == null){
-				return false;
+			Object lhValue = lhs.apply(resource);
+			Object rhValue = rhs.apply(resource);
+			lhValue = (T) ConversionHandler.adapt(lhValue, rhValue.getClass());
+			if (lhValue == null || rhValue == null){ 
+				return (lhValue instanceof Null || rhValue instanceof Null);
 			}
-			if (lhs instanceof Comparable){
-				if (type.getClass().isInstance(lhs)){
-					return ((Comparable<T>)lhs).compareTo(type) >= 0;
+			if (lhValue instanceof Comparable){
+				if (lhValue.getClass().isInstance(lhs)){
+					return ((Comparable<T>)lhValue).compareTo((T)rhValue) >= 0;
 				}
 			}
 			return false;
 		};
-
 	}
 	
 	/*

@@ -14,5 +14,5 @@
 package com.sas.sling.resource.parser.conversion;
 
 public enum ConverstionTypes {
-	String,Long,Byte,Short,Integer,Double,Float,GregorianCalendar,Date,Boolean,BigDecimal
+	String,Long,Byte,Short,Integer,Double,Float,GregorianCalendar,Date,Boolean,BigDecimal, Null
 }

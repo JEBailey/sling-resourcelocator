@@ -79,6 +79,12 @@ public class ResourceLocatorScriptTest {
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(3, found.size());
 	}
+	@Test
+	public void testDateAndPropertyTwice() throws ParseException {
+		String query = "([jcr:content/created] < '2013-08-08T16:32:59.000+02:00' and [jcr:content/jcr:title] == 'English') or [jcr:content/jcr:title] == 'Mongolian'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(4, found.size());
+	}
 	
 	@Test
 	public void testDateOrProperty() throws ParseException {
@@ -97,6 +103,13 @@ public class ResourceLocatorScriptTest {
 	@Test
 	public void testNotNullProperty() throws ParseException {
 		String query = "[layout] != null ";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(5, found.size());
+	}
+	
+	@Test @Ignore
+	public void testChildExistence() throws ParseException {
+		String query = "child('jcr:content') != null ";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(5, found.size());
 	}

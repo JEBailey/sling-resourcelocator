@@ -43,14 +43,10 @@ public class PredicateFactory {
 			return ScriptPredicates.leftSide(operand).is(firstArgument).negate();
 		}
 		case GREATER_THAN: {
-			return resource -> {
-				return ScriptPredicates.leftSide(operand).gt(firstArgument.apply(resource)).test(resource);
-			};
+			return ScriptPredicates.leftSide(operand).gt(firstArgument);
 		}
 		case GREATER_THAN_OR_EQUAL: {
-			return resource -> {
-				return ScriptPredicates.leftSide(operand).gte(firstArgument.apply(resource)).test(resource);
-			};
+			return ScriptPredicates.leftSide(operand).gte(firstArgument);
 		}
 		case LESS_THAN: {
 			return ScriptPredicates.leftSide(operand).lt(firstArgument);
