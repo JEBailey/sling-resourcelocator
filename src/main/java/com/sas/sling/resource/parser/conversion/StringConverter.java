@@ -33,35 +33,35 @@ public class StringConverter implements Converter {
 	@Override
 	public <T> T adaptTo(Class<T> klass) {
 		
-		switch (ConverstionTypes.valueOf(klass.getSimpleName())) {
-		case BigDecimal:
+		switch (klass.getSimpleName()) {
+		case "BigDecimal":
 			return (T) new BigDecimal(value);
-		case Boolean:
+		case "Boolean":
 			return (T) Boolean.valueOf(value);
-		case Byte:
+		case "Byte":
 			return (T) Byte.valueOf(Byte.parseByte(value));
-		case GregorianCalendar:
+		case "GregorianCalendar":
 			final Calendar c = ISO8601.parse(value);
 			if (c == null) {
 				throw new IllegalArgumentException("Not a date string: " + value);
 			}
 			return (T) c;
-		case Date:
+		case "Date":
 			final Calendar cal = ISO8601.parse(value);
 			return (T) cal.getTime();
-		case Double:
+		case "Double":
 			return (T) Double.valueOf(Double.parseDouble(value));
-		case Float:
+		case "Float":
 			return (T) Float.valueOf(Float.parseFloat(value));
-		case Integer:
+		case "Integer":
 			return (T) Integer.valueOf(Integer.parseInt(value));
-		case Long:
+		case "Long":
 			return (T) Long.valueOf(Long.parseLong(value));
-		case Short:
+		case "Short":
 			return (T) Short.valueOf(Short.parseShort(value));
-		case String:
+		case "String":
 			return (T) value;
-		case Null:
+		case "Null":
 			return (T) new Null();
 		default:
 			break;
