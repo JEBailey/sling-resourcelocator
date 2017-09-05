@@ -15,36 +15,14 @@ package com.sas.sling.resource.parser.conversion;
 
 import java.util.Calendar;
 
-import org.apache.jackrabbit.util.ISO8601;
-
 /**
  * A converter for Calendar
  */
-public class CalendarConverter extends NumberConverter implements Converter {
-
-    private final Calendar value;
-
+public class CalendarConverter extends DateConverter implements Converter {
+    
     public CalendarConverter(final Calendar val) {
         super(val.getTimeInMillis());
-        this.value = val;
     }
 
-    @Override
-    public String toString() {
-        return ISO8601.format(this.value);
-    }
-    
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T adaptTo(Class<T> klass) {
-		switch (ConversionTypes.valueOf(klass.getSimpleName())){
-		case GregorianCalendar:
-	        return (T) this.value;
-		case Date:
-			return (T) this.value.getTime();
-		default:
-			return super.adaptTo(klass);
-		}
-	}
 	
 }

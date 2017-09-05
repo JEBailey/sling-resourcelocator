@@ -13,36 +13,26 @@
  */
 package com.sas.sling.resource.parser.conversion;
 
-import java.util.Calendar;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
-
-import org.apache.jackrabbit.util.ISO8601;
 
 /**
  * A converter for Date
  */
 public class DateConverter extends NumberConverter implements Converter {
 
-    private final Date value;
 
-    public DateConverter(final Date val) {
-        super(val.getTime());
-        this.value = val;
+    public DateConverter(final Date date) {
+        super(date.getTime());
     }
 
-    @Override
-    public String toString() {
-        return ISO8601.format(adaptTo(Calendar.class));
-    }
-    
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T adaptTo(Class<T> klass) {
-		switch (ConversionTypes.valueOf(klass.getSimpleName())){
-		case Date:
-			return (T) this.value;
-		default:
-			return super.adaptTo(klass);
-		}
+    protected DateConverter(long timeInMillis) {
+    	super(timeInMillis);
 	}
+
+	@Override
+    public String getString() {
+        return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(Instant.ofEpochMilli(value.longValue()));
+    }
 }

@@ -13,10 +13,11 @@
  */
 package com.sas.sling.resource.parser.conversion;
 
-import java.math.BigDecimal;
-import java.util.Calendar;
-
-import org.apache.jackrabbit.util.ISO8601;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.regex.Pattern;
 
 /**
  * A converter for any object based on toString()
@@ -24,48 +25,33 @@ import org.apache.jackrabbit.util.ISO8601;
 public class StringConverter implements Converter {
 
 	private final String value;
+	
+	private static Pattern DoubleString = Pattern.compile("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
+	private static Pattern LongString = Pattern.compile("^-?\\d{1,19}$");
+	
 
 	public StringConverter(final String val) {
 		this.value = val;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T adaptTo(Class<T> klass) {
-		
-		switch (klass.getSimpleName()) {
-		case "BigDecimal":
-			return (T) new BigDecimal(value);
-		case "Boolean":
-			return (T) Boolean.valueOf(value);
-		case "Byte":
-			return (T) Byte.valueOf(Byte.parseByte(value));
-		case "GregorianCalendar":
-			final Calendar c = ISO8601.parse(value);
-			if (c == null) {
-				throw new IllegalArgumentException("Not a date string: " + value);
-			}
-			return (T) c;
-		case "Date":
-			final Calendar cal = ISO8601.parse(value);
-			return (T) cal.getTime();
-		case "Double":
-			return (T) Double.valueOf(Double.parseDouble(value));
-		case "Float":
-			return (T) Float.valueOf(Float.parseFloat(value));
-		case "Integer":
-			return (T) Integer.valueOf(Integer.parseInt(value));
-		case "Long":
-			return (T) Long.valueOf(Long.parseLong(value));
-		case "Short":
-			return (T) Short.valueOf(Short.parseShort(value));
-		case "String":
-			return (T) value;
-		case "Null":
-			return (T) new Null();
-		default:
-			break;
+	public Number getNumber() {
+		if (LongString.matcher(value).matches()){
+			return Long.parseLong(value);
 		}
-		return null;
+		if (DoubleString.matcher(value).matches()){
+			return Double.parseDouble(value);
+		}
+		try {
+			return LocalDateTime.parse(value,DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC);
+		} catch (DateTimeParseException dtpe){
+			//swallow
+			return null;
+		}
+	}
+
+	@Override
+	public String getString() {
+		return value;
 	}
 }

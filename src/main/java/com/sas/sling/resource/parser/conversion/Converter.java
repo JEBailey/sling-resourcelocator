@@ -18,7 +18,9 @@ package com.sas.sling.resource.parser.conversion;
  */
 public interface Converter {
 
-    <T> T adaptTo(Class<T> klass);
+    Number getNumber();
+    
+    String getString();
 
 
 }

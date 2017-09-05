@@ -13,61 +13,25 @@
  */
 package com.sas.sling.resource.parser.conversion;
 
-import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-
 /**
  * A converter for Number
  */
 public class NumberConverter implements Converter {
 
-    private final Number value;
+    protected final Number value;
 
     public NumberConverter(final Number val) {
         this.value = val;
     }
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T adaptTo(Class<T> klass) {
-		switch (ConversionTypes.valueOf(klass.getSimpleName())){
-		case BigDecimal:
-			if ( this.value instanceof BigDecimal ) {
-	            return (T)this.value;
-	        }
-	        return (T)new BigDecimal(this.value.toString());
-		case Boolean:
-			return (T) Boolean.FALSE;
-		case Byte:
-			 return (T) Byte.valueOf(this.value.byteValue());
-		case GregorianCalendar:
-	        final Calendar cal = Calendar.getInstance();
-	        cal.setTimeInMillis(this.value.longValue());
-	        return (T) cal;
-		case Date:
-			return (T) new Date(this.value.longValue());
-		case Double:
-			return (T) Double.valueOf(this.value.doubleValue());
-		case Float:
-			return (T) magic(this.value.floatValue());
-		case Integer:
-			return (T) Integer.valueOf(this.value.intValue());
-		case Long:
-			return (T) Long.valueOf(this.value.longValue());
-		case Short:
-			 return (T) Short.valueOf(this.value.shortValue());
-		case String:
-			return (T)this.value.toString();
-		default:
-			break;
-		}
-		return null;
+	public Number getNumber() {
+		return value;
 	}
-	
-	private <T> T magic(T object){
-		return object;
+
+	@Override
+	public String getString() {
+		return value.toString();
 	}
-	
-	
+
 }

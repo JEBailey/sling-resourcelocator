@@ -24,27 +24,25 @@ public class ConversionHandler {
 			return (T) initialValue;
 		}
 
-		return getConverter(initialValue).adaptTo(type);
-	}
-
-	/**
-	 * Create a converter for an object.
-	 * 
-	 * @param value
-	 *            The object to convert
-	 * @return A converter for {@code value}
-	 */
-	private static Converter getConverter(final Object value) {
-		if (value instanceof Number) {
-			return new NumberConverter((Number) value);
-		} else if (value instanceof Boolean) {
-			return new BooleanConverter((Boolean) value);
-		} else if (value instanceof Date) {
-			return new DateConverter((Date) value);
-		} else if (value instanceof Calendar) {
-			return new CalendarConverter((Calendar) value);
+		Converter converter = null;
+		if (initialValue instanceof Number) {
+			converter = new NumberConverter((Number) initialValue);
+		} else if (initialValue instanceof Boolean) {
+			converter =  new BooleanConverter((Boolean) initialValue);
+		} else if (initialValue instanceof Date) {
+			converter = new DateConverter((Date) initialValue);
+		} else if (initialValue instanceof Calendar) {
+			converter = new CalendarConverter((Calendar) initialValue);
 		}
 		// default string based
-		return new StringConverter(value.toString());
+		converter =  new StringConverter(initialValue.toString());
+		
+		if (type.isInstance(String.class)){
+			return (T) converter.getString();
+		}
+		
+		return (T) converter.getNumber();
 	}
+
+
 }

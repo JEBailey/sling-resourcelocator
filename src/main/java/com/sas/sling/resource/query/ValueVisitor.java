@@ -18,7 +18,6 @@ import java.util.function.Function;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
 
-import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.conversion.Null;
 import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.node.NodeType;
