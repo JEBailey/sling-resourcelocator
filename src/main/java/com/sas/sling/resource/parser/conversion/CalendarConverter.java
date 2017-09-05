@@ -37,7 +37,7 @@ public class CalendarConverter extends NumberConverter implements Converter {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T adaptTo(Class<T> klass) {
-		switch (ConverstionTypes.valueOf(klass.getSimpleName())){
+		switch (ConversionTypes.valueOf(klass.getSimpleName())){
 		case GregorianCalendar:
 	        return (T) this.value;
 		case Date:

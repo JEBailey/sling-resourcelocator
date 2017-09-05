@@ -38,7 +38,7 @@ public class DateConverter extends NumberConverter implements Converter {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T adaptTo(Class<T> klass) {
-		switch (ConverstionTypes.valueOf(klass.getSimpleName())){
+		switch (ConversionTypes.valueOf(klass.getSimpleName())){
 		case Date:
 			return (T) this.value;
 		default:

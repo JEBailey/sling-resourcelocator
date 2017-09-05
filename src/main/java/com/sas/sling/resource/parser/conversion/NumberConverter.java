@@ -31,7 +31,7 @@ public class NumberConverter implements Converter {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T adaptTo(Class<T> klass) {
-		switch (ConverstionTypes.valueOf(klass.getSimpleName())){
+		switch (ConversionTypes.valueOf(klass.getSimpleName())){
 		case BigDecimal:
 			if ( this.value instanceof BigDecimal ) {
 	            return (T)this.value;

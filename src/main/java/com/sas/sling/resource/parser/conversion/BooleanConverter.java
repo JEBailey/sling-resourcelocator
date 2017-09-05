@@ -35,7 +35,7 @@ public class BooleanConverter implements Converter {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T adaptTo(Class<T> klass) {
-		switch (ConverstionTypes.valueOf(klass.getSimpleName())){
+		switch (ConversionTypes.valueOf(klass.getSimpleName())){
 		case BigDecimal:
 			return (T) new BigDecimal(this.getNumber().toString());
 		case Boolean:
