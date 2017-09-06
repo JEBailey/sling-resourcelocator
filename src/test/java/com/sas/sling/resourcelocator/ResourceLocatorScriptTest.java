@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -50,12 +49,6 @@ public class ResourceLocatorScriptTest {
 		midPoint = new SimpleDateFormat(DATE_FORMAT).parse(DATE_STRING);
 	}
 
-	@Test 
-	public void testNameFunctionIs() throws ParseException {
-		String query = "name() == 'testpage1'";
-		List<Resource> found = handle(START_PATH, query);
-		assertEquals(1, found.size());
-	}
 	
 	@Test
 	public void testPropertyIs() throws ParseException {
@@ -107,11 +100,18 @@ public class ResourceLocatorScriptTest {
 		assertEquals(5, found.size());
 	}
 	
-	@Test @Ignore
-	public void testChildExistence() throws ParseException {
-		String query = "child('jcr:content') != null ";
+	@Test 
+	public void testNameFunctionIs() throws ParseException {
+		String query = "name() == 'testpage1'";
 		List<Resource> found = handle(START_PATH, query);
-		assertEquals(5, found.size());
+		assertEquals(1, found.size());
+	}
+	
+	@Test
+	public void testChildExistence() throws ParseException {
+		String query = "name() == 'testpage3' ";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(1, found.size());
 	}
 	
 	private List<Resource> handle(String path, String filter) throws ParseException {

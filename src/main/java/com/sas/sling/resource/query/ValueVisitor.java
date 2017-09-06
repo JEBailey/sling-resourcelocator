@@ -13,6 +13,9 @@
  */
 package com.sas.sling.resource.query;
 
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import org.apache.sling.api.resource.Resource;
@@ -20,36 +23,57 @@ import org.apache.sling.api.resource.ValueMap;
 
 import com.sas.sling.resource.parser.conversion.Null;
 import com.sas.sling.resource.parser.node.Node;
-import com.sas.sling.resource.parser.node.NodeType;
 import com.sas.sling.resource.parser.node.Visitor;
 
 
 public class ValueVisitor implements Visitor<Function<Resource,Object>, Void> {
 
+	
+	private Map<String,Function<Resource,Object>> functions = new HashMap<>();
+	
+	
+	
+	
 	@Override
 	public Function<Resource,Object> visit(Node node, Void param) {
-		if (node.getType() == NodeType.STRING){
-			return resource -> node.getValue();
-		}
-		if (node.getType() == NodeType.PROPERTY){
-			return resource -> resource.adaptTo(ValueMap.class).get(node.getValue());
-		}
-		if (node.getType() == NodeType.NULL){
+		switch (node.getType()){
+		case FUNCTION:
+			break;
+		case NULL:
 			return resource -> new Null();
-		}
-		if (node.getType() != NodeType.FUNCTION){
+		case PROPERTY:
+			return resource ->{
+				Object value = resource.adaptTo(ValueMap.class).get(node.getValue());
+				if (value instanceof Boolean) {
+					return value.toString();
+				}
+				if (value instanceof Calendar){
+					return ((Calendar)value).getTimeInMillis();
+				}
+				return value;
+			};
+		default:
 			return resource -> node.getValue();
 		}
-
+		//will only get here in the case of the 'FUNCTION' switch case
 		switch (node.getValue()){
 		case "name":
 			return resource -> resource.getName();
 		case "child":
-			return resource -> resource.getChild(node.getRightOperands().get(0).getValue());
+			return resource -> resource.getChild(node.getRightOperands().get(0).getValue()).toString();
 		default:
 		}
 		return null;
-		
 	}
+	
+	public Function<Resource,Object> registerFunction(String functionName,Function<Resource,Object> function){
+		return this.functions.put(functionName, function);
+	}
+	
+	public Function<Resource,Object> removeFunction(String functionName){
+		return this.functions.remove(functionName);
+	}
+	
+	
 
 }

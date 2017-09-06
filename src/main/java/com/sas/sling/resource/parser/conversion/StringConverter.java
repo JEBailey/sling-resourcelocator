@@ -43,7 +43,7 @@ public class StringConverter implements Converter {
 			return Double.parseDouble(value);
 		}
 		try {
-			return LocalDateTime.parse(value,DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC);
+			return LocalDateTime.parse(value,DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC).toEpochMilli();
 		} catch (DateTimeParseException dtpe){
 			//swallow
 			return null;

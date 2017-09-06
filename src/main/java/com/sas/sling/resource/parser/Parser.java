@@ -16,28 +16,6 @@ public final class Parser implements ParserConstants {
     this.factory = factory;
   }
 
-  private String unescape(String s)
-  {
-    if (s.indexOf('\u005c\u005c') < 0)
-    {
-      return s;
-    }
-
-    final StringBuilder sb = new StringBuilder(s.length());
-    for (int i = 0; i < s.length(); i++)
-    {
-      if (s.charAt(i) == '\u005c\u005c')
-      {
-        i++;
-      }
-      if (i < s.length())
-      {
-        sb.append(s.charAt(i));
-      }
-    }
-    return sb.toString();
-  }
-
   final public Node Input() throws ParseException {
   final Node node;
     node = Or();

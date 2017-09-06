@@ -23,19 +23,16 @@ public class ConversionHandler {
 		if (type.isInstance(initialValue)) {
 			return (T) initialValue;
 		}
+		if (Null.class == type){
+			return (T) new Null();
+		}
 
 		Converter converter = null;
 		if (initialValue instanceof Number) {
 			converter = new NumberConverter((Number) initialValue);
-		} else if (initialValue instanceof Boolean) {
-			converter =  new BooleanConverter((Boolean) initialValue);
-		} else if (initialValue instanceof Date) {
-			converter = new DateConverter((Date) initialValue);
-		} else if (initialValue instanceof Calendar) {
-			converter = new CalendarConverter((Calendar) initialValue);
+		} else {
+			converter =  new StringConverter(initialValue.toString());
 		}
-		// default string based
-		converter =  new StringConverter(initialValue.toString());
 		
 		if (type.isInstance(String.class)){
 			return (T) converter.getString();
