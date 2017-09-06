@@ -45,7 +45,6 @@ public final class Parser
     this (stream, encoding);
     this.factory = factory;
   }
-
 }
 
 PARSER_END(Parser)
@@ -97,7 +96,7 @@ TOKEN :
       ","
     | " or "
     ) >
-| < NULL : " null " > 
+| < NULL : " null " >
 | < LPAREN : "(" >
 | < RPAREN : ")" >
 | < LBRACKET : "[" >
@@ -108,7 +107,17 @@ TOKEN :
     | "<"
     | "="
     | "!"
+    | " in"
+    | " is"
     )+ >
+| < COMP :
+    (
+      " less"
+    | " greater"
+    | " than"
+    | " like"
+    | " not"
+    ) >
 }
 
 Node Input() :
@@ -277,11 +286,11 @@ Node Function() :
 {
   < UNRESERVED_STR >
   {
-	selector = factory.createArgument(token.kind, token.image);
+    selector = factory.createArgument(token.kind, token.image);
   }
   children = Arguments()
   {
-      return factory.createFunction(selector, children);
+    return factory.createFunction(selector, children);
   }
 }
 

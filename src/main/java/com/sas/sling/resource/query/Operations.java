@@ -16,27 +16,25 @@ package com.sas.sling.resource.query;
 import java.util.Optional;
 
 public enum Operations {
-    EQUAL("=="), 
-    NOT_EQUAL("!="), 
-    GREATER_THAN(">"), 
-    GREATER_THAN_OR_EQUAL(">="), 
-    LESS_THAN("<"), 
-    LESS_THAN_OR_EQUAL("<="), 
-    IN("in"), 
-    NOT_IN("out");
- 
-    private String operator;
- 
-    private Operations(String operator) {
-        this.operator = operator;
-    }
- 
-    public static Optional<Operations> getSimpleOperator(String operation) {
-    	for (Operations value:Operations.values()){
-    		if (operation.equals(value.operator)){
-    			return Optional.of(value);
-    		}
-    	}
-    	return Optional.empty();
-    }
+	EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL;
+
+
+	public static Optional<Operations> getSimpleOperator(String operation) {
+		switch (operation) {
+		case "==":
+		case "is":
+			return Optional.of(EQUAL);
+		case "!=":
+			return Optional.of(NOT_EQUAL);
+		case ">":
+			return Optional.of(GREATER_THAN);
+		case ">=":
+			return Optional.of(GREATER_THAN_OR_EQUAL);
+		case "<":
+			return Optional.of(LESS_THAN);
+		case "<=":
+			return Optional.of(LESS_THAN_OR_EQUAL);
+		}
+		return Optional.empty();
+	}
 }

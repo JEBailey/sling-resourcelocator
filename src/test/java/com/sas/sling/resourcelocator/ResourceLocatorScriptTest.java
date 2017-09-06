@@ -51,8 +51,15 @@ public class ResourceLocatorScriptTest {
 
 	
 	@Test
-	public void testPropertyIs() throws ParseException {
+	public void testPropertyEquals() throws ParseException {
 		String query = "[jcr:content/jcr:title] == 'English'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(4, found.size());
+	}
+	
+	@Test
+	public void testPropertyIs() throws ParseException {
+		String query = "[jcr:content/jcr:title] is 'English'";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(4, found.size());
 	}

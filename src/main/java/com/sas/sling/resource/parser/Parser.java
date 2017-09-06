@@ -204,9 +204,9 @@ public final class Parser implements ParserConstants {
   Node selector = null;
   List < Node > children = null;
     jj_consume_token(UNRESERVED_STR);
-        selector = factory.createArgument(token.kind, token.image);
+    selector = factory.createArgument(token.kind, token.image);
     children = Arguments();
-      {if (true) return factory.createFunction(selector, children);}
+    {if (true) return factory.createFunction(selector, children);}
     throw new Error("Missing return statement in function");
   }
 
@@ -371,7 +371,7 @@ public final class Parser implements ParserConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[16];
+    boolean[] la1tokens = new boolean[17];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -385,7 +385,7 @@ public final class Parser implements ParserConstants {
         }
       }
     }
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 17; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

@@ -15,9 +15,12 @@ package com.sas.sling.resource.parser.node;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.sas.sling.resource.parser.ParserConstants;
+import com.sas.sling.resource.parser.TokenMgrError;
 import com.sas.sling.resource.parser.predicates.UnknownOperatorException;
+import com.sas.sling.resource.query.Operations;
 
 /**
  * Factory that creates {@link Node} instances for the parser.
@@ -62,6 +65,11 @@ public class NodesFactory implements ParserConstants {
     public Node createComparisonNode(
             String operatorToken, Node selector, List<Node> arguments) {
         if (operatorToken == null) {
+        	String compValue = selector.getValue();
+        	Optional<Operations> validOperation = Operations.getSimpleOperator(compValue);
+        	if (!validOperation.isPresent()){
+        		throw new TokenMgrError("unkown comparator "+compValue,0);
+        	}
             return new Node(NodeType.FUNCTION, selector.getValue(), arguments);
         } else {
             return new Node(operatorToken,selector,arguments);

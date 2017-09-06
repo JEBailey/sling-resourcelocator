@@ -30,7 +30,7 @@ public class PredicateFactory {
 	public static Predicate<Resource> toPredicate(Node node, Function<Resource, Object> operand,
 			List<Function<Resource, Object>> arguments) {
 
-		Optional<Operations> op = Operations.getSimpleOperator(node.getValue());
+		Optional<Operations> op = Operations.getSimpleOperator(node.getValue().trim());
 
 		Function<Resource, Object> firstArgument = arguments.get(0);
 
@@ -52,16 +52,8 @@ public class PredicateFactory {
 			return ScriptPredicates.leftSide(operand).lt(firstArgument);
 		}
 		case LESS_THAN_OR_EQUAL: {
-			return resource -> {
-				return ScriptPredicates.leftSide(operand).lte(firstArgument.apply(resource)).test(resource);
-			};
+			return ScriptPredicates.leftSide(operand).lte(firstArgument);
 		}
-		case IN:
-			return null;// propPredicates.isIn(arguments.toArray(new
-						// String[arguments.size()]));
-		case NOT_IN:
-			return null;// propPredicates.isIn(arguments.toArray(new
-						// String[arguments.size()])).negate();
 		}
 
 		System.out.println(firstArgument + "has been found");

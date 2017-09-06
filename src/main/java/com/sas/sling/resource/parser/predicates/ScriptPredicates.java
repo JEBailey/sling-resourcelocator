@@ -13,7 +13,6 @@
  */
 package com.sas.sling.resource.parser.predicates;
 
-import java.util.Date;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -30,9 +29,10 @@ import com.sas.sling.resource.parser.conversion.Null;
  * <br>
  * is = equal to argument<br>
  * isNot = not equal to argument<br>
- * isIn = property is a single value which matches one of the arguments passed in
- * for comparison<br>
- * contains = property is an array which contains all of the arguments passed in<br>
+ * isIn = property is a single value which matches one of the arguments passed
+ * in for comparison<br>
+ * contains = property is an array which contains all of the arguments passed
+ * in<br>
  * 
  * @author J.E. Bailey
  *
@@ -40,29 +40,28 @@ import com.sas.sling.resource.parser.conversion.Null;
 public class ScriptPredicates {
 
 	// key value to be used against the provided resource object
-	private final Function<Resource,Object> lhs;
+	private final Function<Resource, Object> lhs;
 
-	private ScriptPredicates(Function<Resource,Object> value) {
-		this.lhs = value;
+
+	private ScriptPredicates(Function<Resource, Object> lhs) {
+		this.lhs = lhs;
 	}
 
 	/**
-	 * Used to define which value in the underlying map will we be used.
 	 * 
-	 * @param name key value of the property
-	 * @return PropertyPredicate instance
+	 * @param rhs
+	 * @return
 	 */
-	static public ScriptPredicates leftSide(Function<Resource,Object> value) {
-		return new ScriptPredicates(value);
+	static public ScriptPredicates leftSide(Function<Resource, Object> rhs) {
+		return new ScriptPredicates(rhs);
 	}
 
-
-	public <T> Predicate<Resource> is(Function<Resource,Object> rhs) {
+	public <T> Predicate<Resource> is(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
 			Object lhValue = lhs.apply(resource);
 			Object rhValue = rhs.apply(resource);
-			if (lhValue == null || rhValue == null){ 
+			if (lhValue == null || rhValue == null) {
 				return (lhValue instanceof Null || rhValue instanceof Null);
 			}
 			return ConversionHandler.adapt(lhValue, rhValue.getClass()).equals(rhValue);
@@ -75,87 +74,91 @@ public class ScriptPredicates {
 	 * specific types
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> gt(Function<Resource,Object> rhs) {
+	public <T> Predicate<Resource> gt(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
 			Object lhValue = lhs.apply(resource);
 			Object rhValue = rhs.apply(resource);
 			lhValue = (T) ConversionHandler.adapt(lhValue, rhValue.getClass());
-			if (lhValue == null || rhValue == null){ 
-				return (lhValue instanceof Null || rhValue instanceof Null);
+			if (lhValue == null || rhValue == null) {
+				return false;
 			}
-			if (lhValue instanceof Comparable){
-				if (lhValue.getClass().isInstance(lhs)){
-					return ((Comparable<T>)lhValue).compareTo((T)rhValue) > 0;
+			if (lhValue instanceof Comparable) {
+				if (lhValue.getClass().isInstance(lhs)) {
+					return ((Comparable<T>) lhValue).compareTo((T) rhValue) > 0;
 				}
 			}
 			return false;
 		};
 
 	}
-	
 
 	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> gte(Function<Resource,Object> rhs) {
+	public <T> Predicate<Resource> gte(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
 			Object lhValue = lhs.apply(resource);
 			Object rhValue = rhs.apply(resource);
 			lhValue = (T) ConversionHandler.adapt(lhValue, rhValue.getClass());
-			if (lhValue == null || rhValue == null){ 
-				return (lhValue instanceof Null || rhValue instanceof Null);
+			if (lhValue == null || rhValue == null) {
+				return false;
 			}
-			if (lhValue instanceof Comparable){
-				if (lhValue.getClass().isInstance(lhs)){
-					return ((Comparable<T>)lhValue).compareTo((T)rhValue) >= 0;
+			if (lhValue instanceof Comparable) {
+				if (lhValue.getClass().isInstance(lhs)) {
+					return ((Comparable<T>) lhValue).compareTo((T) rhValue) >= 0;
 				}
 			}
 			return false;
 		};
 	}
-	
+
 	/*
 	 * Generic greater then method that is accessed via public methods that have
 	 * specific types
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> lt(Function<Resource,Object> rhs) {
+	public <T> Predicate<Resource> lt(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "type value may not be null");
 		return resource -> {
 			Object lhValue = lhs.apply(resource);
 			Object rhValue = rhs.apply(resource);
-			if (lhValue == null || rhValue == null){
+			if (lhValue == null || rhValue == null) {
 				return false;
 			}
 			T propValue = (T) ConversionHandler.adapt(rhValue, lhValue.getClass());
-			if (propValue == null){
+			if (propValue == null) {
 				return false;
 			}
-			if (lhValue instanceof Comparable){
-				if (propValue.getClass().isInstance(lhValue)){
-					return ((Comparable<T>)lhValue).compareTo(propValue) < 0;
+			if (lhValue instanceof Comparable) {
+				if (propValue.getClass().isInstance(lhValue)) {
+					return ((Comparable<T>) lhValue).compareTo(propValue) < 0;
 				}
 			}
 			return false;
 		};
 
 	}
-	
+
 	/*
 	 * Generic greater then method that is accessed via public methods that have
 	 * specific types
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> lte(T type) {
-		Objects.requireNonNull(type, "type value may not be null");
+	public <T> Predicate<Resource> lte(Function<Resource, Object> rhs) {
+		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
-			T propValue = (T) ConversionHandler.adapt(lhs, type.getClass());
-			if (propValue == null){
+			Object lhValue = lhs.apply(resource);
+			Object rhValue = rhs.apply(resource);
+			if (lhValue == null || rhValue == null) {
 				return false;
 			}
-			if (lhs instanceof Comparable){
-				if (type.getClass().isInstance(lhs)){
-					return ((Comparable<T>)lhs).compareTo(type) <= 0;
+			T propValue = (T) ConversionHandler.adapt(rhValue, lhValue.getClass());
+			if (propValue == null) {
+				return false;
+			}
+			if (lhValue instanceof Comparable) {
+				if (propValue.getClass().isInstance(lhValue)) {
+					return ((Comparable<T>) lhValue).compareTo(propValue) <= 0;
 				}
 			}
 			return false;
@@ -163,10 +166,35 @@ public class ScriptPredicates {
 
 	}
 
-	public <T> Predicate<Resource> isNot(final Function<Resource,Object> type) {
-		return is(type).negate();
+	/*
+	 * Generic greater then method that is accessed via public methods that have
+	 * specific types
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> Predicate<Resource> like(Function<Resource, Object> rhs) {
+		Objects.requireNonNull(rhs, "value may not be null");
+		return resource -> {
+			Object lhValue = lhs.apply(resource);
+			Object rhValue = rhs.apply(resource);
+			if (lhValue == null || rhValue == null) {
+				return false;
+			}
+			T propValue = (T) ConversionHandler.adapt(rhValue, lhValue.getClass());
+			if (propValue == null) {
+				return false;
+			}
+			if (lhValue instanceof Comparable) {
+				if (propValue.getClass().isInstance(lhValue)) {
+					return ((Comparable<T>) lhValue).compareTo(propValue) <= 0;
+				}
+			}
+			return false;
+		};
+
 	}
 
-
+	public <T> Predicate<Resource> isNot(final Function<Resource, Object> type) {
+		return is(type).negate();
+	}
 
 }
