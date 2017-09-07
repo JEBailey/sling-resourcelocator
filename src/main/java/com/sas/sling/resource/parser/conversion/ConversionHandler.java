@@ -13,13 +13,13 @@
  */
 package com.sas.sling.resource.parser.conversion;
 
-import java.util.Calendar;
-import java.util.Date;
-
 public class ConversionHandler {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T adapt(final Object initialValue, final Class<T> type) {
+		if (initialValue == null) {
+			return null;
+		}
 		if (type.isInstance(initialValue)) {
 			return (T) initialValue;
 		}

@@ -13,10 +13,16 @@
  */
 package com.sas.sling.resource.parser.conversion;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.time.temporal.TemporalAccessor;
 import java.util.regex.Pattern;
 
 /**
@@ -42,12 +48,7 @@ public class StringConverter implements Converter {
 		if (DoubleString.matcher(value).matches()){
 			return Double.parseDouble(value);
 		}
-		try {
-			return LocalDateTime.parse(value,DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC).toEpochMilli();
-		} catch (DateTimeParseException dtpe){
-			//swallow
-			return null;
-		}
+		return null;
 	}
 
 	@Override

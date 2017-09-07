@@ -120,18 +120,14 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> lt(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "type value may not be null");
 		return resource -> {
-			Object lhValue = lhs.apply(resource);
-			Object rhValue = rhs.apply(resource);
+			Number lhValue = ConversionHandler.adapt(lhs.apply(resource), Number.class);
+			Number rhValue = ConversionHandler.adapt(rhs.apply(resource), Number.class);
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
-			T propValue = (T) ConversionHandler.adapt(rhValue, lhValue.getClass());
-			if (propValue == null) {
-				return false;
-			}
 			if (lhValue instanceof Comparable) {
-				if (propValue.getClass().isInstance(lhValue)) {
-					return ((Comparable<T>) lhValue).compareTo(propValue) < 0;
+				if (rhValue.getClass().isInstance(lhValue)) {
+					return ((Comparable<T>) lhValue).compareTo((T) rhValue) < 0;
 				}
 			}
 			return false;

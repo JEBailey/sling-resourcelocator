@@ -66,12 +66,31 @@ public class ResourceLocatorScriptTest {
 	
 	@Test
 	public void testDateBeforeValue() throws ParseException {
-		String query = "[jcr:content/created] < '2013-08-08T16:32:59.000+02:00'";
+		String query = "[jcr:content/created] < date('2013-08-08T16:32:59.000+02:00')";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(3, found.size());
 		found = handle2(START_PATH, query);
 		assertEquals(3, found.size());
 	}
+	
+	@Test
+	public void testDateBeforeValue2() throws ParseException {
+		String query = "[jcr:content/created] less than '2013-08-08T16:32:59.000+02:00'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(3, found.size());
+		found = handle2(START_PATH, query);
+		assertEquals(3, found.size());
+	}
+	
+	@Test
+	public void testDateBeforeValue3() throws ParseException {
+		String query = "[jcr:content/created] < date('2013-08-08','yyyy-MM-dd')";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(3, found.size());
+		found = handle2(START_PATH, query);
+		assertEquals(3, found.size());
+	}
+	
 	
 	@Test
 	public void testDateAndProperty() throws ParseException {
@@ -81,14 +100,14 @@ public class ResourceLocatorScriptTest {
 	}
 	@Test
 	public void testDateAndPropertyTwice() throws ParseException {
-		String query = "([jcr:content/created] < '2013-08-08T16:32:59.000+02:00' and [jcr:content/jcr:title] == 'English') or [jcr:content/jcr:title] == 'Mongolian'";
+		String query = "([jcr:content/created] < date('2013-08-08T16:32:59.000+02:00') and [jcr:content/jcr:title] == 'English') or [jcr:content/jcr:title] == 'Mongolian'";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(4, found.size());
 	}
 	
 	@Test
 	public void testDateOrProperty() throws ParseException {
-		String query = "[jcr:content/created] < '2013-08-08T16:32:59.000+02:00' or [jcr:content/jcr:title] == 'Mongolian'";
+		String query = "[jcr:content/created] < date('2013-08-08T16:32:59.000+02:00') or [jcr:content/jcr:title] == 'Mongolian'";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(4, found.size());
 	}

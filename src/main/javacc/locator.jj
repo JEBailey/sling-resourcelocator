@@ -109,15 +109,12 @@ TOKEN :
     | "!"
     | " in"
     | " is"
-    )+ >
-| < COMP :
-    (
-      " less"
+    | " less"
     | " greater"
     | " than"
     | " like"
     | " not"
-    ) >
+    )+ >
 }
 
 Node Input() :

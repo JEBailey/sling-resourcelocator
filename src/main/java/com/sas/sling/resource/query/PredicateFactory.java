@@ -30,54 +30,33 @@ public class PredicateFactory {
 	public static Predicate<Resource> toPredicate(Node node, Function<Resource, Object> operand,
 			List<Function<Resource, Object>> arguments) {
 
-		Optional<Operations> op = Operations.getSimpleOperator(node.getValue().trim());
+		Optional<ComparisonOperators> op = ComparisonOperators.getSimpleOperator(node.getValue());
 
 		Function<Resource, Object> firstArgument = arguments.get(0);
 
+		ScriptPredicates leftSide = ScriptPredicates.leftSide(operand);
+
 		switch (op.get()) {
-
-		case EQUAL: {
-			return ScriptPredicates.leftSide(operand).is(firstArgument);
-		}
-		case NOT_EQUAL: {
-			return ScriptPredicates.leftSide(operand).is(firstArgument).negate();
-		}
-		case GREATER_THAN: {
-			return ScriptPredicates.leftSide(operand).gt(firstArgument);
-		}
-		case GREATER_THAN_OR_EQUAL: {
-			return ScriptPredicates.leftSide(operand).gte(firstArgument);
-		}
-		case LESS_THAN: {
-			return ScriptPredicates.leftSide(operand).lt(firstArgument);
-		}
-		case LESS_THAN_OR_EQUAL: {
-			return ScriptPredicates.leftSide(operand).lte(firstArgument);
-		}
+		case EQUAL:
+			return leftSide.is(firstArgument);
+		case NOT_EQUAL:
+			return leftSide.is(firstArgument).negate();
+		case GREATER_THAN:
+			return leftSide.gt(firstArgument);
+		case GREATER_THAN_OR_EQUAL:
+			return leftSide.gte(firstArgument);
+		case LESS_THAN:
+			return leftSide.lt(firstArgument);
+		case LESS_THAN_OR_EQUAL:
+			return leftSide.lte(firstArgument);
+		case LIKE:
+			return leftSide.like(firstArgument);
 		}
 
-		System.out.println(firstArgument + "has been found");
+		System.out.println(firstArgument + "is not  been found");
 		return null;
 	}
 
-	// creates function predicate
-	public static Predicate<Resource> toPredicate(String property, List<Object> arguments,
-			final ResourceLocator locator) {
-		switch (property) {
-		case "path": {
-			String path = (String) arguments.get(0);
-			return resource -> {
-				locator.startingPath(path);
-				return true;
-			};
-		}
-		case "name": {
-			return resource -> {
-				return resource.getName().equals(arguments.get(0));
-			};
-		}
-		}
-		return resource -> true;
-	}
+
 
 }

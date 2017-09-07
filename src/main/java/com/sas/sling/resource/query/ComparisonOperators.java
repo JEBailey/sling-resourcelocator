@@ -15,25 +15,30 @@ package com.sas.sling.resource.query;
 
 import java.util.Optional;
 
-public enum Operations {
-	EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL;
+public enum ComparisonOperators {
+	EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, LIKE;
 
 
-	public static Optional<Operations> getSimpleOperator(String operation) {
+	public static Optional<ComparisonOperators> getSimpleOperator(String operation) {
 		switch (operation) {
 		case "==":
-		case "is":
+		case " is":
 			return Optional.of(EQUAL);
 		case "!=":
+		case " is not":
 			return Optional.of(NOT_EQUAL);
 		case ">":
+		case " greater than":
 			return Optional.of(GREATER_THAN);
 		case ">=":
 			return Optional.of(GREATER_THAN_OR_EQUAL);
 		case "<":
+		case " less than":
 			return Optional.of(LESS_THAN);
 		case "<=":
 			return Optional.of(LESS_THAN_OR_EQUAL);
+		case " like":
+			return Optional.of(LIKE);
 		}
 		return Optional.empty();
 	}

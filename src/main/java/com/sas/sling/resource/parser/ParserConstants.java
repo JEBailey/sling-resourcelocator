@@ -36,8 +36,6 @@ public interface ParserConstants {
   int RBRACKET = 14;
   /** RegularExpression Id. */
   int COMP_ALT = 15;
-  /** RegularExpression Id. */
-  int COMP = 16;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -60,7 +58,6 @@ public interface ParserConstants {
     "\"[\"",
     "\"]\"",
     "<COMP_ALT>",
-    "<COMP>",
   };
 
 }

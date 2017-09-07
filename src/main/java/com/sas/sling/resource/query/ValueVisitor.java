@@ -13,8 +13,15 @@
  */
 package com.sas.sling.resource.query;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -61,6 +68,27 @@ public class ValueVisitor implements Visitor<Function<Resource,Object>, Void> {
 			return resource -> resource.getName();
 		case "child":
 			return resource -> resource.getChild(node.getRightOperands().get(0).getValue()).toString();
+		case "date":
+			List<Function<Resource,Object>> children = node.visitChildren(this, param);
+			return resource ->{
+				if (children.isEmpty()){
+					return null;
+				}
+				String dateString = children.get(0).apply(resource).toString();
+				String formatString = null;
+				if (children.size() > 1){
+					formatString = children.get(1).apply(resource).toString();
+					SimpleDateFormat dateFormat = new SimpleDateFormat(formatString);
+					try {
+						return dateFormat.parse(dateString).getTime();
+					} catch (ParseException e) {
+						return null;
+					}
+				}
+				else {
+					return DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(dateString, OffsetDateTime::from).toInstant().toEpochMilli();
+				}
+			};
 		default:
 		}
 		return null;
