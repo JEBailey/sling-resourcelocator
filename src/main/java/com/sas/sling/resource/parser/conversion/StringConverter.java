@@ -48,7 +48,12 @@ public class StringConverter implements Converter {
 		if (DoubleString.matcher(value).matches()){
 			return Double.parseDouble(value);
 		}
-		return null;
+		try {
+			return LocalDateTime.parse(value,DateTimeFormatter.ISO_DATE_TIME).toInstant(ZoneOffset.UTC).toEpochMilli();
+		} catch (DateTimeParseException dtpe){
+			//swallow
+			return null;
+		}
 	}
 
 	@Override

@@ -68,6 +68,24 @@ public class ScriptPredicates {
 		};
 
 	}
+	
+	/*
+
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> Predicate<Resource> like(Function<Resource, Object> rhs) {
+		Objects.requireNonNull(rhs, "value may not be null");
+		return resource -> {
+			String lhValue = ConversionHandler.adapt(lhs.apply(resource), String.class);
+			String rhValue = ConversionHandler.adapt(rhs.apply(resource), String.class);
+			if (lhValue == null || rhValue == null) {
+				return false;
+			}
+			return lhValue.matches(rhValue);
+		};
+
+	}
+	
 
 	/*
 	 * Generic greater then method that is accessed via public methods that have
@@ -77,14 +95,13 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> gt(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
-			Object lhValue = lhs.apply(resource);
-			Object rhValue = rhs.apply(resource);
-			lhValue = (T) ConversionHandler.adapt(lhValue, rhValue.getClass());
+			Number lhValue = ConversionHandler.adapt(lhs.apply(resource), Number.class);
+			Number rhValue = ConversionHandler.adapt(rhs.apply(resource), Number.class);
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
 			if (lhValue instanceof Comparable) {
-				if (lhValue.getClass().isInstance(lhs)) {
+				if (rhValue.getClass().isInstance(lhValue)) {
 					return ((Comparable<T>) lhValue).compareTo((T) rhValue) > 0;
 				}
 			}
@@ -97,14 +114,13 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> gte(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
-			Object lhValue = lhs.apply(resource);
-			Object rhValue = rhs.apply(resource);
-			lhValue = (T) ConversionHandler.adapt(lhValue, rhValue.getClass());
+			Number lhValue = ConversionHandler.adapt(lhs.apply(resource), Number.class);
+			Number rhValue = ConversionHandler.adapt(rhs.apply(resource), Number.class);
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
 			if (lhValue instanceof Comparable) {
-				if (lhValue.getClass().isInstance(lhs)) {
+				if (rhValue.getClass().isInstance(lhValue)) {
 					return ((Comparable<T>) lhValue).compareTo((T) rhValue) >= 0;
 				}
 			}
@@ -143,18 +159,14 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> lte(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
-			Object lhValue = lhs.apply(resource);
-			Object rhValue = rhs.apply(resource);
+			Number lhValue = ConversionHandler.adapt(lhs.apply(resource), Number.class);
+			Number rhValue = ConversionHandler.adapt(rhs.apply(resource), Number.class);
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
-			T propValue = (T) ConversionHandler.adapt(rhValue, lhValue.getClass());
-			if (propValue == null) {
-				return false;
-			}
 			if (lhValue instanceof Comparable) {
-				if (propValue.getClass().isInstance(lhValue)) {
-					return ((Comparable<T>) lhValue).compareTo(propValue) <= 0;
+				if (rhValue.getClass().isInstance(lhValue)) {
+					return ((Comparable<T>) lhValue).compareTo((T) rhValue) <= 0;
 				}
 			}
 			return false;
@@ -162,32 +174,7 @@ public class ScriptPredicates {
 
 	}
 
-	/*
-	 * Generic greater then method that is accessed via public methods that have
-	 * specific types
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> like(Function<Resource, Object> rhs) {
-		Objects.requireNonNull(rhs, "value may not be null");
-		return resource -> {
-			Object lhValue = lhs.apply(resource);
-			Object rhValue = rhs.apply(resource);
-			if (lhValue == null || rhValue == null) {
-				return false;
-			}
-			T propValue = (T) ConversionHandler.adapt(rhValue, lhValue.getClass());
-			if (propValue == null) {
-				return false;
-			}
-			if (lhValue instanceof Comparable) {
-				if (propValue.getClass().isInstance(lhValue)) {
-					return ((Comparable<T>) lhValue).compareTo(propValue) <= 0;
-				}
-			}
-			return false;
-		};
 
-	}
 
 	public <T> Predicate<Resource> isNot(final Function<Resource, Object> type) {
 		return is(type).negate();

@@ -31,7 +31,7 @@ import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.ParseException;
 import com.sas.sling.resource.query.ScriptHandler;
 
-public class ResourceLocatorScriptTest {
+public class ScriptTestDate {
 
 	@Rule
 	public final SlingContext context = new SlingContext();
@@ -49,23 +49,8 @@ public class ResourceLocatorScriptTest {
 		midPoint = new SimpleDateFormat(DATE_FORMAT).parse(DATE_STRING);
 	}
 
-	
 	@Test
-	public void testPropertyEquals() throws ParseException {
-		String query = "[jcr:content/jcr:title] == 'English'";
-		List<Resource> found = handle(START_PATH, query);
-		assertEquals(4, found.size());
-	}
-	
-	@Test
-	public void testPropertyIs() throws ParseException {
-		String query = "[jcr:content/jcr:title] is 'English'";
-		List<Resource> found = handle(START_PATH, query);
-		assertEquals(4, found.size());
-	}
-	
-	@Test
-	public void testDateBeforeValue() throws ParseException {
+	public void testPropLessThanDateFunction() throws ParseException {
 		String query = "[jcr:content/created] < date('2013-08-08T16:32:59.000+02:00')";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(3, found.size());
@@ -74,16 +59,21 @@ public class ResourceLocatorScriptTest {
 	}
 	
 	@Test
-	public void testDateBeforeValue2() throws ParseException {
-		String query = "[jcr:content/created] less than date('2013-08-08T16:32:59.000+02:00')";
+	public void testPropLessThanDateString() throws ParseException {
+		String query = "[jcr:content/created] < '2013-08-08T16:32:59.000'";
 		List<Resource> found = handle(START_PATH, query);
-		assertEquals(3, found.size());
-		found = handle2(START_PATH, query);
 		assertEquals(3, found.size());
 	}
 	
 	@Test
-	public void testDateBeforeValue3() throws ParseException {
+	public void testPropLessThanShortDateString() throws ParseException {
+		String query = "[jcr:content/created] < '2013-08-08T16:32'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(3, found.size());
+	}
+	
+	@Test
+	public void testPropLessThatCustomDateFunction() throws ParseException {
 		String query = "[jcr:content/created] < date('2013-08-08','yyyy-MM-dd')";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(3, found.size());
@@ -91,74 +81,19 @@ public class ResourceLocatorScriptTest {
 		assertEquals(3, found.size());
 	}
 	
-	
 	@Test
-	public void testDateAndProperty() throws ParseException {
-		String query = "[jcr:content/created] < date('2013-08-08T16:32:59.000+02:00') and [jcr:content/jcr:title] == 'English'";
-		List<Resource> found = handle(START_PATH, query);
-		assertEquals(3, found.size());
-	}
-	@Test
-	public void testDateAndPropertyTwice() throws ParseException {
-		String query = "([jcr:content/created] < date('2013-08-08T16:32:59.000+02:00') and [jcr:content/jcr:title] == 'English') or [jcr:content/jcr:title] == 'Mongolian'";
-		List<Resource> found = handle(START_PATH, query);
-		assertEquals(4, found.size());
-	}
-	
-	@Test
-	public void testDateOrProperty() throws ParseException {
-		String query = "[jcr:content/created] < date('2013-08-08T16:32:59.000+02:00') or [jcr:content/jcr:title] == 'Mongolian'";
-		List<Resource> found = handle(START_PATH, query);
-		assertEquals(4, found.size());
-	}
-	
-	@Test
-	public void testDateAsString() throws ParseException {
-		String query = "[jcr:content/created] < '2013-08-08T16:32'";
-		List<Resource> found = handle(START_PATH, query);
-		assertEquals(3, found.size());
-	}
-	
-	@Test
-	public void testNullProperty() throws ParseException {
-		String query = "[jcr:content/foo] == null ";
-		List<Resource> found = handle(START_PATH, query);
-		assertEquals(20, found.size());
-	}
-	
-	@Test
-	public void testNotNullProperty() throws ParseException {
-		String query = "[layout] != null ";
-		List<Resource> found = handle(START_PATH, query);
-		assertEquals(5, found.size());
-	}
-	
-	@Test 
-	public void testNameFunctionIs() throws ParseException {
-		String query = "name() == 'testpage1'";
-		List<Resource> found = handle(START_PATH, query);
-		assertEquals(1, found.size());
-	}
-	
-	@Test 
-	public void testNameFunctionAgainstRegex() throws ParseException {
-		String query = "name() like 'testpage.*'";
-		List<Resource> found = handle(START_PATH, query);
-		assertEquals(4, found.size());
-	}
-	
-	@Test 
-	public void testNameFunctionAgainstRegex2() throws ParseException {
-		String query = "name() like 'testpage[1-2]'";
+	public void testPropLessThanShortDateStringAlpha() throws ParseException {
+		String query = "[jcr:content/created] less than '2013-08-07T14:32:59'";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(2, found.size());
 	}
 	
-	@Test
-	public void testChildExistence() throws ParseException {
-		String query = "name() == 'testpage3' ";
+	
+	@Test  //Thu Aug 07 2013 16:32:59
+	public void testPropLessThanEqualShortDateString() throws ParseException {
+		String query = "[jcr:content/created] <= '2013-08-07T14:32:59'";
 		List<Resource> found = handle(START_PATH, query);
-		assertEquals(1, found.size());
+		assertEquals(3, found.size());
 	}
 	
 	private List<Resource> handle(String path, String filter) throws ParseException {
