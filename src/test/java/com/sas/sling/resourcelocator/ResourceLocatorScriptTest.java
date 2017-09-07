@@ -75,7 +75,7 @@ public class ResourceLocatorScriptTest {
 	
 	@Test
 	public void testDateBeforeValue2() throws ParseException {
-		String query = "[jcr:content/created] less than '2013-08-08T16:32:59.000+02:00'";
+		String query = "[jcr:content/created] less than date('2013-08-08T16:32:59.000+02:00')";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(3, found.size());
 		found = handle2(START_PATH, query);
@@ -94,7 +94,7 @@ public class ResourceLocatorScriptTest {
 	
 	@Test
 	public void testDateAndProperty() throws ParseException {
-		String query = "[jcr:content/created] < '2013-08-08T16:32:59.000+02:00' and [jcr:content/jcr:title] == 'English'";
+		String query = "[jcr:content/created] < date('2013-08-08T16:32:59.000+02:00') and [jcr:content/jcr:title] == 'English'";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(3, found.size());
 	}
