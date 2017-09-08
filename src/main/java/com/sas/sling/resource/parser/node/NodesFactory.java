@@ -83,7 +83,7 @@ public class NodesFactory implements ParserConstants {
     	if (kind == NULL) {
     		return new Node(NodeType.NULL,literal,Collections.emptyList());
     	}
-    	return new Node(literal);
+    	return new Node(literal.trim());
     }
 
 	public Node createFunction(Node functionName, List<Node> args) {

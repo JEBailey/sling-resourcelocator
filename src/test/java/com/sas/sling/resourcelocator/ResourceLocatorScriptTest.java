@@ -161,6 +161,13 @@ public class ResourceLocatorScriptTest {
 		assertEquals(1, found.size());
 	}
 	
+	@Test
+	public void testBoolean() throws ParseException {
+		String query = "[published] == true";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(1, found.size());
+	}
+	
 	private List<Resource> handle(String path, String filter) throws ParseException {
 		Resource resource = context.resourceResolver().getResource(path);
 		Predicate<Resource> predicate =  ScriptHandler.parseQuery(filter);

@@ -96,7 +96,9 @@ TOKEN :
       ","
     | " or "
     ) >
-| < NULL : " null " >
+| < NULL : " null" >
+| < TRUE : " true" >
+| < FALSE : " false" >
 | < LPAREN : "(" >
 | < RPAREN : ")" >
 | < LBRACKET : "[" >
@@ -299,6 +301,8 @@ Node Literal() :
     < DOUBLE_QUOTED_STR >
   | < SINGLE_QUOTED_STR >
   | < NULL >
+  | < TRUE >
+  | < FALSE >
   )
   {
     return factory.createArgument(token.kind, token.image);

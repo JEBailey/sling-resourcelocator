@@ -26,6 +26,7 @@
 			"sling:resourceType": "sample/components/homepage",
 			"jcr:createdBy": "admin",
 			"created": "Thu Aug 07 2012 16:32:59 GMT+0200",
+			"published": true,
 			"par": {
 				"jcr:primaryType": "nt:unstructured",
 				"sling:resourceType": "foundation/components/parsys",

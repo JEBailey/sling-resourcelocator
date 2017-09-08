@@ -61,7 +61,7 @@ Values for comparison are obtained through multiple methods
 
 | Method       | Description                               |
 | ----------   | ----------------------------------------  |
-| Literal      | Single(') or double (") quoted text in the query will be interpreted as a String |
+| Literal      | Single(') or double (") quoted text in the query will be interpreted as a String. Boolean values of *true* and *false* will be translated to a String. |
 | Property     | A String between square brackets '[',']'s will be interpreted as a property value and will be retrieved from the Resource using the get method |
 | Function     | A string followed by parens containing an optional comma seperated list of values. |
 
