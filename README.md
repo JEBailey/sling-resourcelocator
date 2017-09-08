@@ -55,8 +55,18 @@ Derivative of JCR-SQL2.
 | is not       | Is not equal operator for Strings          |
 | like         | Regex match against String                 |
 
+### Values
+
+Values for comparison are obtained through multiple methods
+
+| Method       | Description                               |
+| ----------   | ----------------------------------------  |
+| Literal      | Single(') or double (") quoted text in the query will be interpreted as a String |
+| Property     | A String between square brackets '[',']'s will be interpreted as a property value and will be retrieved from the Resource using the get method |
+| Function     | A string followed by parens containing an optional comma seperated list of values. |
+
 ### Types
-All types are pared down to either a String or a Number. For direct equivalence the comparison is done as a String. For relational comparisons the object will be adapted to a number.
+All types are converted to either a String or a Number. For direct equivalence the comparison is done as a String. For relational comparisons the object will be adapted to a number.
 
 
 
