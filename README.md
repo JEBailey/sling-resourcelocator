@@ -9,22 +9,22 @@ Example of a traversal.
 
 ```java
 ResourceLocator
-		.startFrom(resource)
-		.traversalControl(
-				where(property("jcr:primaryType").is("cq:Page")))
-		.locateResources(
-				where(aChildResource("jcr:content")
-						.has(property("sling:resourceType")
-								.isNot("sas/components/page/folder"))));
+	.startFrom(resource)
+	.traversalControl(
+		where(property("jcr:primaryType").is("cq:Page")))
+	.locateResources(
+		where(aChildResource("jcr:content")
+			.has(property("sling:resourceType")
+			.isNot("sas/components/page/folder"))));
 ```
 
 same results using the filter language
 
 ```java
 ResourceLocator
-		.startFrom(resource)
-		.traversalControl("[jcr:primaryType] == 'cq:Page'")
-		.locateResources("[jcr:content/sling:resourceType] != 'sas/components/page/folder'");
+    .startFrom(resource)
+    .traversalControl("[jcr:primaryType] == 'cq:Page'")
+    .locateResources("[jcr:content/sling:resourceType] != 'sas/components/page/folder'");
 ```
 
 
@@ -34,10 +34,10 @@ The ResourceLocator provides
 2. A series of predicates have been defined around the Resource object(s) to assist in filtering out unwanted resources. These predicates are independent of the ResourceLocator
 3. A domain specific language to create a predicate which filters the streamed resources.
 
-##Filter Language
+## Filter Language
 Derivative of JCR-SQL2.
 
-###Operators
+### Operators
 
 | Name         | Description                                |
 | ---------    | --------------------------------           |
@@ -55,7 +55,7 @@ Derivative of JCR-SQL2.
 | is not       | Is not equal operator for Strings          |
 | like         | Regex match against String                 |
 
-###Types
+### Types
 All types are pared down to either a String or a Number. For direct equivalence the comparison is done as a String. For relational comparisons the object will be adapted to a number.
 
 
