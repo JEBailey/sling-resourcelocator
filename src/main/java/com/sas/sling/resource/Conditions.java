@@ -1,9 +1,4 @@
-package com.sas.sling.resource;
-
-import java.util.Objects;
 /*
- * Copyright 2016 Jason E Bailey
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +11,9 @@ import java.util.Objects;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.sas.sling.resource;
+
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**

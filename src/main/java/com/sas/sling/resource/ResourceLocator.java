@@ -1,8 +1,4 @@
-package com.sas.sling.resource;
-
 /*
- * Copyright 2016 Jason E Bailey
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +11,8 @@ package com.sas.sling.resource;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.sas.sling.resource;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
@@ -30,6 +28,9 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.sling.api.resource.Resource;
+
+import com.sas.sling.resource.parser.ParseException;
+import com.sas.sling.resource.query.ScriptHandler;
 
 /**
  * Base class from which the fluent api is constructed to locate resources which
@@ -109,6 +110,45 @@ public class ResourceLocator {
 		this.traversalControl = Optional.ofNullable(condition);
 		return this;
 	}
+	
+	/**
+	 * When iterating over the child resources, this is used as a validation
+	 * that a specific child resource should be traversed
+	 * 
+	 * This can be used to limit the possible branching options beneath a
+	 * resource tree
+	 * 
+	 * As the Stream API provides an inherent depth first Resource stream this provides
+	 * the ability to limit the children which are acceptable.
+	 * 
+	 * 
+	 * @param condition
+	 *            Add child resource to the traversal path if condition is 'true'
+	 * @return this locator
+	 * @throws ParseException 
+	 */
+	public ResourceLocator traversalControl(String condition) throws ParseException {
+		this.traversalControl = Optional.of(ScriptHandler.parseQuery(condition));
+		return this;
+	}
+	
+	/**
+	 * Rests the starting path for the query to be the 
+	 * This can be used to limit the possible branching options beneath a
+	 * resource tree
+	 * 
+	 * As the Stream API provides an inherent depth first Resource stream this provides
+	 * the ability to limit the children which are acceptable.
+	 * 
+	 * 
+	 * @param path
+	 *            resets resource to path
+	 * @return this locator
+	 */
+	public ResourceLocator startingPath(String path) {
+		this.resource = resource.getResourceResolver().getResource(path);
+		return this;
+	}
 
 	/**
 	 * Sets the maximum number of items to be returned or processed. Starting
@@ -181,7 +221,8 @@ public class ResourceLocator {
 					callback.orElse(e -> resourcesToReturn.add(e)).accept(current);
 				}
 			}
-			current.listChildren().forEachRemaining(child -> {
+			Iterator<Resource> childs = current.listChildren();
+			childs.forEachRemaining(child -> {
 				if (traversalControl.orElse(e -> true).test(child)) {
 					resourcesToCheck.push(child);
 				}
@@ -191,6 +232,22 @@ public class ResourceLocator {
 			}
 		}
 		return resourcesToReturn;
+	}
+	
+	/**
+	 * Recursively descends through the available resources and locates
+	 * resources that match the provided filter lan. Additional restrictions can
+	 * be set to limit the paths that the traversal takes, and how the located
+	 * resources are handled.
+	 * 
+	 * @param condition
+	 *            predicate to be used against all matching child resources
+	 * @return List of matching resource or empty list if callback is enabled
+	 * @throws ParseException 
+	 */
+	public List<Resource> locateResources(String condition) throws ParseException {
+		Predicate<Resource> predicate =  ScriptHandler.parseQuery(condition);
+		return locateResources(predicate);
 	}
 
 	/**

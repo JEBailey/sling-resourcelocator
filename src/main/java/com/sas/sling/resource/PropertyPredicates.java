@@ -1,8 +1,4 @@
-package com.sas.sling.resource;
-
 /*
- * Copyright 2016 Jason E Bailey
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +11,8 @@ package com.sas.sling.resource;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.sas.sling.resource;
+
 import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.Objects;
@@ -65,6 +63,7 @@ public class PropertyPredicates {
 	public Predicate<Resource> is(String string) {
 		return genericIs(string);
 	}
+	
 
 	/**
 	 * Equivalence matching against a Number (long)
@@ -198,6 +197,78 @@ public class PropertyPredicates {
 		};
 
 	}
+	
+	/*
+	 * Generic greater then method that is accessed via public methods that have
+	 * specific types
+	 */
+	private <T> Predicate<Resource> genericGt(T type) {
+		Objects.requireNonNull(type, "type value may not be null");
+		return resource -> {
+			@SuppressWarnings("unchecked")
+			T propValue = (T) resource.adaptTo(ValueMap.class).get(key,
+					type.getClass());
+			if (propValue instanceof Comparable<?>){
+				return ((Comparable<T>)propValue).compareTo(type) > 0;
+			}
+			return type.equals(propValue);
+		};
+
+	}
+	
+	/*
+	 * Generic greater then method that is accessed via public methods that have
+	 * specific types
+	 */
+	private <T> Predicate<Resource> genericGte(T type) {
+		Objects.requireNonNull(type, "type value may not be null");
+		return resource -> {
+			@SuppressWarnings("unchecked")
+			T propValue = (T) resource.adaptTo(ValueMap.class).get(key,
+					type.getClass());
+			if (propValue instanceof Comparable<?>){
+				return ((Comparable<T>)propValue).compareTo(type) >= 0;
+			}
+			return type.equals(propValue);
+		};
+
+	}
+	
+	/*
+	 * Generic greater then method that is accessed via public methods that have
+	 * specific types
+	 */
+	private <T> Predicate<Resource> genericLt(T type) {
+		Objects.requireNonNull(type, "type value may not be null");
+		return resource -> {
+			@SuppressWarnings("unchecked")
+			T propValue = (T) resource.adaptTo(ValueMap.class).get(key,
+					type.getClass());
+			if (propValue instanceof Comparable<?>){
+				return ((Comparable<T>)propValue).compareTo(type) < 0;
+			}
+			return type.equals(propValue);
+		};
+
+	}
+	
+	/*
+	 * Generic greater then method that is accessed via public methods that have
+	 * specific types
+	 */
+	private <T> Predicate<Resource> genericLte(T type) {
+		Objects.requireNonNull(type, "type value may not be null");
+		return resource -> {
+			@SuppressWarnings("unchecked")
+			T propValue = (T) resource.adaptTo(ValueMap.class).get(key,
+					type.getClass());
+			if (propValue instanceof Comparable<?>){
+				return ((Comparable<T>)propValue).compareTo(type) >= 0;
+			}
+			return type.equals(propValue);
+		};
+
+	}
 
 	private <T> Predicate<Resource> genericIsNot(final T type) {
 		return genericIs(type).negate();
@@ -292,5 +363,24 @@ public class PropertyPredicates {
 			}
 			return true;
 		};
+	}
+
+	public Predicate<Resource> gt(String argument) {
+		Objects.requireNonNull(argument, "argument may not be null");
+		return genericGt(argument);
+	}
+	
+	public Predicate<Resource> gte(String argument) {
+		Objects.requireNonNull(argument, "argument may not be null");
+		return genericGte(argument);
+	}
+	
+	public Predicate<Resource> lt(String argument) {
+		Objects.requireNonNull(argument, "argument may not be null");
+		return genericLt(argument);
+	}
+	public Predicate<Resource> lte(String argument) {
+		Objects.requireNonNull(argument, "argument may not be null");
+		return genericLte(argument);
 	}
 }

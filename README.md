@@ -3,47 +3,70 @@
 * Resource Locator Utility for Apache Sling 
 * Fluent interface for filtering of a resource tree.
 * Predefined predicates for Resources and Properties
+* Filter language to easily define predicates
 
-Example of a traversal using a callback to print out located 
+Example of a traversal.
 
 ```java
 ResourceLocator
-		.startFrom(resource)
-		.usingCallback(e -> out.println(e.getPath()))
-		.traversalControl(
-				where(property("jcr:primaryType").is("cq:Page")))
-		.locateResources(
-				where(aChildResource("jcr:content")
-						.has(property("sling:resourceType")
-								.isNot("sas/components/page/folder"))));
+	.startFrom(resource)
+	.traversalControl(
+		where(property("jcr:primaryType").is("cq:Page")))
+	.locateResources(
+		where(aChildResource("jcr:content")
+			.has(property("sling:resourceType")
+			.isNot("sas/components/page/folder"))));
 ```
 
-The ResourceLocator package encompasses two distinct pieces of functionality. 
+same results using the filter language
 
-1. The ResourceLocator provides a fluent interface to perform a recursive traversal of a given resource tree with the ability to set specific constraints and predicates.
+```java
+ResourceLocator
+    .startFrom(resource)
+    .traversalControl("[jcr:primaryType] == 'cq:Page'")
+    .locateResources("[jcr:content/sling:resourceType] != 'sas/components/page/folder'");
+```
+
+
+The ResourceLocator provides 
+
+1. The ResourceLocator which provides a fluent interface to perform a recursive traversal of a given resource tree with the ability to set specific constraints and predicates.
 2. A series of predicates have been defined around the Resource object(s) to assist in filtering out unwanted resources. These predicates are independent of the ResourceLocator
+3. A domain specific language to create a predicate which filters the streamed resources.
 
-Example of no callback, which produces a list that can then be Streamed across
+## Filter Language
+Derivative of JCR-SQL2.
 
-```java
-List<Resource> resources = ResourceLocator
-		.startFrom(resource)
-		.traversalControl(
-				where(property("jcr:primaryType").is("cq:Page")))
-		.locateResources(
-				where(aChildResource("jcr:content")
-						.has(property("sling:resourceType")
-								.isNot("sas/components/page/folder"))));
-								
-// do something stream worthy here								
-resources.stream();
+### Operators
 
-```
+| Name         | Description                                |
+| ---------    | --------------------------------           |
+| and          | Logical AND                                |
+| or           | Logical OR                                 |
+| ==           | Equal operator for Strings                 |
+| <            | Less than operator for Numbers             |
+| <=           | Less than or equal operator for Numbers    |
+| >            | Greater than operator for Numbers          |
+| >=           | Greater than or equal operator for Numbers |
+| !=           | Is not equal to for Strings                |
+| less than    | less than operator for Numbers             |
+| greater than | greater than operator for Numbers          |
+| is           | Equal operator for Strings                 |
+| is not       | Is not equal operator for Strings          |
+| like         | Regex match against String                 |
 
-Since the supplied set of Predicates are neutral you can use them outside of the ResourceLocator
+### Values
 
-```java
+Values for comparison are obtained through multiple methods
 
-resource.stream().filter(where(property("jcr:created").isAfter(priorDate)));
+| Method       | Description                               |
+| ----------   | ----------------------------------------  |
+| Literal      | Single(') or double (") quoted text in the query will be interpreted as a String |
+| Property     | A String between square brackets '[',']'s will be interpreted as a property value and will be retrieved from the Resource using the get method |
+| Function     | A string followed by parens containing an optional comma seperated list of values. |
 
-```
+### Types
+All types are converted to either a String or a Number. For direct equivalence the comparison is done as a String. For relational comparisons the object will be adapted to a number.
+
+
+
