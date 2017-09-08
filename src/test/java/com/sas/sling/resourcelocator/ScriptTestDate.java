@@ -96,6 +96,41 @@ public class ScriptTestDate {
 		assertEquals(3, found.size());
 	}
 	
+	@Test  //Thu Aug 07 2013 16:32:59 - sans seconds
+	public void testPropLessThanEqualShortDateString2() throws ParseException {
+		String query = "[jcr:content/created] <= '2013-08-07T14:32'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(2, found.size());
+	}
+	
+	@Test  //Thu Aug 07 2013 16:32:59 //milliseconds
+	public void testPropLessThanEqualShortDateString3() throws ParseException {
+		String query = "[jcr:content/created] < '2013-08-07T14:32:59.010'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(3, found.size());
+	}
+	
+	@Test
+	public void testPropGreaterThanShortDateString() throws ParseException {
+		String query = "[jcr:content/created] > '2013-08-07T14:32'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(3, found.size());
+	}
+	
+	@Test
+	public void testPropGreaterThanShortDateStringAlpha() throws ParseException {
+		String query = "[jcr:content/created] greater than '2013-08-07T14:32:59'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(2, found.size());
+	}
+	
+	@Test
+	public void testPropGreaterThanEqualDateString() throws ParseException {
+		String query = "[jcr:content/created] >= '2013-08-07T14:32:59'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(3, found.size());
+	}
+	
 	private List<Resource> handle(String path, String filter) throws ParseException {
 		Resource resource = context.resourceResolver().getResource(path);
 		Predicate<Resource> predicate =  ScriptHandler.parseQuery(filter);
