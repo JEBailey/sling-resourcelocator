@@ -53,100 +53,7 @@ public class PropertyPredicates {
 	static public PropertyPredicates property(String name) {
 		return new PropertyPredicates(name);
 	}
-
-	/**
-	 * Equivalence matching against a String
-	 * 
-	 * @param string to match against
-	 * @return true if Strings are equivalent
-	 */
-	public Predicate<Resource> is(String string) {
-		return genericIs(string);
-	}
 	
-
-	/**
-	 * Equivalence matching against a Number (long)
-	 * 
-	 * @param number to be compared against
-	 * @return true if numbers are equivalent
-	 */
-	public Predicate<Resource> is(Long number) {
-		return genericIs(number);
-	}
-	
-	/**
-	 * Equivalence matching against a Boolean
-	 * 
-	 * @param number to be compared against
-	 * @return true if booleans are equivalent
-	 */
-	public Predicate<Resource> is(Boolean bool) {
-		return genericIs(bool);
-	}
-
-	/**
-	 * Equivalence negation for a String
-	 * 
-	 * @param string to be compared against
-	 * @return true if string is different
-	 */
-	public Predicate<Resource> isNot(String string) {
-		return genericIsNot(string);
-	}
-
-	/**
-	 * Equivalence negation for a number (Long)
-	 * 
-	 * @param number to be compared against
-	 * @return true if the numbers are not equal
-	 */
-	public Predicate<Resource> isNot(Long number) {
-		return genericIsNot(number);
-	}
-
-	/**
-	 * Equivalence matching against one or more strings
-	 * 
-	 * @param strings to be compared with
-	 * @return true if property matches one of the provided Strings
-	 */
-	public Predicate<Resource> isIn(String... strings) {
-		return genericIsIn(strings);
-	}
-
-	/**
-	 * Equivalence matching against one or more numbers (Long)
-	 * 
-	 * @param numbers to match against
-	 * @return predicate matcher
-	 */
-	public Predicate<Resource> isIn(Long... numbers) {
-		return genericIsIn(numbers);
-	}
-
-	/**
-	 * Assumes that the referenced property value is an array of Strings and
-	 * attempts to validate that all provided strings against that reference
-	 * 
-	 * @param strings to match against
-	 * @return matcher
-	 */
-	public Predicate<Resource> contains(String... strings) {
-		return genericContains(strings);
-	}
-
-	/**
-	 * Assumes that the referenced property value is an array of numbers and
-	 * attempts to validate that all provided numbers against that reference
-	 * 
-	 * @param numbers to match against
-	 * @return predicate which will perform the matching
-	 */
-	public Predicate<Resource> contains(Long... numbers) {
-		return genericContains(numbers);
-	}
-
 	/**
 	 * Assumes that the referenced property value is a date and that this date
 	 * is earlier in the epoch than the one being tested
@@ -187,7 +94,7 @@ public class PropertyPredicates {
 	 * Generic equalities method that is accessed via public methods that have
 	 * specific types
 	 */
-	private <T> Predicate<Resource> genericIs(T type) {
+	public <T> Predicate<Resource> is(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			@SuppressWarnings("unchecked")
@@ -202,7 +109,7 @@ public class PropertyPredicates {
 	 * Generic greater then method that is accessed via public methods that have
 	 * specific types
 	 */
-	private <T> Predicate<Resource> genericGt(T type) {
+	public <T extends Comparable<T>> Predicate<Resource> greaterThan(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			@SuppressWarnings("unchecked")
@@ -220,7 +127,7 @@ public class PropertyPredicates {
 	 * Generic greater then method that is accessed via public methods that have
 	 * specific types
 	 */
-	private <T> Predicate<Resource> genericGte(T type) {
+	public <T extends Comparable<T>> Predicate<Resource> greaterThanOrEqual(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			@SuppressWarnings("unchecked")
@@ -238,7 +145,7 @@ public class PropertyPredicates {
 	 * Generic greater then method that is accessed via public methods that have
 	 * specific types
 	 */
-	private <T> Predicate<Resource> genericLt(T type) {
+	public <T extends Comparable<T>> Predicate<Resource> lessThan(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			@SuppressWarnings("unchecked")
@@ -256,7 +163,7 @@ public class PropertyPredicates {
 	 * Generic greater then method that is accessed via public methods that have
 	 * specific types
 	 */
-	private <T> Predicate<Resource> genericLte(T type) {
+	public <T extends Comparable<T>> Predicate<Resource> lessThanOrEqual(T type) {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			@SuppressWarnings("unchecked")
@@ -270,12 +177,12 @@ public class PropertyPredicates {
 
 	}
 
-	private <T> Predicate<Resource> genericIsNot(final T type) {
-		return genericIs(type).negate();
+	public <T> Predicate<Resource> isNot(final T type) {
+		return is(type).negate();
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> Predicate<Resource> genericContains(final T[] values) {
+	public <T> Predicate<Resource> contains(final T[] values) {
 		Objects.requireNonNull(values, "value may not be null");
 		return resource -> {
 			T[] propValues = (T[]) resource.adaptTo(ValueMap.class).get(key,
@@ -315,7 +222,7 @@ public class PropertyPredicates {
 
 	}
 
-	private <T> Predicate<Resource> genericIsIn(final T[] values) {
+	public <T> Predicate<Resource> isIn(final T[] values) {
 		Objects.requireNonNull(values, "values may not be null");
 		return resource -> {
 			Object propValue = resource.adaptTo(ValueMap.class).get(key,
@@ -364,23 +271,5 @@ public class PropertyPredicates {
 			return true;
 		};
 	}
-
-	public Predicate<Resource> gt(String argument) {
-		Objects.requireNonNull(argument, "argument may not be null");
-		return genericGt(argument);
-	}
 	
-	public Predicate<Resource> gte(String argument) {
-		Objects.requireNonNull(argument, "argument may not be null");
-		return genericGte(argument);
-	}
-	
-	public Predicate<Resource> lt(String argument) {
-		Objects.requireNonNull(argument, "argument may not be null");
-		return genericLt(argument);
-	}
-	public Predicate<Resource> lte(String argument) {
-		Objects.requireNonNull(argument, "argument may not be null");
-		return genericLte(argument);
-	}
 }
