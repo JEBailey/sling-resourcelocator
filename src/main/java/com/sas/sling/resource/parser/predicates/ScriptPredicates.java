@@ -216,14 +216,6 @@ public class ScriptPredicates {
 			return true;
 		};
 	}
-	
-	public <T> Predicate<Resource> notIn(Function<Resource, Object> rhs) {
-		return in(rhs).negate();
-	}
-	
-	public <T> Predicate<Resource> containsNot(Function<Resource, Object> rhs) {
-		return contains(rhs).negate();
-	}
 
 	private String[] adaptToArray(Object arr) {
 		if (arr instanceof String[] || arr == null) {
@@ -238,10 +230,6 @@ public class ScriptPredicates {
 			response.add(ConversionHandler.adapt(arr, String.class));
 		}
 		return response.toArray(new String[]{});
-	}
-
-	public <T> Predicate<Resource> isNot(final Function<Resource, Object> type) {
-		return is(type).negate();
 	}
 
 }
