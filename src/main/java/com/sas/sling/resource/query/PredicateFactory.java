@@ -53,6 +53,10 @@ public class PredicateFactory {
 			return leftSide.contains(firstArgument);
 		case CONTAINS_NOT:
 			return leftSide.containsNot(firstArgument);
+		case IN:
+			return leftSide.in(firstArgument);
+		case NOT_IN:
+			return leftSide.notIn(firstArgument);
 		}
 
 		System.out.println(firstArgument + "is not  been found");

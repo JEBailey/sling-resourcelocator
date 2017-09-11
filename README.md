@@ -54,6 +54,9 @@ Derivative of JCR-SQL2.
 | is           | Equal operator for Strings                 |
 | is not       | Is not equal operator for Strings          |
 | like         | Regex match against String                 |
+| contains     | Is matching for one or more items in array |
+| contains not | is right hand value not in left hand values|
+
 
 ### Values
 
@@ -68,5 +71,7 @@ Values for comparison are obtained through multiple methods
 ### Types
 All types are converted to either a String or a Number. For direct equivalence the comparison is done as a String. For relational comparisons the object will be adapted to a number.
 
+### Dates
+Dates are special, there are three ways to enter a date.
 
 

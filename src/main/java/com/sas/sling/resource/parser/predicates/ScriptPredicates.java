@@ -194,6 +194,33 @@ public class ScriptPredicates {
 		};
 	}
 	
+	public <T> Predicate<Resource> in(Function<Resource, Object> rhs) {
+		Objects.requireNonNull(rhs, "statement may not be null");
+		return resource -> {
+			String[] lhValues = adaptToArray(lhs.apply(resource));
+			String[] rhValues = adaptToArray(rhs.apply(resource));
+			if (lhValues == null || rhValues == null){
+				return false;
+			}
+			for (String lhValue : lhValues) {
+				innerLoop: {
+					for (String rhValue : rhValues) {
+						if (rhValue.equals(lhValue)) {
+							break innerLoop;
+						}
+					}
+					return false;
+				}
+			}
+			//reaches here only if every lhValue was successfully found in rhValues
+			return true;
+		};
+	}
+	
+	public <T> Predicate<Resource> notIn(Function<Resource, Object> rhs) {
+		return in(rhs).negate();
+	}
+	
 	public <T> Predicate<Resource> containsNot(Function<Resource, Object> rhs) {
 		return contains(rhs).negate();
 	}
