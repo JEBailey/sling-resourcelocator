@@ -168,6 +168,20 @@ public class ResourceLocatorScriptTest {
 		assertEquals(1, found.size());
 	}
 	
+	@Test
+	public void testContains() throws ParseException {
+		String query = "[jcr:content/monkey] contains 'fish'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(1, found.size());
+	}
+	
+	@Test
+	public void testContainsNot() throws ParseException {
+		String query = "[jcr:content/monkey] contains not 'fish'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(19, found.size());
+	}
+	
 	private List<Resource> handle(String path, String filter) throws ParseException {
 		Resource resource = context.resourceResolver().getResource(path);
 		Predicate<Resource> predicate =  ScriptHandler.parseQuery(filter);

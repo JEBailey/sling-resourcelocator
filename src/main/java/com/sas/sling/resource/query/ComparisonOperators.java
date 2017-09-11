@@ -16,7 +16,7 @@ package com.sas.sling.resource.query;
 import java.util.Optional;
 
 public enum ComparisonOperators {
-	EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, LIKE;
+	EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, LIKE, CONTAINS, CONTAINS_NOT, IN;
 
 
 	public static Optional<ComparisonOperators> getSimpleOperator(String operation) {
@@ -39,6 +39,10 @@ public enum ComparisonOperators {
 			return Optional.of(LESS_THAN_OR_EQUAL);
 		case " like":
 			return Optional.of(LIKE);
+		case " contains":
+			return Optional.of(CONTAINS);
+		case " contains not":
+			return Optional.of(CONTAINS_NOT);
 		}
 		return Optional.empty();
 	}

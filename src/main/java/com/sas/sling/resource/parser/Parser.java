@@ -4,9 +4,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.sas.sling.resource.parser.node.Node;
-import com.sas.sling.resource.parser.node.NodesFactory;
+import com.sas.sling.resource.parser.node.*;
+import com.sas.sling.resource.parser.predicates.*;
 
 public final class Parser implements ParserConstants {
   private NodesFactory factory;

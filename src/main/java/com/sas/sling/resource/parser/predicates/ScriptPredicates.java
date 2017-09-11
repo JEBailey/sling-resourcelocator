@@ -13,6 +13,7 @@
  */
 package com.sas.sling.resource.parser.predicates;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -42,7 +43,6 @@ public class ScriptPredicates {
 	// key value to be used against the provided resource object
 	private final Function<Resource, Object> lhs;
 
-
 	private ScriptPredicates(Function<Resource, Object> lhs) {
 		this.lhs = lhs;
 	}
@@ -68,9 +68,9 @@ public class ScriptPredicates {
 		};
 
 	}
-	
-	/*
 
+	/*
+	
 	 */
 	public <T> Predicate<Resource> like(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "value may not be null");
@@ -84,7 +84,6 @@ public class ScriptPredicates {
 		};
 
 	}
-	
 
 	/*
 	 * Generic greater then method that is accessed via public methods that have
@@ -170,10 +169,49 @@ public class ScriptPredicates {
 			}
 			return false;
 		};
-
 	}
 
+	public <T> Predicate<Resource> contains(Function<Resource, Object> rhs) {
+		Objects.requireNonNull(rhs, "statement may not be null");
+		return resource -> {
+			String[] lhValues = adaptToArray(lhs.apply(resource));
+			String[] rhValues = adaptToArray(rhs.apply(resource));
+			if (lhValues == null || rhValues == null){
+				return false;
+			}
+			for (String rhValue : rhValues) {
+				innerLoop: {
+					for (String lhValue : lhValues) {
+						if (lhValue.equals(rhValue)) {
+							break innerLoop;
+						}
+					}
+					return false;
+				}
+			}
+			//reaches here only if every rhValue was successfully found in lhValues
+			return true;
+		};
+	}
+	
+	public <T> Predicate<Resource> containsNot(Function<Resource, Object> rhs) {
+		return contains(rhs).negate();
+	}
 
+	private String[] adaptToArray(Object arr) {
+		if (arr instanceof String[] || arr == null) {
+			return (String[])arr;
+		}
+		ArrayList<String> response = new ArrayList<>();
+		if (arr.getClass().isArray()){
+			for (Object thing:(Object[])arr){
+				response.add(ConversionHandler.adapt(thing, String.class));
+			}
+		} else {
+			response.add(ConversionHandler.adapt(arr, String.class));
+		}
+		return response.toArray(new String[]{});
+	}
 
 	public <T> Predicate<Resource> isNot(final Function<Resource, Object> type) {
 		return is(type).negate();

@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.sling.api.resource.Resource;
+import org.osgi.framework.Constants;
 
 import com.sas.sling.resource.parser.ParseException;
 import com.sas.sling.resource.query.ScriptHandler;
@@ -43,6 +44,8 @@ public class ResourceLocator {
 
 	// starting resource
 	private Resource resource;
+	
+	public String string = Constants.ACTIVATION_LAZY;
 
 	private Optional<Consumer<Resource>> callback = Optional.empty();
 

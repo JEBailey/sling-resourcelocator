@@ -49,6 +49,10 @@ public class PredicateFactory {
 			return leftSide.lte(firstArgument);
 		case LIKE:
 			return leftSide.like(firstArgument);
+		case CONTAINS:
+			return leftSide.contains(firstArgument);
+		case CONTAINS_NOT:
+			return leftSide.containsNot(firstArgument);
 		}
 
 		System.out.println(firstArgument + "is not  been found");
