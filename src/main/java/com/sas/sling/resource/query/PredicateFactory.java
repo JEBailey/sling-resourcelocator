@@ -20,8 +20,6 @@ import java.util.function.Predicate;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.sas.sling.resource.PropertyPredicates;
-import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.predicates.ScriptPredicates;
 

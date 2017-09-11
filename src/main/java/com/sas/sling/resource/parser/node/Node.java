@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.sas.sling.resource.parser.Token;
-
 /**
  * Common interface of the AST nodes. Implementations must be immutable.
  */

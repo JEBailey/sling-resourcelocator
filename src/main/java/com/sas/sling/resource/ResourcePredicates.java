@@ -13,7 +13,6 @@
  */
 package com.sas.sling.resource;
 
-import java.util.Map;
 /*
  * Copyright 2016 Jason E Bailey
  *

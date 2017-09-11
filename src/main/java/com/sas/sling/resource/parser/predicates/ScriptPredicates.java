@@ -72,7 +72,6 @@ public class ScriptPredicates {
 	/*
 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T> Predicate<Resource> like(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "value may not be null");
 		return resource -> {
