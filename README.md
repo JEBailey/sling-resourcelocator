@@ -72,6 +72,27 @@ Values for comparison are obtained through multiple methods
 All types are converted to either a String or a Number. For direct equivalence the comparison is done as a String. For relational comparisons the object will be adapted to a number.
 
 ### Dates
-Dates are special, there are three ways to enter a date.
+Dates are special, there are multiple ways to enter a date.
+
+Inline, as part of the query, a date can be identified as a string that conforms to a standard ISO-8601 date time.
+
+   '2013-08-08T16:32:59.000'
+   '2013-08-08T16:32:59'
+   '2013-08-08T16:32'
+
+Are all valid date representations that are defaulting to the UTC timezone.
+
+For a ISO8601 date with timezone offset use the date function.
+
+   date('2013-08-08T16:32:59.000+02:00')
+
+If you need a different date format then the date function can accomadate that
+
+   date('2013-08-08','yyyy-MM-dd')
+
+Or you could just add your own custom Function 
+
+
+
 
 
