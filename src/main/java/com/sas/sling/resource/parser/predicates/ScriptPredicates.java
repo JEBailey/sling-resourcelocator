@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import org.apache.sling.api.resource.Resource;
 
@@ -56,15 +57,15 @@ public class ScriptPredicates {
 		return new ScriptPredicates(rhs);
 	}
 
-	public <T> Predicate<Resource> is(Function<Resource, Object> rhs) {
+	public static Predicate<Resource> is(Function<Resource, Object> lhs,Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
-			Object lhValue = lhs.apply(resource);
-			Object rhValue = rhs.apply(resource);
+			CharSequence lhValue = ConversionHandler.getString(lhs.apply(resource));
+			CharSequence rhValue = ConversionHandler.getString(rhs.apply(resource));
 			if (lhValue == null || rhValue == null) {
 				return (lhValue instanceof Null || rhValue instanceof Null);
 			}
-			return ConversionHandler.adapt(lhValue, rhValue.getClass()).equals(rhValue);
+			return lhValue.equals(rhValue);
 		};
 
 	}
@@ -75,12 +76,12 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> like(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "value may not be null");
 		return resource -> {
-			String lhValue = ConversionHandler.adapt(lhs.apply(resource), String.class);
-			String rhValue = ConversionHandler.adapt(rhs.apply(resource), String.class);
+			CharSequence lhValue = ConversionHandler.getString(lhs.apply(resource));
+			CharSequence rhValue = ConversionHandler.getString(rhs.apply(resource));
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
-			return lhValue.matches(rhValue);
+			return Pattern.matches(rhValue.toString(), lhValue);
 		};
 
 	}
@@ -93,8 +94,8 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> gt(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
-			Number lhValue = ConversionHandler.adapt(lhs.apply(resource), Number.class);
-			Number rhValue = ConversionHandler.adapt(rhs.apply(resource), Number.class);
+			Number lhValue = ConversionHandler.getNumber(lhs.apply(resource));
+			Number rhValue = ConversionHandler.getNumber(rhs.apply(resource));
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
@@ -112,8 +113,8 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> gte(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
-			Number lhValue = ConversionHandler.adapt(lhs.apply(resource), Number.class);
-			Number rhValue = ConversionHandler.adapt(rhs.apply(resource), Number.class);
+			Number lhValue = ConversionHandler.getNumber(lhs.apply(resource));
+			Number rhValue = ConversionHandler.getNumber(rhs.apply(resource));
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
@@ -134,8 +135,8 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> lt(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "type value may not be null");
 		return resource -> {
-			Number lhValue = ConversionHandler.adapt(lhs.apply(resource), Number.class);
-			Number rhValue = ConversionHandler.adapt(rhs.apply(resource), Number.class);
+			Number lhValue = ConversionHandler.getNumber(lhs.apply(resource));
+			Number rhValue = ConversionHandler.getNumber(rhs.apply(resource));
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
@@ -157,8 +158,8 @@ public class ScriptPredicates {
 	public <T> Predicate<Resource> lte(Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
-			Number lhValue = ConversionHandler.adapt(lhs.apply(resource), Number.class);
-			Number rhValue = ConversionHandler.adapt(rhs.apply(resource), Number.class);
+			Number lhValue = ConversionHandler.getNumber(lhs.apply(resource));
+			Number rhValue = ConversionHandler.getNumber(rhs.apply(resource));
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
@@ -221,13 +222,13 @@ public class ScriptPredicates {
 		if (arr instanceof String[] || arr == null) {
 			return (String[])arr;
 		}
-		ArrayList<String> response = new ArrayList<>();
+		ArrayList<CharSequence> response = new ArrayList<>();
 		if (arr.getClass().isArray()){
 			for (Object thing:(Object[])arr){
-				response.add(ConversionHandler.adapt(thing, String.class));
+				response.add(ConversionHandler.getString(thing));
 			}
 		} else {
-			response.add(ConversionHandler.adapt(arr, String.class));
+			response.add(ConversionHandler.getString(arr));
 		}
 		return response.toArray(new String[]{});
 	}

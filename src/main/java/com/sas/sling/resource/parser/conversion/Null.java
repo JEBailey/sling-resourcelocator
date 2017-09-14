@@ -13,11 +13,47 @@
  */
 package com.sas.sling.resource.parser.conversion;
 
-public class Null {
+@SuppressWarnings("serial")
+public class Null extends Number implements CharSequence {
 
 	@Override
 	public boolean equals(Object obj) {
 		return false;
+	}
+
+	@Override
+	public int length() {
+		return 0;
+	}
+
+	@Override
+	public char charAt(int index) {
+		return 0;
+	}
+
+	@Override
+	public CharSequence subSequence(int start, int end) {
+		return null;
+	}
+
+	@Override
+	public int intValue() {
+		return 0;
+	}
+
+	@Override
+	public long longValue() {
+		return 0;
+	}
+
+	@Override
+	public float floatValue() {
+		return 0;
+	}
+
+	@Override
+	public double doubleValue() {
+		return 0;
 	}
 
 }

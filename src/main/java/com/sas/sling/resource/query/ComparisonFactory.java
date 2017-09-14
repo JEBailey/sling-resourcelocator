@@ -23,43 +23,43 @@ import org.apache.sling.api.resource.Resource;
 import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.predicates.ScriptPredicates;
 
-public class PredicateFactory {
+public class ComparisonFactory {
 
-	public static Predicate<Resource> toPredicate(Node node, Function<Resource, Object> operand,
+	public static Predicate<Resource> toPredicate(Node node, Function<Resource, Object> leftHandStatement,
 			List<Function<Resource, Object>> arguments) {
 
 		Optional<ComparisonOperators> op = ComparisonOperators.getSimpleOperator(node.getValue());
 
-		Function<Resource, Object> firstArgument = arguments.get(0);
+		Function<Resource, Object> rightHandStatement = arguments.get(0);
 
-		ScriptPredicates leftSide = ScriptPredicates.leftSide(operand);
+		ScriptPredicates leftSide = ScriptPredicates.leftSide(leftHandStatement);
 
 		switch (op.get()) {
 		case EQUAL:
-			return leftSide.is(firstArgument);
+			return ScriptPredicates.is(leftHandStatement,rightHandStatement);
 		case NOT_EQUAL:
-			return leftSide.is(firstArgument).negate();
+			return  ScriptPredicates.is(leftHandStatement,rightHandStatement).negate();
 		case GREATER_THAN:
-			return leftSide.gt(firstArgument);
+			return leftSide.gt(rightHandStatement);
 		case GREATER_THAN_OR_EQUAL:
-			return leftSide.gte(firstArgument);
+			return leftSide.gte(rightHandStatement);
 		case LESS_THAN:
-			return leftSide.lt(firstArgument);
+			return leftSide.lt(rightHandStatement);
 		case LESS_THAN_OR_EQUAL:
-			return leftSide.lte(firstArgument);
+			return leftSide.lte(rightHandStatement);
 		case LIKE:
-			return leftSide.like(firstArgument);
+			return leftSide.like(rightHandStatement);
 		case CONTAINS:
-			return leftSide.contains(firstArgument);
+			return leftSide.contains(rightHandStatement);
 		case CONTAINS_NOT:
-			return leftSide.contains(firstArgument).negate();
+			return leftSide.contains(rightHandStatement).negate();
 		case IN:
-			return leftSide.in(firstArgument);
+			return leftSide.in(rightHandStatement);
 		case NOT_IN:
-			return leftSide.in(firstArgument).negate();
+			return leftSide.in(rightHandStatement).negate();
 		}
 
-		System.out.println(firstArgument + "is not  been found");
+		System.out.println(rightHandStatement + "is not  been found");
 		return null;
 	}
 

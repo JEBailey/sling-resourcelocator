@@ -17,18 +17,15 @@ import java.util.Calendar;
 
 public class ConversionHandler {
 
-	@SuppressWarnings("unchecked")
-	public static <T> T adapt(final Object initialValue, final Class<T> type) {
+	
+	public static CharSequence getString(final Object initialValue) {
 		if (initialValue == null) {
 			return null;
 		}
-		if (type.isInstance(initialValue)) {
-			return (T) initialValue;
+		if (initialValue instanceof CharSequence) {
+			return (CharSequence)initialValue;
 		}
-		if (Null.class == type){
-			return (T) new Null();
-		}
-
+		
 		Converter converter = null;
 		if (initialValue instanceof Number) {
 			converter = new ConverterForNumber((Number) initialValue);
@@ -36,14 +33,29 @@ public class ConversionHandler {
 		else if (initialValue instanceof Calendar) {
 			converter = new ConverterForCalendar((Calendar) initialValue);
 		} else {
+			//catch all for all else
 			converter =  new ConverterForString(initialValue.toString());
 		}
 		
-		if (type == String.class){
-			return (T) converter.getString();
+		return converter.getString();
+	}
+	
+	public static Number getNumber(final Object initialValue) {
+		if (initialValue == null) {
+			return null;
+		}
+		if (initialValue instanceof Number) {
+			return (Number)initialValue;
 		}
 		
-		return (T) converter.getNumber();
+		Converter converter = null;
+		if (initialValue instanceof Calendar) {
+			converter = new ConverterForCalendar((Calendar) initialValue);
+		} else {
+			converter =  new ConverterForString(initialValue.toString());
+		}
+		
+		return converter.getNumber();
 	}
 
 

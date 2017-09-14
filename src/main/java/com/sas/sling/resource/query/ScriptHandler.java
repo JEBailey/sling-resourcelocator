@@ -27,6 +27,6 @@ public class ScriptHandler {
 	// TODO - not anywhere close to done.
 	public static Predicate<Resource> parseQuery(String query) throws ParseException {
 		Node rootNode = new Parser(new ByteArrayInputStream(query.getBytes()), "UTF-8", new NodesFactory()).Input();
-		return rootNode.accept(new PredicateVistor(),null);
+		return rootNode.accept(new ComparisonVisitor(),null);
 	}
 }
