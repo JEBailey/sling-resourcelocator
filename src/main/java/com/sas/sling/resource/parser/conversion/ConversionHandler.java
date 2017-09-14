@@ -13,6 +13,8 @@
  */
 package com.sas.sling.resource.parser.conversion;
 
+import java.util.Calendar;
+
 public class ConversionHandler {
 
 	@SuppressWarnings("unchecked")
@@ -29,12 +31,15 @@ public class ConversionHandler {
 
 		Converter converter = null;
 		if (initialValue instanceof Number) {
-			converter = new NumberConverter((Number) initialValue);
+			converter = new ConverterForNumber((Number) initialValue);
+		}
+		else if (initialValue instanceof Calendar) {
+			converter = new ConverterForCalendar((Calendar) initialValue);
 		} else {
-			converter =  new StringConverter(initialValue.toString());
+			converter =  new ConverterForString(initialValue.toString());
 		}
 		
-		if (type.isInstance(String.class)){
+		if (type == String.class){
 			return (T) converter.getString();
 		}
 		

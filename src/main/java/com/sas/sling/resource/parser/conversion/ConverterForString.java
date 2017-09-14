@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 /**
  * A converter for any object based on toString()
  */
-public class StringConverter implements Converter {
+public class ConverterForString implements Converter {
 
 	private final String value;
 	
@@ -30,7 +30,7 @@ public class StringConverter implements Converter {
 	private static Pattern LongString = Pattern.compile("^-?\\d{1,19}$");
 	
 
-	public StringConverter(final String val) {
+	public ConverterForString(final String val) {
 		this.value = val;
 	}
 

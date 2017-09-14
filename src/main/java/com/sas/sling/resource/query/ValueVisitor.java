@@ -50,9 +50,6 @@ public class ValueVisitor implements Visitor<Function<Resource,Object>, Void> {
 				if (value instanceof Boolean) {
 					return value.toString();
 				}
-				if (value instanceof Calendar){
-					return ((Calendar)value).getTimeInMillis();
-				}
 				return value;
 			};
 		default:

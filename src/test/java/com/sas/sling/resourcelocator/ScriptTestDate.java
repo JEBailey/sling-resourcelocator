@@ -131,6 +131,20 @@ public class ScriptTestDate {
 		assertEquals(3, found.size());
 	}
 	
+	@Test
+	public void testPropisLikeDateRegex() throws ParseException {
+		String query = "[jcr:content/created] like '2013-08-07.*'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(1, found.size());
+	}
+	
+	@Test
+	public void testPropisLikeDateRegex2() throws ParseException {
+		String query = "[jcr:content/created] like '201[2-5].*'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(4, found.size());
+	}
+	
 	private List<Resource> handle(String path, String filter) throws ParseException {
 		Resource resource = context.resourceResolver().getResource(path);
 		Predicate<Resource> predicate =  ScriptHandler.parseQuery(filter);

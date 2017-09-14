@@ -16,11 +16,11 @@ package com.sas.sling.resource.parser.conversion;
 /**
  * A converter for Number
  */
-public class NumberConverter implements Converter {
+public class ConverterForNumber implements Converter {
 
     protected final Number value;
 
-    public NumberConverter(final Number val) {
+    public ConverterForNumber(final Number val) {
         this.value = val;
     }
 
