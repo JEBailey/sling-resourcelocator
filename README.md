@@ -39,23 +39,23 @@ Derivative of JCR-SQL2.
 
 ### Operators
 
-| Name       | Comparison Type  | Description                                |
-| ---------  | ---------------  | --------------------------------           |
-| and        | NA               | Logical AND                                |
-| or         | NA               | Logical OR                                 |
-| ==         | String           | Equal operator for Strings                 |
-| <          | Number           | Less than operator for Numbers             |
-| <=         | Number           | Less than or equal operator for Numbers    |
-| >          | Number           | Greater than operator for Numbers          |
-| >=         | Number           | Greater than or equal operator for Numbers |
-| !=         | Number           | Is not equal to for Strings                |
-| less than  | Number           | less than operator for Numbers             |
-| greater than| Number          | greater than operator for Numbers          |
-| is          | Number          | Equal operator for Strings                 |
-| is not      | Number          | Is not equal operator for Strings          |
-| like        | Number          | Regex match against String                 |
-| contains    | Number          | Is matching for one or more items in array |
-| contains not| Number          | is right hand value not in left hand values|
+| Name       | Comparison Type | Description                                |
+| ---------  | --------------- | --------------------------------           |
+| and        | NA              | Logical AND                                |
+| or         | NA              | Logical OR                                 |
+| ==         | String          | Equal operator for Strings                 |
+| <          | Numeric         | Less than operator for Numbers             |
+| <=         | Numeric         | Less than or equal operator for Numbers    |
+| >          | Numeric         | Greater than operator for Numbers          |
+| >=         | Numeric         | Greater than or equal operator for Numbers |
+| !=         | String          | Is not equal to for Strings                |
+| less than  | Numeric         | less than operator for Numbers             |
+| greater than| Numeric        | greater than operator for Numbers          |
+| is          | String         | Equal operator for Strings                 |
+| is not      | String         | Is not equal operator for Strings          |
+| like        | String         | Regex match against String                 |
+| contains    | String         | Is matching for one or more items in array |
+| contains not| String         | is right hand value not in left hand values|
 
 
 ### Values
