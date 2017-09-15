@@ -66,7 +66,7 @@ Values for comparison are obtained through multiple methods
 | ----------   | ----------------------------------------  |
 | Literal      | Single(') or double (") quoted text in the query will be interpreted as a String. Boolean values of *true* and *false* will be translated to a String. |
 | Property     | A String between square brackets '[',']'s will be interpreted as a property value and will be retrieved from the Resource using the get method |
-| Function     | A string followed by parens containing an optional comma seperated list of values. |
+| Function     | A string followed by parens containing an optional comma separated list of values. |
 
 ### Types
 All types are converted to either a String or a Number. For direct equivalence the comparison is done as a String. For relational comparisons the object will be adapted to a number.
@@ -88,13 +88,13 @@ For a ISO8601 date with timezone offset use the date function.
 
 > date('2013-08-08T16:32:59.000+02:00')
 
-If you need a different date format then the date function can accomadate that
+If you need a different date format then the date function can accommodate that
 
 > date('2013-08-08','yyyy-MM-dd')
 
 Or you could just add your own custom Function 
 
-Dates are represented on the resource side as a Calendar object. Based on the operation being performed this object is treated either as a String in iso-8601 format or as a number. The number representing the time in milliseconds since the EPOCH UTC region
+Dates are represented on the resource side as a Calendar object. Based on the operation being performed this object is treated either as a String in ISO-8601 format or as a number. The number representing the time in milliseconds since the EPOCH UTC region
 
 
 
