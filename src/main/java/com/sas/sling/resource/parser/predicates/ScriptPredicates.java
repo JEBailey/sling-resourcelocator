@@ -41,23 +41,7 @@ import com.sas.sling.resource.parser.conversion.Null;
  */
 public class ScriptPredicates {
 
-	// key value to be used against the provided resource object
-	private final Function<Resource, Object> lhs;
-
-	private ScriptPredicates(Function<Resource, Object> lhs) {
-		this.lhs = lhs;
-	}
-
-	/**
-	 * 
-	 * @param rhs
-	 * @return
-	 */
-	static public ScriptPredicates leftSide(Function<Resource, Object> rhs) {
-		return new ScriptPredicates(rhs);
-	}
-
-	public static Predicate<Resource> is(Function<Resource, Object> lhs,Function<Resource, Object> rhs) {
+	public static Predicate<Resource> is(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
 			CharSequence lhValue = ConversionHandler.getString(lhs.apply(resource));
@@ -73,7 +57,7 @@ public class ScriptPredicates {
 	/*
 	
 	 */
-	public <T> Predicate<Resource> like(Function<Resource, Object> rhs) {
+	public static Predicate<Resource> like(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "value may not be null");
 		return resource -> {
 			CharSequence lhValue = ConversionHandler.getString(lhs.apply(resource));
@@ -91,7 +75,7 @@ public class ScriptPredicates {
 	 * specific types
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> gt(Function<Resource, Object> rhs) {
+	public static Predicate<Resource> gt(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
 			Number lhValue = ConversionHandler.getNumber(lhs.apply(resource));
@@ -100,9 +84,7 @@ public class ScriptPredicates {
 				return false;
 			}
 			if (lhValue instanceof Comparable) {
-				if (rhValue.getClass().isInstance(lhValue)) {
-					return ((Comparable<T>) lhValue).compareTo((T) rhValue) > 0;
-				}
+				return ((Comparable<Number>) lhValue).compareTo(rhValue) > 0;
 			}
 			return false;
 		};
@@ -110,7 +92,7 @@ public class ScriptPredicates {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> gte(Function<Resource, Object> rhs) {
+	public static Predicate<Resource> gte(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
 			Number lhValue = ConversionHandler.getNumber(lhs.apply(resource));
@@ -119,9 +101,7 @@ public class ScriptPredicates {
 				return false;
 			}
 			if (lhValue instanceof Comparable) {
-				if (rhValue.getClass().isInstance(lhValue)) {
-					return ((Comparable<T>) lhValue).compareTo((T) rhValue) >= 0;
-				}
+				return ((Comparable<Number>) lhValue).compareTo(rhValue) >= 0;
 			}
 			return false;
 		};
@@ -132,7 +112,7 @@ public class ScriptPredicates {
 	 * specific types
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> lt(Function<Resource, Object> rhs) {
+	public static Predicate<Resource> lt(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "type value may not be null");
 		return resource -> {
 			Number lhValue = ConversionHandler.getNumber(lhs.apply(resource));
@@ -141,9 +121,7 @@ public class ScriptPredicates {
 				return false;
 			}
 			if (lhValue instanceof Comparable) {
-				if (rhValue.getClass().isInstance(lhValue)) {
-					return ((Comparable<T>) lhValue).compareTo((T) rhValue) < 0;
-				}
+				return ((Comparable<Number>) lhValue).compareTo(rhValue) < 0;
 			}
 			return false;
 		};
@@ -155,7 +133,7 @@ public class ScriptPredicates {
 	 * specific types
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Predicate<Resource> lte(Function<Resource, Object> rhs) {
+	public static Predicate<Resource> lte(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
 			Number lhValue = ConversionHandler.getNumber(lhs.apply(resource));
@@ -164,20 +142,18 @@ public class ScriptPredicates {
 				return false;
 			}
 			if (lhValue instanceof Comparable) {
-				if (rhValue.getClass().isInstance(lhValue)) {
-					return ((Comparable<T>) lhValue).compareTo((T) rhValue) <= 0;
-				}
+				return ((Comparable<Number>) lhValue).compareTo(rhValue) <= 0;
 			}
 			return false;
 		};
 	}
 
-	public <T> Predicate<Resource> contains(Function<Resource, Object> rhs) {
+	public static Predicate<Resource> contains(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
 			String[] lhValues = adaptToArray(lhs.apply(resource));
 			String[] rhValues = adaptToArray(rhs.apply(resource));
-			if (lhValues == null || rhValues == null){
+			if (lhValues == null || rhValues == null) {
 				return false;
 			}
 			for (String rhValue : rhValues) {
@@ -190,17 +166,18 @@ public class ScriptPredicates {
 					return false;
 				}
 			}
-			//reaches here only if every rhValue was successfully found in lhValues
+			// reaches here only if every rhValue was successfully found in
+			// lhValues
 			return true;
 		};
 	}
-	
-	public <T> Predicate<Resource> in(Function<Resource, Object> rhs) {
+
+	public static Predicate<Resource> in(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
 			String[] lhValues = adaptToArray(lhs.apply(resource));
 			String[] rhValues = adaptToArray(rhs.apply(resource));
-			if (lhValues == null || rhValues == null){
+			if (lhValues == null || rhValues == null) {
 				return false;
 			}
 			for (String lhValue : lhValues) {
@@ -213,24 +190,25 @@ public class ScriptPredicates {
 					return false;
 				}
 			}
-			//reaches here only if every lhValue was successfully found in rhValues
+			// reaches here only if every lhValue was successfully found in
+			// rhValues
 			return true;
 		};
 	}
 
-	private String[] adaptToArray(Object arr) {
+	private static String[] adaptToArray(Object arr) {
 		if (arr instanceof String[] || arr == null) {
-			return (String[])arr;
+			return (String[]) arr;
 		}
 		ArrayList<CharSequence> response = new ArrayList<>();
-		if (arr.getClass().isArray()){
-			for (Object thing:(Object[])arr){
+		if (arr.getClass().isArray()) {
+			for (Object thing : (Object[]) arr) {
 				response.add(ConversionHandler.getString(thing));
 			}
 		} else {
 			response.add(ConversionHandler.getString(arr));
 		}
-		return response.toArray(new String[]{});
+		return response.toArray(new String[] {});
 	}
 
 }

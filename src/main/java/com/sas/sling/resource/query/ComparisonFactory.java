@@ -32,31 +32,29 @@ public class ComparisonFactory {
 
 		Function<Resource, Object> rightHandStatement = arguments.get(0);
 
-		ScriptPredicates leftSide = ScriptPredicates.leftSide(leftHandStatement);
-
 		switch (op.get()) {
 		case EQUAL:
-			return ScriptPredicates.is(leftHandStatement,rightHandStatement);
+			return ScriptPredicates.is(leftHandStatement, rightHandStatement);
 		case NOT_EQUAL:
-			return  ScriptPredicates.is(leftHandStatement,rightHandStatement).negate();
+			return  ScriptPredicates.is(leftHandStatement, rightHandStatement).negate();
 		case GREATER_THAN:
-			return leftSide.gt(rightHandStatement);
+			return ScriptPredicates.gt(leftHandStatement, rightHandStatement);
 		case GREATER_THAN_OR_EQUAL:
-			return leftSide.gte(rightHandStatement);
+			return ScriptPredicates.gte(leftHandStatement, rightHandStatement);
 		case LESS_THAN:
-			return leftSide.lt(rightHandStatement);
+			return ScriptPredicates.lt(leftHandStatement, rightHandStatement);
 		case LESS_THAN_OR_EQUAL:
-			return leftSide.lte(rightHandStatement);
+			return ScriptPredicates.lte(leftHandStatement, rightHandStatement);
 		case LIKE:
-			return leftSide.like(rightHandStatement);
+			return ScriptPredicates.like(leftHandStatement, rightHandStatement);
 		case CONTAINS:
-			return leftSide.contains(rightHandStatement);
+			return ScriptPredicates.contains(leftHandStatement, rightHandStatement);
 		case CONTAINS_NOT:
-			return leftSide.contains(rightHandStatement).negate();
+			return ScriptPredicates.contains(leftHandStatement, rightHandStatement).negate();
 		case IN:
-			return leftSide.in(rightHandStatement);
+			return ScriptPredicates.in(leftHandStatement, rightHandStatement);
 		case NOT_IN:
-			return leftSide.in(rightHandStatement).negate();
+			return ScriptPredicates.in(leftHandStatement, rightHandStatement).negate();
 		}
 
 		System.out.println(rightHandStatement + "is not  been found");
