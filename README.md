@@ -39,23 +39,23 @@ Derivative of JCR-SQL2.
 
 ### Operators
 
-| Name         | Description                                |
-| ---------    | --------------------------------           |
-| and          | Logical AND                                |
-| or           | Logical OR                                 |
-| ==           | Equal operator for Strings                 |
-| <            | Less than operator for Numbers             |
-| <=           | Less than or equal operator for Numbers    |
-| >            | Greater than operator for Numbers          |
-| >=           | Greater than or equal operator for Numbers |
-| !=           | Is not equal to for Strings                |
-| less than    | less than operator for Numbers             |
-| greater than | greater than operator for Numbers          |
-| is           | Equal operator for Strings                 |
-| is not       | Is not equal operator for Strings          |
-| like         | Regex match against String                 |
-| contains     | Is matching for one or more items in array |
-| contains not | is right hand value not in left hand values|
+| Name       | Comparison Type  | Description                                |
+| ---------  | ---------------  | --------------------------------           |
+| and        | NA               | Logical AND                                |
+| or         | NA               | Logical OR                                 |
+| ==         | String           | Equal operator for Strings                 |
+| <          | Number           | Less than operator for Numbers             |
+| <=         | Number           | Less than or equal operator for Numbers    |
+| >          | Number           | Greater than operator for Numbers          |
+| >=         | Number           | Greater than or equal operator for Numbers |
+| !=         | Number           | Is not equal to for Strings                |
+| less than  | Number           | less than operator for Numbers             |
+| greater than| Number          | greater than operator for Numbers          |
+| is          | Number          | Equal operator for Strings                 |
+| is not      | Number          | Is not equal operator for Strings          |
+| like        | Number          | Regex match against String                 |
+| contains    | Number          | Is matching for one or more items in array |
+| contains not| Number          | is right hand value not in left hand values|
 
 
 ### Values
@@ -72,7 +72,7 @@ Values for comparison are obtained through multiple methods
 All types are converted to either a String or a Number. For direct equivalence the comparison is done as a String. For relational comparisons the object will be adapted to a number.
 
 ### Dates
-Dates are special, there are multiple ways to enter a date.
+Dates are a special, there are multiple ways to enter a date.
 
 Inline, as part of the query, a date can be identified as a string that conforms to a standard ISO-8601 date time.
 
@@ -94,6 +94,7 @@ If you need a different date format then the date function can accomadate that
 
 Or you could just add your own custom Function 
 
+Dates are represented on the resource side as a Calendar object. Based on the operation being performed this object is treated either as a String in iso-8601 format or as a number. The number representing the time in milliseconds since the EPOCH UTC region
 
 
 
