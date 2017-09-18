@@ -14,28 +14,26 @@
 package com.sas.sling.resource.parser.conversion;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Calendar;
 
 /**
  * A converter for any object based on toString()
  */
-public class ConverterForCalendar implements Converter {
+public class ConverterForInstant implements Converter {
 
-	private final long value;
+	private final Instant value;
 
-	public ConverterForCalendar(final Calendar val) {
-		this.value = val.getTimeInMillis();
+	public ConverterForInstant(final Instant val) {
+		this.value = val;
 	}
 
 	@Override
 	public Number getNumber() {
-		return value;
+		return value.toEpochMilli();
 	}
 
 	@Override
 	public String getString() {
-		return OffsetDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneOffset.UTC).toString();
+		return value.atOffset(ZoneOffset.UTC).toString();
 	}
 }

@@ -13,7 +13,7 @@
  */
 package com.sas.sling.resource.parser.conversion;
 
-import java.util.Calendar;
+import java.time.Instant;
 
 public class ConversionHandler {
 
@@ -30,8 +30,8 @@ public class ConversionHandler {
 		if (initialValue instanceof Number) {
 			converter = new ConverterForNumber((Number) initialValue);
 		}
-		else if (initialValue instanceof Calendar) {
-			converter = new ConverterForCalendar((Calendar) initialValue);
+		else if (initialValue instanceof Instant) {
+			converter = new ConverterForInstant((Instant) initialValue);
 		} else {
 			//catch all for all else
 			converter =  new ConverterForString(initialValue.toString());
@@ -49,8 +49,8 @@ public class ConversionHandler {
 		}
 		
 		Converter converter = null;
-		if (initialValue instanceof Calendar) {
-			converter = new ConverterForCalendar((Calendar) initialValue);
+		if (initialValue instanceof Instant) {
+			converter = new ConverterForInstant((Instant) initialValue);
 		} else {
 			converter =  new ConverterForString(initialValue.toString());
 		}

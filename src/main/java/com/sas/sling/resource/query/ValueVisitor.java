@@ -15,6 +15,7 @@ package com.sas.sling.resource.query;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -47,6 +48,9 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 				if (value instanceof Boolean) {
 					return value.toString();
 				}
+				if (value instanceof Calendar){
+					return ((Calendar)value).toInstant();
+				}
 				return value;
 			};
 		default:
@@ -64,20 +68,16 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 				}
 				String dateString = children.get(0).apply(resource).toString();
 				String formatString = null;
-				Calendar cal = Calendar.getInstance();
 				if (children.size() > 1) {
 					formatString = children.get(1).apply(resource).toString();
 					SimpleDateFormat dateFormat = new SimpleDateFormat(formatString);
 					try {
-						cal.setTimeInMillis(dateFormat.parse(dateString).getTime());
-						return cal;
+						return Instant.ofEpochMilli(dateFormat.parse(dateString).getTime());
 					} catch (ParseException e) {
 						return null;
 					}
 				} else {
-					cal.setTimeInMillis(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(dateString, OffsetDateTime::from)
-							.toInstant().toEpochMilli());
-					return cal;
+					return DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(dateString, OffsetDateTime::from).toInstant();
 				}
 			};
 		default:

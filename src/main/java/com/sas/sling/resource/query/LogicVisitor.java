@@ -24,7 +24,7 @@ import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.node.Visitor;
 
 
-public class ComparisonVisitor implements Visitor<Predicate<Resource>, Void> {
+public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
 
 	@Override
 	public Predicate<Resource> visit(Node node, Void locator) {
