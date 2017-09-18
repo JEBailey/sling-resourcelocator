@@ -25,6 +25,8 @@ import com.sas.sling.resource.parser.node.Visitor;
 
 
 public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
+	
+	private ValueVisitor valueVisitor = new ValueVisitor();
 
 	@Override
 	public Predicate<Resource> visit(Node node, Void locator) {
@@ -66,7 +68,7 @@ public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
 	}
 	
 	private Predicate<Resource> createComparisonPredicate(Node comparisonNode, List<Function<Resource, Object>> arguments, Void locator) {
-		Function<Resource, Object> operand = comparisonNode.getLeftOperand().accept(new ValueVisitor(),locator);
+		Function<Resource, Object> operand = comparisonNode.getLeftOperand().accept(valueVisitor,locator);
 		return ComparisonFactory.toPredicate(comparisonNode, operand, arguments);
 	}
 

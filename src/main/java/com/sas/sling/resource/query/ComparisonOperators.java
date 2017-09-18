@@ -15,10 +15,21 @@ package com.sas.sling.resource.query;
 
 import java.util.Optional;
 
+/**
+ * Provides an Enumeration of all of the types of comparisons that exist.
+ * Additionally provides a default mapping of String values that match these
+ * types
+ */
 public enum ComparisonOperators {
 	EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, LIKE, CONTAINS, CONTAINS_NOT, IN, NOT_IN;
 
-
+	
+	/**
+	 * Finds enum which represents the provided String
+	 * 
+	 * @param operation as a string
+	 * @return Optional Enum which represents the comparison.
+	 */
 	public static Optional<ComparisonOperators> getSimpleOperator(String operation) {
 		switch (operation) {
 		case "==":

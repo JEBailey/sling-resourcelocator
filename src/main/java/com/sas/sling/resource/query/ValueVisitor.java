@@ -13,14 +13,8 @@
  */
 package com.sas.sling.resource.query;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -30,10 +24,14 @@ import org.apache.sling.api.resource.ValueMap;
 import com.sas.sling.resource.parser.conversion.Null;
 import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.node.Visitor;
+import com.sas.sling.resource.query.function.InstantProvider;
+import com.sas.sling.resource.query.function.ValueProvider;
 
 public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 
-	private Map<String, Function<Resource, Object>> functions = new HashMap<>();
+	private Map<String, ValueProvider> functions = new HashMap<>();
+	
+	private ValueProvider instant = new InstantProvider();
 
 	@Override
 	public Function<Resource, Object> visit(Node node, Void param) {
@@ -61,35 +59,22 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 		case "name":
 			return resource -> resource.getName();
 		case "date":
-			List<Function<Resource, Object>> children = node.visitChildren(this, param);
-			return resource -> {
-				if (children.isEmpty()) {
-					return null;
-				}
-				String dateString = children.get(0).apply(resource).toString();
-				String formatString = null;
-				if (children.size() > 1) {
-					formatString = children.get(1).apply(resource).toString();
-					SimpleDateFormat dateFormat = new SimpleDateFormat(formatString);
-					try {
-						return Instant.ofEpochMilli(dateFormat.parse(dateString).getTime());
-					} catch (ParseException e) {
-						return null;
-					}
-				} else {
-					return DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(dateString, OffsetDateTime::from).toInstant();
-				}
-			};
+			return instant.provision(node, this);
 		default:
+			ValueProvider temp = functions.get(node.getValue());
+			if (temp !=  null){
+				return temp.provision(node, this);
+			}
+			
 		}
 		return null;
 	}
 
-	public Function<Resource, Object> registerFunction(String functionName, Function<Resource, Object> function) {
+	public ValueProvider registerFunction(String functionName, ValueProvider function) {
 		return this.functions.put(functionName, function);
 	}
 
-	public Function<Resource, Object> removeFunction(String functionName) {
+	public ValueProvider removeFunction(String functionName) {
 		return this.functions.remove(functionName);
 	}
 
