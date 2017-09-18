@@ -39,7 +39,7 @@ import com.sas.sling.resource.parser.conversion.Null;
  * @author J.E. Bailey
  *
  */
-public class ScriptPredicates {
+public class ComparisonPredicates {
 
 	public static Predicate<Resource> is(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");

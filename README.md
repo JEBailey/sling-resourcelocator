@@ -96,6 +96,23 @@ Or you could just add your own custom Function
 
 Dates are represented on the resource side as a Calendar object. Based on the operation being performed this object is treated either as a String in ISO-8601 format or as a number. The number representing the time in milliseconds since the EPOCH UTC region
 
+### Functions
+
+Functions provide the ability to add additional functionality to the Filter language. A Function is written in the format
+
+> string '(' comma, separated, list() ')'
+
+All functions must return either a String, a Number, or a Calendar instance.
+
+OOTB Functions are:
+
+| Name | Arguments | Description                                                    |
+| ---- | --------- | -----------                                                    |
+| name | none      | Provides the name of the resource                              |
+| date | 1 - 2     | PrFirst argument is string representation of the da
+| 
+
+
 
 
 

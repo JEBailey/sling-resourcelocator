@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 import org.apache.sling.api.resource.Resource;
 
 import com.sas.sling.resource.parser.node.Node;
-import com.sas.sling.resource.parser.predicates.ScriptPredicates;
+import com.sas.sling.resource.parser.predicates.ComparisonPredicates;
 
 public class ComparisonFactory {
 
@@ -34,27 +34,27 @@ public class ComparisonFactory {
 
 		switch (op.get()) {
 		case EQUAL:
-			return ScriptPredicates.is(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.is(leftHandStatement, rightHandStatement);
 		case NOT_EQUAL:
-			return  ScriptPredicates.is(leftHandStatement, rightHandStatement).negate();
+			return  ComparisonPredicates.is(leftHandStatement, rightHandStatement).negate();
 		case GREATER_THAN:
-			return ScriptPredicates.gt(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.gt(leftHandStatement, rightHandStatement);
 		case GREATER_THAN_OR_EQUAL:
-			return ScriptPredicates.gte(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.gte(leftHandStatement, rightHandStatement);
 		case LESS_THAN:
-			return ScriptPredicates.lt(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.lt(leftHandStatement, rightHandStatement);
 		case LESS_THAN_OR_EQUAL:
-			return ScriptPredicates.lte(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.lte(leftHandStatement, rightHandStatement);
 		case LIKE:
-			return ScriptPredicates.like(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.like(leftHandStatement, rightHandStatement);
 		case CONTAINS:
-			return ScriptPredicates.contains(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.contains(leftHandStatement, rightHandStatement);
 		case CONTAINS_NOT:
-			return ScriptPredicates.contains(leftHandStatement, rightHandStatement).negate();
+			return ComparisonPredicates.contains(leftHandStatement, rightHandStatement).negate();
 		case IN:
-			return ScriptPredicates.in(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.in(leftHandStatement, rightHandStatement);
 		case NOT_IN:
-			return ScriptPredicates.in(leftHandStatement, rightHandStatement).negate();
+			return ComparisonPredicates.in(leftHandStatement, rightHandStatement).negate();
 		}
 
 		System.out.println(rightHandStatement + "is not  been found");

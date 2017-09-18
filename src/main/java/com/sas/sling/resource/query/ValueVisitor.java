@@ -30,22 +30,19 @@ import com.sas.sling.resource.parser.conversion.Null;
 import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.node.Visitor;
 
+public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 
-public class ValueVisitor implements Visitor<Function<Resource,Object>, Void> {
+	private Map<String, Function<Resource, Object>> functions = new HashMap<>();
 
-	
-	private Map<String,Function<Resource,Object>> functions = new HashMap<>();
-	
-	
 	@Override
-	public Function<Resource,Object> visit(Node node, Void param) {
-		switch (node.getType()){
+	public Function<Resource, Object> visit(Node node, Void param) {
+		switch (node.getType()) {
 		case FUNCTION:
 			break;
 		case NULL:
 			return resource -> new Null();
 		case PROPERTY:
-			return resource ->{
+			return resource -> {
 				Object value = resource.adaptTo(ValueMap.class).get(node.getValue());
 				if (value instanceof Boolean) {
 					return value.toString();
@@ -55,46 +52,45 @@ public class ValueVisitor implements Visitor<Function<Resource,Object>, Void> {
 		default:
 			return resource -> node.getValue();
 		}
-		//will only get here in the case of the 'FUNCTION' switch case
-		switch (node.getValue()){
+		// will only get here in the case of the 'FUNCTION' switch case
+		switch (node.getValue()) {
 		case "name":
 			return resource -> resource.getName();
-		case "child":
-			return resource -> resource.getChild(node.getRightOperands().get(0).getValue()).toString();
 		case "date":
-			List<Function<Resource,Object>> children = node.visitChildren(this, param);
-			return resource ->{
-				if (children.isEmpty()){
+			List<Function<Resource, Object>> children = node.visitChildren(this, param);
+			return resource -> {
+				if (children.isEmpty()) {
 					return null;
 				}
 				String dateString = children.get(0).apply(resource).toString();
 				String formatString = null;
-				if (children.size() > 1){
+				Calendar cal = Calendar.getInstance();
+				if (children.size() > 1) {
 					formatString = children.get(1).apply(resource).toString();
 					SimpleDateFormat dateFormat = new SimpleDateFormat(formatString);
 					try {
-						return dateFormat.parse(dateString).getTime();
+						cal.setTimeInMillis(dateFormat.parse(dateString).getTime());
+						return cal;
 					} catch (ParseException e) {
 						return null;
 					}
-				}
-				else {
-					return DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(dateString, OffsetDateTime::from).toInstant().toEpochMilli();
+				} else {
+					cal.setTimeInMillis(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(dateString, OffsetDateTime::from)
+							.toInstant().toEpochMilli());
+					return cal;
 				}
 			};
 		default:
 		}
 		return null;
 	}
-	
-	public Function<Resource,Object> registerFunction(String functionName,Function<Resource,Object> function){
+
+	public Function<Resource, Object> registerFunction(String functionName, Function<Resource, Object> function) {
 		return this.functions.put(functionName, function);
 	}
-	
-	public Function<Resource,Object> removeFunction(String functionName){
+
+	public Function<Resource, Object> removeFunction(String functionName) {
 		return this.functions.remove(functionName);
 	}
-	
-	
 
 }
