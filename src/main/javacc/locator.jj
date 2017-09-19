@@ -59,11 +59,16 @@ TOKEN :
 {
   < #ALPHA : [ "a"-"z", "A"-"Z" ] >
 | < #ESCAPED_CHAR : "\\" ~[ ] >
+| < #DOT: "." >
+| < #PLUS: "+" >
+| < #MINUS: "-" >
+| < #DIGIT: [ "0"-"9" ] >
+| < #EXP: ["e","E"] ( < PLUS > | < MINUS > )? >
 }
 
 TOKEN :
 {
-  < UNRESERVED_STR : (~[ "\"", "'", "(", ")", ",", "=", "<", ">", " ", "[", "]" ])+ >
+  < UNRESERVED_STR : (~[ "\"", "'", "(", ")", ",", "=", "<", ">", " ", "[", "]","+","-","." ])+ >
 | < SINGLE_QUOTED_STR :
     (
       "'"
@@ -119,6 +124,15 @@ TOKEN :
     | " contains"
     | " in"
     )+ >
+}
+
+
+TOKEN: {
+        <NUMBER:  <INTEGER> | <INTEGER> <FRACTIONAL_DIGITS> | <INTEGER> <EXPONENT> | <INTEGER> <FRACTIONAL_DIGITS> <EXPONENT> >
+    |   <INTEGER: (<MINUS>)? ( <DIGITS> ) > //support leading zeros
+    |   <FRACTIONAL_DIGITS: <DOT> <DIGITS> >
+    |   <EXPONENT: <EXP> <DIGITS> >
+    |   <DIGITS: ( <DIGIT> )+ >
 }
 
 Node Input() :
@@ -302,6 +316,7 @@ Node Literal() :
   (
     < DOUBLE_QUOTED_STR >
   | < SINGLE_QUOTED_STR >
+  | < NUMBER >
   | < NULL >
   | < TRUE >
   | < FALSE >

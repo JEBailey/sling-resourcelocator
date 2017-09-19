@@ -83,6 +83,7 @@ public final class Parser implements ParserConstants {
     case TRUE:
     case FALSE:
     case LBRACKET:
+    case NUMBER:
       node = Comparison();
       break;
     default:
@@ -133,6 +134,7 @@ public final class Parser implements ParserConstants {
       case TRUE:
       case FALSE:
       case LBRACKET:
+      case NUMBER:
         value = CommaSepArguments();
         break;
       default:
@@ -149,6 +151,7 @@ public final class Parser implements ParserConstants {
     case TRUE:
     case FALSE:
     case LBRACKET:
+    case NUMBER:
       value = Argument();
     {if (true) return Arrays.asList((Node) value);}
       break;
@@ -191,6 +194,7 @@ public final class Parser implements ParserConstants {
     case NULL:
     case TRUE:
     case FALSE:
+    case NUMBER:
       selector = Literal();
       break;
     case LBRACKET:
@@ -225,6 +229,9 @@ public final class Parser implements ParserConstants {
       break;
     case SINGLE_QUOTED_STR:
       jj_consume_token(SINGLE_QUOTED_STR);
+      break;
+    case NUMBER:
+      jj_consume_token(NUMBER);
       break;
     case NULL:
       jj_consume_token(NULL);
@@ -268,7 +275,7 @@ public final class Parser implements ParserConstants {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x200,0x100,0xbce0,0x9ce0,0xbce0,0x200,0x9ce0,0x1cc0,};
+      jj_la1_0 = new int[] {0x4000,0x2000,0x979c00,0x939c00,0x979c00,0x4000,0x939c00,0x839800,};
    }
 
   /** Constructor with InputStream. */
@@ -385,7 +392,7 @@ public final class Parser implements ParserConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[18];
+    boolean[] la1tokens = new boolean[28];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -399,7 +406,7 @@ public final class Parser implements ParserConstants {
         }
       }
     }
-    for (int i = 0; i < 18; i++) {
+    for (int i = 0; i < 28; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

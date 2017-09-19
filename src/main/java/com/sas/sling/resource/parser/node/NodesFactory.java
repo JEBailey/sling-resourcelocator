@@ -13,84 +13,90 @@
  */
 package com.sas.sling.resource.parser.node;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import com.sas.sling.resource.parser.ParserConstants;
-import com.sas.sling.resource.parser.TokenMgrError;
 import com.sas.sling.resource.parser.predicates.UnknownOperatorException;
-import com.sas.sling.resource.query.ComparisonOperators;
 
 /**
  * Factory that creates {@link Node} instances for the parser.
  */
 public class NodesFactory implements ParserConstants {
 
+	/**
+	 * Creates a specific {@link Node} instance for the specified operator and
+	 * with the given children nodes.
+	 *
+	 * @param operator
+	 *            The logical operator to create a node for.
+	 * @param children
+	 *            Children nodes, i.e. operands.
+	 * @return A subclass of the {@link Node} according to the specified
+	 *         operator.
+	 */
+	public Node createOrNode(List<Node> children) {
+		return new Node(NodeType.OR, children);
+	}
 
-    /**
-     * Creates a specific {@link Node} instance for the specified operator and with the
-     * given children nodes.
-     *
-     * @param operator The logical operator to create a node for.
-     * @param children Children nodes, i.e. operands.
-     * @return A subclass of the {@link Node} according to the specified operator.
-     */
-    public Node createOrNode(List<Node> children) {
-    	return new Node(NodeType.OR,children);
-    }
-    
-    /**
-     * Creates a specific {@link LogicalNode} instance for the specified operator and with the
-     * given children nodes.
-     *
-     * @param operator The logical operator to create a node for.
-     * @param children Children nodes, i.e. operands.
-     * @return A subclass of the {@link Node} according to the specified operator.
-     */
-    public Node createAndNode(List<Node> children) {
-    	return new Node(NodeType.AND,children);
-    }
+	/**
+	 * Creates a specific {@link LogicalNode} instance for the specified
+	 * operator and with the given children nodes.
+	 *
+	 * @param operator
+	 *            The logical operator to create a node for.
+	 * @param children
+	 *            Children nodes, i.e. operands.
+	 * @return A subclass of the {@link Node} according to the specified
+	 *         operator.
+	 */
+	public Node createAndNode(List<Node> children) {
+		return new Node(NodeType.AND, children);
+	}
 
-    /**
-     * Creates a {@link Node} instance with the given parameters.
-     *
-     * @param operatorToken A textual representation of the comparison operator to be found in the
-     *                      set of supported {@linkplain ComparisonOperator operators}.
-     * @param selector The selector that specifies the left side of the comparison.
-     * @param arguments A list of arguments that specifies the right side of the comparison.
-     *
-     * @throws UnknownOperatorException If no operator for the specified operator token exists.
-     */
-    public Node createComparisonNode(
-            String operatorToken, Node selector, List<Node> arguments) {
-        if (operatorToken == null) {
-        	String compValue = selector.getValue();
-        	Optional<ComparisonOperators> validOperation = ComparisonOperators.getSimpleOperator(compValue);
-        	if (!validOperation.isPresent()){
-        		throw new TokenMgrError("unkown comparator "+compValue,0);
-        	}
-            return new Node(NodeType.FUNCTION, selector.getValue(), arguments);
-        } else {
-            return new Node(operatorToken,selector,arguments);
-        }
-    }
-    
-    public Node createArgument(int kind,String literal) {
-    	if (kind == DOUBLE_QUOTED_STR || kind == SINGLE_QUOTED_STR){
-    		literal = literal.substring(1, literal.length() -1);
-    	}
-    	if (kind == NULL) {
-    		return new Node(NodeType.NULL,literal,Collections.emptyList());
-    	}
-    	return new Node(literal.trim());
-    }
+	/**
+	 * Creates a {@link Node} instance with the given parameters.
+	 *
+	 * @param operatorToken
+	 *            A textual representation of the comparison operator to be
+	 *            found in the set of supported {@linkplain ComparisonOperator
+	 *            operators}.
+	 * @param leftHandStatement
+	 *            The selector that specifies the left side of the comparison.
+	 * @param arguments
+	 *            A list of arguments that specifies the right side of the
+	 *            comparison.
+	 *
+	 * @throws UnknownOperatorException
+	 *             If no operator for the specified operator token exists.
+	 */
+	public Node createComparisonNode(String operatorToken, Node leftHandStatement, List<Node> arguments) {
+		return new Node(operatorToken, leftHandStatement, arguments);
+	}
+
+	public Node createArgument(int kind, String literal) {
+		String value = literal.trim();
+		NodeType type = NodeType.STRING;
+		switch (kind) {
+		case DOUBLE_QUOTED_STR:
+		case SINGLE_QUOTED_STR:
+			value = literal.substring(1, literal.length() - 1);
+			break;
+		case NULL:
+			type = NodeType.NULL;
+			break;
+		case NUMBER:
+			type = NodeType.NUMBER;
+			break;
+		default:
+		}
+		return new Node(value, type);
+	}
 
 	public Node createFunction(Node functionName, List<Node> args) {
-		return new Node(NodeType.FUNCTION,functionName.getValue(), args);
+		return new Node(functionName.getValue(), NodeType.FUNCTION, args);
 	}
 
 	public Node createPropertySelector(String image) {
-		return Node.propertyNode(image);
+		return new Node(image, NodeType.PROPERTY);
 	}
 }

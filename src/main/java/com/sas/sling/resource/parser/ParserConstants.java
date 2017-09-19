@@ -15,31 +15,51 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int ESCAPED_CHAR = 4;
   /** RegularExpression Id. */
-  int UNRESERVED_STR = 5;
+  int DOT = 5;
   /** RegularExpression Id. */
-  int SINGLE_QUOTED_STR = 6;
+  int PLUS = 6;
   /** RegularExpression Id. */
-  int DOUBLE_QUOTED_STR = 7;
+  int MINUS = 7;
   /** RegularExpression Id. */
-  int AND = 8;
+  int DIGIT = 8;
   /** RegularExpression Id. */
-  int OR = 9;
+  int EXP = 9;
   /** RegularExpression Id. */
-  int NULL = 10;
+  int UNRESERVED_STR = 10;
   /** RegularExpression Id. */
-  int TRUE = 11;
+  int SINGLE_QUOTED_STR = 11;
   /** RegularExpression Id. */
-  int FALSE = 12;
+  int DOUBLE_QUOTED_STR = 12;
   /** RegularExpression Id. */
-  int LPAREN = 13;
+  int AND = 13;
   /** RegularExpression Id. */
-  int RPAREN = 14;
+  int OR = 14;
   /** RegularExpression Id. */
-  int LBRACKET = 15;
+  int NULL = 15;
   /** RegularExpression Id. */
-  int RBRACKET = 16;
+  int TRUE = 16;
   /** RegularExpression Id. */
-  int COMP_ALT = 17;
+  int FALSE = 17;
+  /** RegularExpression Id. */
+  int LPAREN = 18;
+  /** RegularExpression Id. */
+  int RPAREN = 19;
+  /** RegularExpression Id. */
+  int LBRACKET = 20;
+  /** RegularExpression Id. */
+  int RBRACKET = 21;
+  /** RegularExpression Id. */
+  int COMP_ALT = 22;
+  /** RegularExpression Id. */
+  int NUMBER = 23;
+  /** RegularExpression Id. */
+  int INTEGER = 24;
+  /** RegularExpression Id. */
+  int FRACTIONAL_DIGITS = 25;
+  /** RegularExpression Id. */
+  int EXPONENT = 26;
+  /** RegularExpression Id. */
+  int DIGITS = 27;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -51,6 +71,11 @@ public interface ParserConstants {
     "\"\\t\"",
     "<ALPHA>",
     "<ESCAPED_CHAR>",
+    "\".\"",
+    "\"+\"",
+    "\"-\"",
+    "<DIGIT>",
+    "<EXP>",
     "<UNRESERVED_STR>",
     "<SINGLE_QUOTED_STR>",
     "<DOUBLE_QUOTED_STR>",
@@ -64,6 +89,11 @@ public interface ParserConstants {
     "\"[\"",
     "\"]\"",
     "<COMP_ALT>",
+    "<NUMBER>",
+    "<INTEGER>",
+    "<FRACTIONAL_DIGITS>",
+    "<EXPONENT>",
+    "<DIGITS>",
   };
 
 }

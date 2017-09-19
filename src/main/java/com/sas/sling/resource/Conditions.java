@@ -20,8 +20,6 @@ import java.util.function.Predicate;
  * A collection of terms to assist in building a fluent api. These terms may not
  * have functionality other than providing syntax sugar over existing features,
  * or merely providing context for other terms
- * 
- * @author JE Bailey
  *
  */
 public class Conditions {

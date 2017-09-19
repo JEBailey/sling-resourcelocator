@@ -40,6 +40,22 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 			break;
 		case NULL:
 			return resource -> new Null();
+		case NUMBER:
+			Number numericValue = null;
+			{
+				String numberText = node.getValue();
+				try {
+					numericValue = Integer.valueOf(numberText);
+				} catch (NumberFormatException nfe1) {
+					try {
+						numericValue = Double.valueOf(numberText);
+					} catch (NumberFormatException nfe2) {
+					 //swallow
+					}
+				}
+			}
+			final Number numericReply = numericValue;
+			return resource -> numericReply;
 		case PROPERTY:
 			return resource -> {
 				Object value = resource.adaptTo(ValueMap.class).get(node.getValue());

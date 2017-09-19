@@ -32,43 +32,32 @@ public class Node implements Iterable<Node> {
 
 	public Node() {
 	}
-	
+
 	/**
 	 * creates a node which represents a String Literal value
 	 * 
 	 * @param value
 	 */
-	public Node(String value) {
+	public Node(String value, NodeType type) {
 		this.value = value;
-		this.type = NodeType.STRING;
-	}
-	
-	/**
-	 * creates a node which represents a property in the resource that will be provided
-	 * 
-	 * @param value
-	 */
-	public static Node propertyNode(String value) {
-		Node reply = new Node(value);
-		reply.type = NodeType.PROPERTY;
-		return reply;
+		this.type = type;
 	}
 
-	public Node(NodeType type, String identifier, List<Node> children) {
-		this.value = Objects.requireNonNull(identifier,"identifier must not be null");
-		this.children =  Objects.requireNonNull(children, "children must not be null" );
+	public Node(String identifier, NodeType type, List<Node> children) {
+		this.value = Objects.requireNonNull(identifier, "identifier must not be null");
+		this.children = Objects.requireNonNull(children, "children must not be null");
 		this.type = type;
 	}
 
 	public Node(NodeType type, List<Node> children) {
-		this.children = Objects.requireNonNull(children, "children must not be null" );
+		this.children = Objects.requireNonNull(children, "children must not be null");
 		this.type = type;
 	}
 
-	public Node(String operatorToken, Node selector, List<Node> children) {
+	public Node(String operatorToken, Node lhs, List<Node> children) {
 		this.value = operatorToken;
-		this.left = selector;
-		this.children = Objects.requireNonNull(children, "children must not be null" );
+		this.left = lhs;
+		this.children = Objects.requireNonNull(children, "children must not be null");
 		this.type = NodeType.COMPARISON;
 	}
 
@@ -113,7 +102,7 @@ public class Node implements Iterable<Node> {
 	}
 
 	public Node withChildren(List<Node> children) {
-		return new Node(this.type, this.value, children);
+		return new Node(this.value, this.type, children);
 	}
 
 	/**
@@ -158,7 +147,7 @@ public class Node implements Iterable<Node> {
 	public NodeType getType() {
 		return type;
 	}
-	
+
 	public void setType(NodeType type) {
 		this.type = type;
 	}

@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.regex.Pattern;
 
 /**
  * A converter for any object based on toString()
@@ -25,10 +24,6 @@ import java.util.regex.Pattern;
 public class ConverterForString implements Converter {
 
 	private final String value;
-	
-	private static Pattern DoubleString = Pattern.compile("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
-	private static Pattern LongString = Pattern.compile("^-?\\d{1,19}$");
-	
 
 	public ConverterForString(final String val) {
 		this.value = val;
@@ -36,17 +31,20 @@ public class ConverterForString implements Converter {
 
 	@Override
 	public Number getNumber() {
-		if (LongString.matcher(value).matches()){
-			return Long.parseLong(value);
-		}
-		if (DoubleString.matcher(value).matches()){
-			return Double.parseDouble(value);
-		}
 		try {
-			return LocalDateTime.parse(value,DateTimeFormatter.ISO_DATE_TIME).toInstant(ZoneOffset.UTC).toEpochMilli();
-		} catch (DateTimeParseException dtpe){
-			//swallow
-			return null;
+			return Long.valueOf(value);
+		} catch (NumberFormatException nfe) {
+			try {
+				return Double.valueOf(value);
+			} catch (NumberFormatException nfe2) {
+				try {
+					return LocalDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME).toInstant(ZoneOffset.UTC)
+							.toEpochMilli();
+				} catch (DateTimeParseException dtpe) {
+					// swallow
+					return null;
+				}
+			}
 		}
 	}
 

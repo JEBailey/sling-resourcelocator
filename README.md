@@ -106,11 +106,10 @@ All functions must return either a String, a Number, or a Calendar instance.
 
 OOTB Functions are:
 
-| Name | Arguments | Returns | Description                                                    |
-| ---- | --------- | ------- | -----------------------------------                            |
-| name | none      | String  | Provides the name of the resource                              |
-| date | 0 - 2     | Instant | First argument is string representation of the date, second argument is a standard Java DateFormat representation of the value. No argument returns the current time. |
-| 
+| Name  | Arguments | Returns | Description                                                    |
+| ----  | --------- | ------- | -----------------------------------                            |
+| name  | none      | String  | Provides the name of the resource                              |
+| date  | 0 - 2     | Instant | First argument is string representation of the date, second argument is a standard Java DateFormat representation of the value. No argument returns the current time. |
 
 
 

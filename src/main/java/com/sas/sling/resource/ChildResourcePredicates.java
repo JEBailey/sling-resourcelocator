@@ -36,7 +36,6 @@ import org.apache.sling.api.resource.Resource;
 /**
  * Predicates that are to be used against a child resource
  * 
- * @author JE Bailey
  *
  */
 public class ChildResourcePredicates {

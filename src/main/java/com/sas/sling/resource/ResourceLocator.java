@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.sling.api.resource.Resource;
-import org.osgi.framework.Constants;
 
 import com.sas.sling.resource.parser.ParseException;
 import com.sas.sling.resource.query.ScriptHandler;
@@ -36,16 +35,12 @@ import com.sas.sling.resource.query.ScriptHandler;
 /**
  * Base class from which the fluent api is constructed to locate resources which
  * we are interested in.
- * 
- * @author JE Bailey
  *
  */
 public class ResourceLocator {
 
 	// starting resource
 	private Resource resource;
-	
-	public String string = Constants.ACTIVATION_LAZY;
 
 	private Optional<Consumer<Resource>> callback = Optional.empty();
 
