@@ -211,6 +211,27 @@ public class ResourceLocatorScriptTest {
 	}
 	
 	@Test
+	public void testPathLike() throws ParseException {
+		String query = "path() like '/content/sample/en/testpage1.*'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(4, found.size());
+	}
+	
+	@Test
+	public void testPathLike2() throws ParseException {
+		String query = "path() like '/content/sample/en/testpage1'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(1, found.size());
+	}
+	
+	@Test
+	public void testPathLike3() throws ParseException {
+		String query = "path() is '/content/sample/en/testpage1'";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(1, found.size());
+	}
+	
+	@Test
 	public void testNotIn() throws ParseException {
 		String query = "'fish' not in [jcr:content/monkey]";
 		List<Resource> found = handle(START_PATH, query);

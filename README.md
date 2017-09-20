@@ -110,7 +110,7 @@ OOTB Functions are:
 | ----  | --------- | ------- | -----------------------------------                            |
 | name  | none      | String  | Provides the name of the resource                              |
 | date  | 0 - 2     | Instant | First argument is string representation of the date, second argument is a standard Java DateFormat representation of the value. No argument returns the current time. |
-
+| path  | none		| String  | path of the tested resource        |
 
 
 

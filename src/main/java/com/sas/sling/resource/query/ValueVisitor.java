@@ -76,6 +76,8 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 			return resource -> resource.getName();
 		case "date":
 			return instant.provision(node, this);
+		case "path":
+			return resource -> resource.getPath();
 		default:
 			ValueProvider temp = functions.get(node.getValue());
 			if (temp !=  null){
