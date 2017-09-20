@@ -68,7 +68,7 @@ TOKEN :
 
 TOKEN :
 {
-  < UNRESERVED_STR : (~[ "\"", "'", "(", ")", ",", "=", "<", ">", " ", "[", "]","+","-","." ])+ >
+  < UNRESERVED_STR : (~[ "\"", "'", "(", ")", ",", "=", "<", ">", " ", "[", "]","+","-",".","0"-"9" ])+ >
 | < SINGLE_QUOTED_STR :
     (
       "'"
@@ -128,11 +128,11 @@ TOKEN :
 
 
 TOKEN: {
-        <NUMBER:  <INTEGER> | <INTEGER> <FRACTIONAL_DIGITS> | <INTEGER> <EXPONENT> | <INTEGER> <FRACTIONAL_DIGITS> <EXPONENT> >
-    |   <INTEGER: (<MINUS>)? ( <DIGITS> ) > //support leading zeros
-    |   <FRACTIONAL_DIGITS: <DOT> <DIGITS> >
-    |   <EXPONENT: <EXP> <DIGITS> >
-    |   <DIGITS: ( <DIGIT> )+ >
+        < NUMBER:  <INTEGER> | <INTEGER> <FRACTIONAL_DIGITS> | <INTEGER> <EXPONENT> | <INTEGER> <FRACTIONAL_DIGITS> <EXPONENT> >
+    |   < INTEGER: (<MINUS>)? ( <DIGITS> ) > //support leading zeros
+    |   < FRACTIONAL_DIGITS: <DOT> <DIGITS> >
+    |   < EXPONENT: <EXP> <DIGITS> >
+    |   < DIGITS: ( <DIGIT> )+ >
 }
 
 Node Input() :

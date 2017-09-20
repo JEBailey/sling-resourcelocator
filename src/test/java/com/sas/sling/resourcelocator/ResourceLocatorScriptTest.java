@@ -127,6 +127,20 @@ public class ResourceLocatorScriptTest {
 	}
 	
 	@Test
+	public void testNumberLiteral() throws ParseException {
+		String query = "[count] < 2 ";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(1, found.size());
+	}
+	
+	@Test
+	public void testNumberLiteral2() throws ParseException {
+		String query = "[count] < 2 or [count] > 1";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(1, found.size());
+	}
+	
+	@Test
 	public void testNotNullProperty() throws ParseException {
 		String query = "[layout] != null ";
 		List<Resource> found = handle(START_PATH, query);
