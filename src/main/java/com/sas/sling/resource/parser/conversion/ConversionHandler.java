@@ -16,6 +16,10 @@ package com.sas.sling.resource.parser.conversion;
 import java.time.Instant;
 
 public class ConversionHandler {
+	
+	public ConversionHandler(Object lhValue, Object rhValue){
+		
+	}
 
 	
 	public static CharSequence getString(final Object initialValue) {

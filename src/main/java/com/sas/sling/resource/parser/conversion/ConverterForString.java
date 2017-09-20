@@ -13,6 +13,7 @@
  */
 package com.sas.sling.resource.parser.conversion;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -32,10 +33,10 @@ public class ConverterForString implements Converter {
 	@Override
 	public Number getNumber() {
 		try {
-			return Long.valueOf(value);
+			return Integer.valueOf(value);
 		} catch (NumberFormatException nfe) {
 			try {
-				return Double.valueOf(value);
+				return new BigDecimal(value);
 			} catch (NumberFormatException nfe2) {
 				try {
 					return LocalDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME).toInstant(ZoneOffset.UTC)

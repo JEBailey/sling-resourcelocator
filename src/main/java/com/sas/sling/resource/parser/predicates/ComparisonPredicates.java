@@ -13,12 +13,14 @@
  */
 package com.sas.sling.resource.parser.predicates;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.sling.api.resource.Resource;
 
 import com.sas.sling.resource.parser.conversion.ConversionHandler;
@@ -83,6 +85,8 @@ public class ComparisonPredicates {
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
+			lhValue = standardizeNumbers(lhValue, rhValue.getClass());
+			rhValue = standardizeNumbers(rhValue, lhValue.getClass());
 			if (lhValue instanceof Comparable) {
 				return ((Comparable<Number>) lhValue).compareTo(rhValue) > 0;
 			}
@@ -100,6 +104,8 @@ public class ComparisonPredicates {
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
+			lhValue = standardizeNumbers(lhValue, rhValue.getClass());
+			rhValue = standardizeNumbers(rhValue, lhValue.getClass());
 			if (lhValue instanceof Comparable) {
 				return ((Comparable<Number>) lhValue).compareTo(rhValue) >= 0;
 			}
@@ -120,6 +126,8 @@ public class ComparisonPredicates {
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
+			lhValue = standardizeNumbers(lhValue, rhValue.getClass());
+			rhValue = standardizeNumbers(rhValue, lhValue.getClass());
 			if (lhValue instanceof Comparable) {
 				return ((Comparable<Number>) lhValue).compareTo(rhValue) < 0;
 			}
@@ -141,6 +149,8 @@ public class ComparisonPredicates {
 			if (lhValue == null || rhValue == null) {
 				return false;
 			}
+			lhValue = standardizeNumbers(lhValue, rhValue.getClass());
+			rhValue = standardizeNumbers(rhValue, lhValue.getClass());
 			if (lhValue instanceof Comparable) {
 				return ((Comparable<Number>) lhValue).compareTo(rhValue) <= 0;
 			}
@@ -194,6 +204,16 @@ public class ComparisonPredicates {
 			// rhValues
 			return true;
 		};
+	}
+	
+	private static Number standardizeNumbers(Number value, Class<? extends Number> klass) {
+		if (value.getClass() == klass || value instanceof BigDecimal){
+			return value;
+		}
+		if (value instanceof Double){
+			return BigDecimal.valueOf(value.doubleValue());
+		}
+		return BigDecimal.valueOf(value.longValue());
 	}
 
 	private static String[] adaptToArray(Object arr) {
