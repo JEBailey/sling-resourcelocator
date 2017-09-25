@@ -14,7 +14,7 @@
 package com.sas.sling.resource.parser.conversion;
 
 /**
- * A converter for Number
+ * A converter for Number objects
  */
 public class ConverterForNumber implements Converter {
 

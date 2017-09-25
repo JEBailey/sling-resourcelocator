@@ -17,6 +17,11 @@ import java.util.function.Predicate;
 
 import org.apache.sling.api.resource.Resource;
 
+/**
+ * Collection of predicates specific to obtaining information from the resource
+ * object which isn't a property value
+ *
+ */
 public class ResourcePredicates {
 
 	/**

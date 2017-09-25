@@ -43,12 +43,13 @@ public class ChildResourcePredicates {
 	private final String name;
 
 	private ChildResourcePredicates(String name) {
-		this.name = Objects.requireNonNull(name, "name value may not be null");;
+		this.name = Objects.requireNonNull(name, "name value may not be null");
+		;
 	}
 
 	/**
-	 * Instantiates a ChildResourcePredicate object to provide the application
-	 * of Predicates against the named child
+	 * Instantiates a ChildResourcePredicate object to provide the application of
+	 * Predicates against the named child
 	 * 
 	 * @param name
 	 *            of the expected child resource
@@ -59,12 +60,12 @@ public class ChildResourcePredicates {
 	}
 
 	/**
-	 * Applies a predicate against the named child resource. The returned
-	 * predicate will always return 'false' for a child that doesn't exist
+	 * Applies a predicate against the named child resource. The returned predicate
+	 * will always return 'false' for a child that doesn't exist
 	 * 
 	 * @param predicate
 	 *            to be used against the child resource
-	 * @return Predicate which will apply the given predicate
+	 * @return Predicate which will apply the given predicate to the child resource
 	 */
 	public Predicate<Resource> has(Predicate<Resource> predicate) {
 		Objects.requireNonNull(predicate, "predicate may not be null");

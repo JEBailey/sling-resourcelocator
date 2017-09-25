@@ -13,6 +13,7 @@
  */
 package com.sas.sling.resource;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
@@ -30,11 +31,15 @@ import java.util.stream.StreamSupport;
 import org.apache.sling.api.resource.Resource;
 
 import com.sas.sling.resource.parser.ParseException;
-import com.sas.sling.resource.query.ScriptHandler;
+import com.sas.sling.resource.parser.Parser;
+import com.sas.sling.resource.parser.node.Node;
+import com.sas.sling.resource.query.LogicVisitor;
 
 /**
- * Base class from which the fluent api is constructed to locate resources which
- * we are interested in.
+ * Base class from which a fluent api can be created or which can be defined
+ * using the integrated query language.
+ * 
+ * Additionally provides the ability to stream child resources.
  *
  */
 public class ResourceLocator {
@@ -49,6 +54,8 @@ public class ResourceLocator {
 	private long limit = Long.MAX_VALUE;
 
 	private long startOfRange;
+	
+	private LogicVisitor logicVisitor = null;
 
 	/**
 	 * Starting point to locate resources. resources of the start resource.
@@ -73,10 +80,9 @@ public class ResourceLocator {
 
 	/**
 	 * When a matching resource is located, pass that resource to the callback
-	 * handler. This is used when the handling of the resources needs to be done
-	 * as those resources are identified. This replaces the default
-	 * Consumer that appends the resource to the internal list
-	 * returned will be returned.
+	 * handler. This is used when the handling of the resources needs to be done as
+	 * those resources are identified. This replaces the default Consumer that
+	 * appends the resource to the internal list returned will be returned.
 	 * 
 	 * This is equivalent of a .forEach in the stream api
 	 * 
@@ -90,14 +96,14 @@ public class ResourceLocator {
 	}
 
 	/**
-	 * When iterating over the child resources, this is used as a validation
-	 * that a specific child resource should be traversed
+	 * When iterating over the child resources, this is used as a validation that a
+	 * specific child resource should be traversed
 	 * 
-	 * This can be used to limit the possible branching options beneath a
-	 * resource tree
+	 * This can be used to limit the possible branching options beneath a resource
+	 * tree
 	 * 
-	 * As the Stream API provides an inherent depth first Resource stream this provides
-	 * the ability to limit the children which are acceptable.
+	 * As the Stream API provides an inherent depth first Resource stream this
+	 * provides the ability to limit the children which are acceptable.
 	 * 
 	 * 
 	 * @param condition
@@ -108,35 +114,34 @@ public class ResourceLocator {
 		this.traversalControl = Optional.ofNullable(condition);
 		return this;
 	}
-	
+
 	/**
-	 * When iterating over the child resources, this is used as a validation
-	 * that a specific child resource should be traversed
+	 * When iterating over the child resources, this is used as a validation that a
+	 * specific child resource should be traversed
 	 * 
-	 * This can be used to limit the possible branching options beneath a
-	 * resource tree
+	 * This can be used to limit the possible branching options beneath a resource
+	 * tree
 	 * 
-	 * As the Stream API provides an inherent depth first Resource stream this provides
-	 * the ability to limit the children which are acceptable.
+	 * As the Stream API provides an inherent depth first Resource stream this
+	 * provides the ability to limit the children which are acceptable.
 	 * 
 	 * 
 	 * @param condition
 	 *            Add child resource to the traversal path if condition is 'true'
 	 * @return this locator
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	public ResourceLocator traversalControl(String condition) throws ParseException {
-		this.traversalControl = Optional.of(ScriptHandler.parseQuery(condition));
+		this.traversalControl = Optional.of(parse(condition));
 		return this;
 	}
-	
+
 	/**
-	 * Rests the starting path for the query to be the 
-	 * This can be used to limit the possible branching options beneath a
-	 * resource tree
+	 * Rests the starting path for the query to be the This can be used to limit the
+	 * possible branching options beneath a resource tree
 	 * 
-	 * As the Stream API provides an inherent depth first Resource stream this provides
-	 * the ability to limit the children which are acceptable.
+	 * As the Stream API provides an inherent depth first Resource stream this
+	 * provides the ability to limit the children which are acceptable.
 	 * 
 	 * 
 	 * @param path
@@ -149,9 +154,9 @@ public class ResourceLocator {
 	}
 
 	/**
-	 * Sets the maximum number of items to be returned or processed. Starting
-	 * from the first matching resource. This method is mutually exclusive to
-	 * the range method
+	 * Sets the maximum number of items to be returned or processed. Starting from
+	 * the first matching resource. This method is mutually exclusive to the range
+	 * method
 	 * 
 	 * This performs the same form of limitation as a limit on a Stream
 	 * 
@@ -169,9 +174,9 @@ public class ResourceLocator {
 	}
 
 	/**
-	 * Sets the maximum number of items to be returned or processed. Starting
-	 * from the nth identified resource as set by the startOfRange. This method
-	 * is mutually exclusive to the limit method
+	 * Sets the maximum number of items to be returned or processed. Starting from
+	 * the nth identified resource as set by the startOfRange. This method is
+	 * mutually exclusive to the limit method
 	 * 
 	 * This can be achieved on a Stream by performing a a filter operation
 	 * 
@@ -189,10 +194,10 @@ public class ResourceLocator {
 	}
 
 	/**
-	 * Recursively descends through the available resources and locates
-	 * resources that match the provided predicate. Additional restrictions can
-	 * be set to limit the paths that the traversal takes, and how the located
-	 * resources are handled.
+	 * Recursively descends through the available resources and locates resources
+	 * that match the provided predicate. Additional restrictions can be set to
+	 * limit the paths that the traversal takes, and how the located resources are
+	 * handled.
 	 * 
 	 * @param condition
 	 *            predicate to be used against all matching child resources
@@ -231,27 +236,27 @@ public class ResourceLocator {
 		}
 		return resourcesToReturn;
 	}
-	
+
 	/**
-	 * Recursively descends through the available resources and locates
-	 * resources that match the provided filter lan. Additional restrictions can
-	 * be set to limit the paths that the traversal takes, and how the located
-	 * resources are handled.
+	 * Recursively descends through the available resources and locates resources
+	 * that match the provided filter lan. Additional restrictions can be set to
+	 * limit the paths that the traversal takes, and how the located resources are
+	 * handled.
 	 * 
 	 * @param condition
 	 *            predicate to be used against all matching child resources
 	 * @return List of matching resource or empty list if callback is enabled
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	public List<Resource> locateResources(String condition) throws ParseException {
-		Predicate<Resource> predicate =  ScriptHandler.parseQuery(condition);
+		Predicate<Resource> predicate = parse(condition);
 		return locateResources(predicate);
 	}
 
 	/**
 	 * Provides a stream of resources starting from the initiator resource and
-	 * traversing through it's descendants The only fluent api check it performs
-	 * is of the traversal predicate.
+	 * traversing through it's descendants The only fluent api check it performs is
+	 * of the traversal predicate.
 	 * 
 	 * @return self closing {@code Stream<Resource>} of unknown size.
 	 */
@@ -281,17 +286,29 @@ public class ResourceLocator {
 			}
 		}, Spliterator.ORDERED | Spliterator.IMMUTABLE), false);
 	}
-	
+
 	/**
 	 * Provides a stream of resources starting from the initiator resource and
-	 * traversing through it's descendants The only fluent api check it performs
-	 * is of the traversal predicate.
+	 * traversing through it's descendants The only fluent api check it performs is
+	 * of the traversal predicate.
 	 * 
 	 * @return self closing {@code Stream<Resource>} of unknown size.
 	 */
 	public Stream<Resource> stream(Predicate<Resource> traversalConstraint) {
 		this.traversalControl = Optional.of(traversalConstraint);
 		return stream();
+	}
+	
+	private Predicate<Resource> parse(String filter) throws ParseException{
+		Node rootNode = new Parser(new ByteArrayInputStream(filter.getBytes())).Input();
+		return rootNode.accept(getVisitor(),null);
+	}
+	
+	private LogicVisitor getVisitor() {
+		if (logicVisitor == null) {
+			logicVisitor = new LogicVisitor();
+		}
+		return logicVisitor;
 	}
 
 }

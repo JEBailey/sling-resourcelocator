@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 /**
- * A converter for any object based on toString()
+ * 
  */
 public class ConverterForString implements Converter {
 

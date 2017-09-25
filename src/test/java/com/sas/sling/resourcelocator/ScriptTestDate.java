@@ -18,8 +18,6 @@ import static org.junit.Assert.assertEquals;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
@@ -29,7 +27,6 @@ import org.junit.Test;
 
 import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.ParseException;
-import com.sas.sling.resource.query.ScriptHandler;
 
 public class ScriptTestDate {
 
@@ -54,8 +51,6 @@ public class ScriptTestDate {
 		String query = "[jcr:content/created] < date('2013-08-08T16:32:59.000+02:00')";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(3, found.size());
-		found = handle2(START_PATH, query);
-		assertEquals(3, found.size());
 	}
 	
 	@Test
@@ -76,8 +71,6 @@ public class ScriptTestDate {
 	public void testPropLessThatCustomDateFunction() throws ParseException {
 		String query = "[jcr:content/created] < date('2013-08-08','yyyy-MM-dd')";
 		List<Resource> found = handle(START_PATH, query);
-		assertEquals(3, found.size());
-		found = handle2(START_PATH, query);
 		assertEquals(3, found.size());
 	}
 	
@@ -145,13 +138,8 @@ public class ScriptTestDate {
 		assertEquals(4, found.size());
 	}
 	
-	private List<Resource> handle(String path, String filter) throws ParseException {
-		Resource resource = context.resourceResolver().getResource(path);
-		Predicate<Resource> predicate =  ScriptHandler.parseQuery(filter);
-		return ResourceLocator.startFrom(resource).stream().filter(predicate).collect(Collectors.toList());
-	}
 	
-	private List<Resource> handle2(String path, String filter) throws ParseException {
+	private List<Resource> handle(String path, String filter) throws ParseException {
 		Resource resource = context.resourceResolver().getResource(path);
 		return ResourceLocator.startFrom(resource).locateResources(filter);
 	}

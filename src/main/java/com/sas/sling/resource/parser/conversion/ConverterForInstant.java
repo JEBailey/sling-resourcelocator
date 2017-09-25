@@ -17,7 +17,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 
 /**
- * A converter for any object based on toString()
+ * 
  */
 public class ConverterForInstant implements Converter {
 

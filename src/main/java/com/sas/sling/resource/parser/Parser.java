@@ -8,13 +8,7 @@ import com.sas.sling.resource.parser.node.*;
 import com.sas.sling.resource.parser.predicates.*;
 
 public final class Parser implements ParserConstants {
-  private NodesFactory factory;
-
-  public Parser(InputStream stream, String encoding, NodesFactory factory)
-  {
-    this (stream, encoding);
-    this.factory = factory;
-  }
+  private NodesFactory factory = new NodesFactory();
 
   final public Node Input() throws ParseException {
   final Node node;

@@ -30,6 +30,9 @@ import org.apache.sling.api.resource.ValueMap;
  * isNot = not equal to argument<br>
  * isIn = property is a single value which matches one of the arguments passed in
  * for comparison<br>
+ * greaterThan = greater than the property<br>
+ * lessThan = less than the property<br>
+ * exists = is the property of the child <br> 
  * contains = property is an array which contains all of the arguments passed in<br>
  * 
  * @author J.E. Bailey

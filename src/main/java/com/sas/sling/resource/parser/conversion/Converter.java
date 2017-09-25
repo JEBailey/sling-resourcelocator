@@ -14,10 +14,14 @@
 package com.sas.sling.resource.parser.conversion;
 
 /**
- * A converter converts a value to a specific target type.
+ * A converter converts an Object to either a Number value or a String
  */
 public interface Converter {
 
+	/**
+	 *
+	 * @return a <java>Number</java> derived from the original Object
+	 */
     Number getNumber();
     
     String getString();

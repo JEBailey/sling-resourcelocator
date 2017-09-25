@@ -22,18 +22,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
 import com.sas.sling.resource.ResourceLocator;
-import com.sas.sling.resource.query.ScriptHandler;
 
 public class ResourceLocatorTest {
 
@@ -100,13 +96,5 @@ public class ResourceLocatorTest {
 		assertEquals(2, found.size());
 	}
 	
-	@Test @Ignore
-	public void testBeforeMidDateScript() throws com.sas.sling.resource.parser.ParseException {
-		Resource resource = context.resourceResolver().getResource("/content/sample/en");
-		String query = String.format(" jcr:content/created < '%s' ", DATE_STRING);
-		Predicate<Resource> predicate = ScriptHandler.parseQuery(query);
-		List<Resource> found = ResourceLocator.startFrom(resource).stream().filter(predicate).collect(Collectors.toList());
-		assertEquals(5, found.size());
-	}
 	
 }
