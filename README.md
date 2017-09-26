@@ -57,6 +57,9 @@ Derivative of JCR-SQL2.
 | contains    | String         | Is matching for one or more items in array |
 | contains not| String         | is right hand value not in left hand values|
 
+### Logical Operators
+The 'and' and 'or' operators are logical operators that string together conditions. 'And' operators take precedence. 'Or' operators evaluate from left to right
+
 
 ### Values
 

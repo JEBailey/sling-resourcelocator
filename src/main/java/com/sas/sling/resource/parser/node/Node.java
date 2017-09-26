@@ -17,11 +17,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Common interface of the AST nodes. Implementations must be immutable.
+ * 
  */
 public class Node implements Iterable<Node> {
 
@@ -30,40 +29,34 @@ public class Node implements Iterable<Node> {
 	private Node left;
 	private String value;
 
-	public Node() {
-	}
-
 	/**
 	 * creates a node which represents a String Literal value
 	 * 
 	 * @param value
 	 */
 	public Node(String value, NodeType type) {
-		this.value = value;
-		this.type = type;
-	}
-
-	public Node(String identifier, NodeType type, List<Node> children) {
-		this.value = Objects.requireNonNull(identifier, "identifier must not be null");
-		this.children = Objects.requireNonNull(children, "children must not be null");
-		this.type = type;
+		this(value, type, null);
 	}
 
 	public Node(NodeType type, List<Node> children) {
-		this.children = Objects.requireNonNull(children, "children must not be null");
-		this.type = type;
+		this(null, type, children);
 	}
 
-	public Node(String operatorToken, Node lhs, List<Node> children) {
-		this.value = operatorToken;
+	public Node(String value, Node lhs, List<Node> children) {
+		this(value, NodeType.COMPARISON, children);
 		this.left = lhs;
-		this.children = Objects.requireNonNull(children, "children must not be null");
-		this.type = NodeType.COMPARISON;
+	}
+
+	public Node(String value, NodeType type, List<Node> children) {
+		this.value = value;
+		this.type = type;
+		if (children != null) {
+			this.children = children;
+		}
 	}
 
 	/**
-	 * Accepts the visitor, calls its <tt>visit()</tt> method and returns a
-	 * result.
+	 * Accepts the visitor, calls its <tt>visit()</tt> method and returns a result.
 	 *
 	 * <p>
 	 * Each implementation must implement this methods exactly as listed:

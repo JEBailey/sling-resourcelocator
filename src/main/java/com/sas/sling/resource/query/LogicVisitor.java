@@ -23,31 +23,37 @@ import org.apache.sling.api.resource.Resource;
 import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.node.Visitor;
 
-
+/**
+ * Visitor implementation that handles the high level handling of logic between
+ * statements that define the comparisons that would be performed.
+ * 
+ * In practical terms this handles the "and" and "or" predicates
+ * 
+ */
 public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
-	
+
 	private ValueVisitor valueVisitor = new ValueVisitor();
 
 	@Override
 	public Predicate<Resource> visit(Node node, Void locator) {
-		List<Function<Resource,Object>> arguments = Collections.emptyList();
-		switch (node.getType()){
+		List<Function<Resource, Object>> arguments = Collections.emptyList();
+		switch (node.getType()) {
 		case AND:
 			return createAndPredicate(node, locator);
 		case OR:
 			return createOrPredicate(node, locator);
 		case COMPARISON:
 			arguments = node.visitChildren(new ValueVisitor(), locator);
-			return createComparisonPredicate(node,arguments, locator);
+			return createComparisonPredicate(node, arguments, locator);
 		default:
-			//no action
+			// no action
 		}
 		return null;
 	}
-	
+
 	private Predicate<Resource> createAndPredicate(Node node, Void locator) {
 		return node.getRightOperands().stream().map(child -> {
-			return visit(child,locator);
+			return visit(child, locator);
 		}).reduce(null, (predicate, accumulator) -> {
 			if (predicate == null) {
 				return accumulator;
@@ -56,9 +62,16 @@ public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
 		});
 	}
 
+	/**
+	 * Returns a predicate which consists of a series of Or statements
+	 * 
+	 * @param node
+	 * @param param
+	 * @return
+	 */
 	private Predicate<Resource> createOrPredicate(Node node, Void param) {
 		return node.getRightOperands().stream().map(child -> {
-			return visit(child,param);
+			return visit(child, param);
 		}).reduce(null, (predicate, accumulator) -> {
 			if (predicate == null) {
 				return accumulator;
@@ -66,10 +79,15 @@ public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
 			return accumulator.or(predicate);
 		});
 	}
-	
-	private Predicate<Resource> createComparisonPredicate(Node comparisonNode, List<Function<Resource, Object>> arguments, Void locator) {
-		Function<Resource, Object> operand = comparisonNode.getLeftOperand().accept(valueVisitor,locator);
+
+	private Predicate<Resource> createComparisonPredicate(Node comparisonNode,
+			List<Function<Resource, Object>> arguments, Void locator) {
+		Function<Resource, Object> operand = comparisonNode.getLeftOperand().accept(valueVisitor, locator);
 		return ComparisonFactory.toPredicate(comparisonNode, operand, arguments);
+	}
+
+	public ValueVisitor getValueVisitor() {
+		return valueVisitor;
 	}
 
 }

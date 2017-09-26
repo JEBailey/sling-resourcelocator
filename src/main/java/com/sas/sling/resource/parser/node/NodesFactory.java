@@ -39,7 +39,7 @@ public class NodesFactory implements ParserConstants {
 	}
 
 	/**
-	 * Creates a specific {@link LogicalNode} instance for the specified
+	 * Creates a specific {@link Node} instance for the 'AND'
 	 * operator and with the given children nodes.
 	 *
 	 * @param operator
@@ -50,7 +50,7 @@ public class NodesFactory implements ParserConstants {
 	 *         operator.
 	 */
 	public Node createAndNode(List<Node> children) {
-		return new Node(NodeType.AND, children);
+		return new Node("and", NodeType.AND, children);
 	}
 
 	/**
@@ -92,8 +92,8 @@ public class NodesFactory implements ParserConstants {
 		return new Node(value, type);
 	}
 
-	public Node createFunction(Node functionName, List<Node> args) {
-		return new Node(functionName.getValue(), NodeType.FUNCTION, args);
+	public Node createFunction(Node functionName, List<Node> children) {
+		return new Node(functionName.getValue(), NodeType.FUNCTION, children);
 	}
 
 	public Node createPropertySelector(String image) {

@@ -20,7 +20,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.sling.api.resource.Resource;
 
 import com.sas.sling.resource.parser.conversion.ConversionHandler;
