@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
 
 /**
@@ -101,7 +102,7 @@ public class PropertyPredicates {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			@SuppressWarnings("unchecked")
-			T propValue = (T) resource.adaptTo(ValueMap.class).get(key,
+			T propValue = (T) valueMapOf(resource).get(key,
 					type.getClass());
 			return type.equals(propValue);
 		};
@@ -116,7 +117,7 @@ public class PropertyPredicates {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			@SuppressWarnings("unchecked")
-			T propValue = (T) resource.adaptTo(ValueMap.class).get(key,
+			T propValue = (T) valueMapOf(resource).get(key,
 					type.getClass());
 			if (propValue instanceof Comparable<?>){
 				return ((Comparable<T>)propValue).compareTo(type) > 0;
@@ -134,7 +135,7 @@ public class PropertyPredicates {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			@SuppressWarnings("unchecked")
-			T propValue = (T) resource.adaptTo(ValueMap.class).get(key,
+			T propValue = (T) valueMapOf(resource).get(key,
 					type.getClass());
 			if (propValue instanceof Comparable<?>){
 				return ((Comparable<T>)propValue).compareTo(type) >= 0;
@@ -152,7 +153,7 @@ public class PropertyPredicates {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			@SuppressWarnings("unchecked")
-			T propValue = (T) resource.adaptTo(ValueMap.class).get(key,
+			T propValue = (T) valueMapOf(resource).get(key,
 					type.getClass());
 			if (propValue instanceof Comparable<?>){
 				return ((Comparable<T>)propValue).compareTo(type) < 0;
@@ -170,7 +171,7 @@ public class PropertyPredicates {
 		Objects.requireNonNull(type, "type value may not be null");
 		return resource -> {
 			@SuppressWarnings("unchecked")
-			T propValue = (T) resource.adaptTo(ValueMap.class).get(key,
+			T propValue = (T) valueMapOf(resource).get(key,
 					type.getClass());
 			if (propValue instanceof Comparable<?>){
 				return ((Comparable<T>)propValue).compareTo(type) >= 0;
@@ -188,7 +189,7 @@ public class PropertyPredicates {
 	public <T> Predicate<Resource> contains(final T[] values) {
 		Objects.requireNonNull(values, "value may not be null");
 		return resource -> {
-			T[] propValues = (T[]) resource.adaptTo(ValueMap.class).get(key,
+			T[] propValues = (T[]) valueMapOf(resource).get(key,
 					values.getClass());
 			if (propValues == null) {
 				if (values.length > 1) {
@@ -197,7 +198,7 @@ public class PropertyPredicates {
 					return false;
 				}
 				Class<?> componentType = values.getClass().getComponentType();
-				T tempValue = (T) resource.adaptTo(ValueMap.class).get(key,
+				T tempValue = (T) valueMapOf(resource).get(key,
 						componentType);
 				if (tempValue != null) {
 					propValues = (T[]) Array.newInstance(componentType, 1);
@@ -228,7 +229,7 @@ public class PropertyPredicates {
 	public <T> Predicate<Resource> isIn(final T[] values) {
 		Objects.requireNonNull(values, "values may not be null");
 		return resource -> {
-			Object propValue = resource.adaptTo(ValueMap.class).get(key,
+			Object propValue = valueMapOf(resource).get(key,
 					values.getClass().getComponentType());
 			if (propValue == null) {
 				return false;
@@ -248,7 +249,7 @@ public class PropertyPredicates {
 	 * @return a predicate that determines existence of the value
 	 */
 	public Predicate<Resource> exists() {
-		return resource -> resource.adaptTo(ValueMap.class).get(key) != null;
+		return resource -> valueMapOf(resource).get(key) != null;
 	}
 
 	/**
@@ -264,7 +265,7 @@ public class PropertyPredicates {
 	public Predicate<Resource> isNotIn(final Object... objects) {
 		Objects.requireNonNull(objects, "objects may not be null");
 		return resource -> {
-			Object value = resource.adaptTo(ValueMap.class).get(key);
+			Object value = valueMapOf(resource).get(key);
 
 			for (Object object : objects) {
 				if (object.equals(value)) {
@@ -273,6 +274,13 @@ public class PropertyPredicates {
 			}
 			return true;
 		};
+	}
+	
+	private ValueMap valueMapOf(Resource resource){
+		if (resource == null || ResourceUtil.isNonExistingResource(resource)){
+			return ValueMap.EMPTY;
+		}
+		 return resource.adaptTo(ValueMap.class);
 	}
 	
 }

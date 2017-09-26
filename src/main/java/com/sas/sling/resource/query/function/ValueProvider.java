@@ -13,15 +13,28 @@
  */
 package com.sas.sling.resource.query.function;
 
+import java.util.List;
 import java.util.function.Function;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.sas.sling.resource.parser.node.Node;
-import com.sas.sling.resource.parser.node.Visitor;
-
+/**
+ * This interface is used to to create a provider that will be mapped to a
+ * function in the ValueVisitor.
+ * 
+ */
 public interface ValueProvider {
 
-	Function<Resource, Object> provision(Node node, Visitor<Function<Resource, Object>, Void> visitor);
+	/**
+	 * This method provides a Function which accepts the resource being tested and
+	 * returns an Object to be used as part of the comparison. The returned Object
+	 * is not necessarily tied to the resource
+	 * 
+	 * @param arguments
+	 *            A list of Value Providers which represent the arguments.
+	 * @return Function object which will provide a String, Instant, or Number based
+	 *         Object to be used as part of a comparison or Function
+	 */
+	Function<Resource, Object> provision(List<Function<Resource, Object>> arguments);
 
 }

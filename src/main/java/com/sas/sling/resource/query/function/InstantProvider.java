@@ -23,22 +23,19 @@ import java.util.function.Function;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.sas.sling.resource.parser.node.Node;
-import com.sas.sling.resource.parser.node.Visitor;
-
 public class InstantProvider implements ValueProvider {
 
 	@Override
-	public Function<Resource, Object> provision(Node node, Visitor<Function<Resource, Object>, Void> visitor) {
-		List<Function<Resource, Object>> children = node.visitChildren(visitor, null);
+	public Function<Resource, Object> provision(List<Function<Resource, Object>> arguments) {
+
 		return resource -> {
-			if (children.isEmpty()) {
+			if (arguments.isEmpty()) {
 				return Instant.now();
 			}
-			String dateString = children.get(0).apply(resource).toString();
+			String dateString = arguments.get(0).apply(resource).toString();
 			String formatString = null;
-			if (children.size() > 1) {
-				formatString = children.get(1).apply(resource).toString();
+			if (arguments.size() > 1) {
+				formatString = arguments.get(1).apply(resource).toString();
 				SimpleDateFormat dateFormat = new SimpleDateFormat(formatString);
 				try {
 					return Instant.ofEpochMilli(dateFormat.parse(dateString).getTime());
