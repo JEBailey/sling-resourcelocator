@@ -36,7 +36,6 @@ import org.apache.sling.api.resource.ValueMap;
  * exists = is the property of the child <br> 
  * contains = property is an array which contains all of the arguments passed in<br>
  * 
- * @author J.E. Bailey
  *
  */
 public class PropertyPredicates {
