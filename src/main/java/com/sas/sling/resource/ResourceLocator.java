@@ -263,7 +263,8 @@ public class ResourceLocator {
 	public Stream<Resource> stream() {
 		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(new Iterator<Resource>() {
 
-			Deque<Resource> resourcesToCheck = new ArrayDeque<>();
+			LinkedList<Resource> resourcesToCheck = new LinkedList<>();
+			LinkedList<Resource> approvedChildren = new LinkedList<>();
 
 			{
 				resourcesToCheck.addFirst(resource);
@@ -277,11 +278,14 @@ public class ResourceLocator {
 			@Override
 			public Resource next() {
 				Resource current = resourcesToCheck.removeFirst();
+				
+				approvedChildren.clear();
 				current.listChildren().forEachRemaining(child -> {
 					if (traversalControl.orElse(e -> true).test(child)) {
-						resourcesToCheck.addFirst(child);
+						approvedChildren.push(child);
 					}
 				});
+				resourcesToCheck.addAll(0, approvedChildren);
 				return current;
 			}
 		}, Spliterator.ORDERED | Spliterator.IMMUTABLE), false);
@@ -299,7 +303,7 @@ public class ResourceLocator {
 		return stream();
 	}
 	
-	private Predicate<Resource> parse(String filter) throws ParseException{
+	public Predicate<Resource> parse(String filter) throws ParseException{
 		Node rootNode = new Parser(new ByteArrayInputStream(filter.getBytes())).Input();
 		return rootNode.accept(getVisitor(),null);
 	}

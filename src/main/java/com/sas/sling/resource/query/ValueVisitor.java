@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
 
 import com.sas.sling.resource.parser.conversion.Null;
@@ -58,7 +59,7 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 			return resource -> numericReply;
 		case PROPERTY:
 			return resource -> {
-				Object value = resource.adaptTo(ValueMap.class).get(node.getValue());
+				Object value = valueMapOf(resource).get(node.getValue());
 				if (value instanceof Boolean) {
 					return value.toString();
 				}
@@ -94,6 +95,13 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 
 	public ValueProvider removeFunction(String functionName) {
 		return this.functions.remove(functionName);
+	}
+	
+	private ValueMap valueMapOf(Resource resource){
+		if (resource == null || ResourceUtil.isNonExistingResource(resource)){
+			return ValueMap.EMPTY;
+		}
+		 return resource.adaptTo(ValueMap.class);
 	}
 
 }
