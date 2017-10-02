@@ -19,8 +19,7 @@ import java.util.function.Function;
 import org.apache.sling.api.resource.Resource;
 
 /**
- * This interface is used to to create a provider that will be mapped to a
- * function in the ValueVisitor.
+ * Defines the method used to obtain the function which resolves to a value
  * 
  */
 public interface ValueProvider {

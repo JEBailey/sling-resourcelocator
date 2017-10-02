@@ -14,8 +14,6 @@
 package com.sas.sling.resource;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -204,8 +202,9 @@ public class ResourceLocator {
 	 * @return List of matching resource or empty list if callback is enabled
 	 */
 	public List<Resource> locateResources(Predicate<Resource> condition) {
-		List<Resource> resourcesToReturn = new LinkedList<>();
-		Deque<Resource> resourcesToCheck = new ArrayDeque<>();
+		LinkedList<Resource> resourcesToReturn = new LinkedList<>();
+		LinkedList<Resource> resourcesToCheck = new LinkedList<>();
+		LinkedList<Resource> approvedChildren = new LinkedList<>();
 
 		resourcesToCheck.add(resource);
 
@@ -224,12 +223,16 @@ public class ResourceLocator {
 					callback.orElse(e -> resourcesToReturn.add(e)).accept(current);
 				}
 			}
-			Iterator<Resource> childs = current.listChildren();
-			childs.forEachRemaining(child -> {
+			Iterator<Resource> children = current.listChildren();
+			approvedChildren.clear();
+			
+			children.forEachRemaining(child -> {
 				if (traversalControl.orElse(e -> true).test(child)) {
-					resourcesToCheck.push(child);
+					approvedChildren.add(child);
 				}
 			});
+			resourcesToCheck.addAll(0, approvedChildren);
+			
 			if (count > max) {
 				break;
 			}
@@ -286,6 +289,7 @@ public class ResourceLocator {
 					}
 				});
 				resourcesToCheck.addAll(0, approvedChildren);
+				
 				return current;
 			}
 		}, Spliterator.ORDERED | Spliterator.IMMUTABLE), false);
