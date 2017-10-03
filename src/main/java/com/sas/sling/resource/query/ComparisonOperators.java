@@ -21,7 +21,7 @@ import java.util.Optional;
  * types
  */
 public enum ComparisonOperators {
-	EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, LIKE, CONTAINS, CONTAINS_NOT, IN, NOT_IN;
+	EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, LIKE, CONTAINS, CONTAINS_NOT, CONTAINS_ANY, IN, NOT_IN;
 
 	
 	/**
@@ -54,6 +54,8 @@ public enum ComparisonOperators {
 			return Optional.of(CONTAINS);
 		case " contains not":
 			return Optional.of(CONTAINS_NOT);
+		case " contains any":
+			return Optional.of(CONTAINS_ANY);
 		case " in":
 			return Optional.of(IN);
 		case " not in":

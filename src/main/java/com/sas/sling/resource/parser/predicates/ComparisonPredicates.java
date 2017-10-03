@@ -181,6 +181,24 @@ public class ComparisonPredicates {
 		};
 	}
 
+	public static Predicate<Resource> containsAny(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
+		return resource -> {
+			String[] lhValues = adaptToArray(lhs.apply(resource));
+			String[] rhValues = adaptToArray(rhs.apply(resource));
+			if (lhValues == null || rhValues == null) {
+				return false;
+			}
+			for (String rhValue : rhValues) {
+				for (String lhValue : lhValues) {
+					if (lhValue.equals(rhValue)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		};
+	}
+
 	public static Predicate<Resource> in(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
@@ -204,12 +222,12 @@ public class ComparisonPredicates {
 			return true;
 		};
 	}
-	
+
 	private static Number standardizeNumbers(Number value, Class<? extends Number> klass) {
-		if (value.getClass() == klass || value instanceof BigDecimal){
+		if (value.getClass() == klass || value instanceof BigDecimal) {
 			return value;
 		}
-		if (value instanceof Double){
+		if (value instanceof Double) {
 			return BigDecimal.valueOf(value.doubleValue());
 		}
 		return BigDecimal.valueOf(value.longValue());

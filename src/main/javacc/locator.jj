@@ -110,6 +110,7 @@ TOKEN :
     | " like"
     | " not"
     | " contains"
+    | " any"
     | " in"
     )+ >
 }

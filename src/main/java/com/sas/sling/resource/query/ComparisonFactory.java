@@ -51,6 +51,8 @@ public class ComparisonFactory {
 			return ComparisonPredicates.contains(leftHandStatement, rightHandStatement);
 		case CONTAINS_NOT:
 			return ComparisonPredicates.contains(leftHandStatement, rightHandStatement).negate();
+		case CONTAINS_ANY:
+			return ComparisonPredicates.containsAny(leftHandStatement, rightHandStatement);
 		case IN:
 			return ComparisonPredicates.in(leftHandStatement, rightHandStatement);
 		case NOT_IN:

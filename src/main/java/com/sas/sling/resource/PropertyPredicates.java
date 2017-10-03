@@ -224,6 +224,50 @@ public class PropertyPredicates {
 		};
 
 	}
+	
+	/**
+	 * Contains any take one or move values as it's input and returns true if any of
+	 * the property values matches any of the provides values.
+	 * 
+	 * @param values
+	 *            One or more objects to be compared with
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> Predicate<Resource> containsAny(final T... values) {
+		Objects.requireNonNull(values, "value may not be null");
+		return resource -> {
+			T[] propValues = (T[]) valueMapOf(resource).get(key, values.getClass());
+			if (propValues == null) {
+				if (values.length > 1) {
+					// no point converting if the number of values to test
+					// exceeds the possible values in the repository
+					return false;
+				}
+				Class<?> componentType = values.getClass().getComponentType();
+				T tempValue = (T) valueMapOf(resource).get(key, componentType);
+				if (tempValue != null) {
+					propValues = (T[]) Array.newInstance(componentType, 1);
+					propValues[0] = tempValue;
+				}
+			}
+			// property identified by resource is not present
+			if (propValues == null) {
+				return false;
+			}
+			// validate that all items in values have matches in properties
+			for (T item : values) {
+				for (T propItem : propValues) {
+					if (item.equals(propItem)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		};
+
+	}
+
 
 	public <T> Predicate<Resource> isIn(final T[] values) {
 		Objects.requireNonNull(values, "values may not be null");
