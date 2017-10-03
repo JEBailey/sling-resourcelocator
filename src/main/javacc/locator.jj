@@ -80,12 +80,12 @@ TOKEN :
 {
   < AND :
     (
-      ";"
+      " && "
     | " and "
     ) >
 | < OR :
     (
-      ","
+      " || "
     | " or "
     ) >
 | < NULL : " null" >
@@ -95,6 +95,7 @@ TOKEN :
 | < RPAREN : ")" >
 | < LBRACKET : "[" >
 | < RBRACKET : "]" >
+| < COMMA : "," >
 | < COMP_ALT :
     (
       ">"
@@ -254,7 +255,7 @@ List < Node > CommaSepArguments() :
     list.add(arg);
   }
   (
-    < OR > 
+    < COMMA > 
     arg = Argument()
     {
       list.add(arg);

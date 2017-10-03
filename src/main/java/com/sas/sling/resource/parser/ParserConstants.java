@@ -49,17 +49,19 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int RBRACKET = 21;
   /** RegularExpression Id. */
-  int COMP_ALT = 22;
+  int COMMA = 22;
   /** RegularExpression Id. */
-  int NUMBER = 23;
+  int COMP_ALT = 23;
   /** RegularExpression Id. */
-  int INTEGER = 24;
+  int NUMBER = 24;
   /** RegularExpression Id. */
-  int FRACTIONAL_DIGITS = 25;
+  int INTEGER = 25;
   /** RegularExpression Id. */
-  int EXPONENT = 26;
+  int FRACTIONAL_DIGITS = 26;
   /** RegularExpression Id. */
-  int DIGITS = 27;
+  int EXPONENT = 27;
+  /** RegularExpression Id. */
+  int DIGITS = 28;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -88,6 +90,7 @@ public interface ParserConstants {
     "\")\"",
     "\"[\"",
     "\"]\"",
+    "\",\"",
     "<COMP_ALT>",
     "<NUMBER>",
     "<INTEGER>",

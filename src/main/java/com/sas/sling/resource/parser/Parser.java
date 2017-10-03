@@ -165,14 +165,14 @@ public final class Parser implements ParserConstants {
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case OR:
+      case COMMA:
         ;
         break;
       default:
         jj_la1[5] = jj_gen;
         break label_3;
       }
-      jj_consume_token(OR);
+      jj_consume_token(COMMA);
       arg = Argument();
       list.add(arg);
     }
@@ -269,7 +269,7 @@ public final class Parser implements ParserConstants {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x4000,0x2000,0x979c00,0x939c00,0x979c00,0x4000,0x939c00,0x839800,};
+      jj_la1_0 = new int[] {0x4000,0x2000,0x1179c00,0x1139c00,0x1179c00,0x400000,0x1139c00,0x1039800,};
    }
 
   /** Constructor with InputStream. */
@@ -386,7 +386,7 @@ public final class Parser implements ParserConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[28];
+    boolean[] la1tokens = new boolean[29];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -400,7 +400,7 @@ public final class Parser implements ParserConstants {
         }
       }
     }
-    for (int i = 0; i < 28; i++) {
+    for (int i = 0; i < 29; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

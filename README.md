@@ -42,7 +42,9 @@ Derivative of JCR-SQL2.
 | Name       | Comparison Type | Description                                |
 | ---------  | --------------- | --------------------------------           |
 | and        | NA              | Logical AND                                |
+| &&         | NA              | Logical AND                                |
 | or         | NA              | Logical OR                                 |
+| ||         | NA              | Logical OR                                 |
 | ==         | String          | Equal operator for Strings                 |
 | <          | Numeric         | Less than operator for Numbers             |
 | <=         | Numeric         | Less than or equal operator for Numbers    |
@@ -97,7 +99,7 @@ If you need a different date format then the date function can accommodate that
 
 Or you could just add your own custom Function 
 
-Dates are represented on the resource side as a Calendar object. Based on the operation being performed this object is treated either as a String in ISO-8601 format or as a number. The number representing the time in milliseconds since the EPOCH UTC region
+Dates are transitionally represented as a java.util.Instant which is then converted to a String in ISO-8601 format or as a Long number based on the type of comparison. The number representing the time in milliseconds since the EPOCH UTC region
 
 ### Functions
 
