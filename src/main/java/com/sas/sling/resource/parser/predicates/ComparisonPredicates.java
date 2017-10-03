@@ -165,6 +165,9 @@ public class ComparisonPredicates {
 			if (lhValues == null || rhValues == null) {
 				return false;
 			}
+			if (lhValues.length < rhValues.length ) {
+				return false;
+			}
 			for (String rhValue : rhValues) {
 				innerLoop: {
 					for (String lhValue : lhValues) {
