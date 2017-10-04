@@ -20,7 +20,7 @@ import java.util.Optional;
  * Additionally provides a default mapping of String values that match these
  * types
  */
-public enum ComparisonOperators {
+public enum ComparisonOperator {
 	EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, LIKE, CONTAINS, CONTAINS_NOT, CONTAINS_ANY, IN, NOT_IN;
 
 	
@@ -30,7 +30,7 @@ public enum ComparisonOperators {
 	 * @param operation as a string
 	 * @return Optional Enum which represents the comparison.
 	 */
-	public static Optional<ComparisonOperators> getSimpleOperator(String operation) {
+	public static Optional<ComparisonOperator> getSimpleOperator(String operation) {
 		switch (operation) {
 		case "==":
 		case " is":

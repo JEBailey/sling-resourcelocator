@@ -37,7 +37,7 @@ public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
 	@Override
 	public Predicate<Resource> visit(Node node, Void locator) {
 		List<Function<Resource, Object>> arguments = Collections.emptyList();
-		switch (node.getType()) {
+		switch (node.type) {
 		case AND:
 			return createAndPredicate(node, locator);
 		case OR:
@@ -82,8 +82,8 @@ public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
 
 	private Predicate<Resource> createComparisonPredicate(Node comparisonNode,
 			List<Function<Resource, Object>> arguments, Void locator) {
-		Function<Resource, Object> operand = comparisonNode.getLeftOperand().accept(valueVisitor, locator);
-		return ComparisonFactory.toPredicate(comparisonNode, operand, arguments);
+		Function<Resource, Object> leftHandStatement = comparisonNode.leftNode.accept(valueVisitor, locator);
+		return ComparisonFactory.toPredicate(comparisonNode, leftHandStatement, arguments);
 	}
 
 	public ValueVisitor getValueVisitor() {

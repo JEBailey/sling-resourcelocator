@@ -13,6 +13,7 @@
  */
 package com.sas.sling.resource.query;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 
 	@Override
 	public Function<Resource, Object> visit(Node node, Void param) {
-		switch (node.getType()) {
+		switch (node.type) {
 		case FUNCTION:
 			break;
 		case NULL:
@@ -49,7 +50,7 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 					numericValue = Integer.valueOf(numberText);
 				} catch (NumberFormatException nfe1) {
 					try {
-						numericValue = Double.valueOf(numberText);
+						numericValue = new BigDecimal(numberText);
 					} catch (NumberFormatException nfe2) {
 					 //swallow
 					}

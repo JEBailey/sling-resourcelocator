@@ -4,8 +4,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import com.sas.sling.resource.parser.node.*;
 import com.sas.sling.resource.parser.predicates.*;
+import com.sas.sling.resource.query.*;
 
 public final class Parser implements ParserConstants {
   private NodesFactory factory = new NodesFactory();
@@ -105,7 +107,11 @@ public final class Parser implements ParserConstants {
     sel = Argument();
     op = Operator();
     args = Arguments();
-    {if (true) return factory.createComparisonNode(op, sel, args);}
+    Optional<ComparisonOperator> oper = ComparisonOperator.getSimpleOperator(op);
+    if (!oper.isPresent()) {
+      {if (true) throw new TokenMgrError(op + " is not a valid comparison", TokenMgrError.LEXICAL_ERROR);}
+    }
+    {if (true) return factory.createComparisonNode(oper.get(), sel, args);}
     throw new Error("Missing return statement in function");
   }
 

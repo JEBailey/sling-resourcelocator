@@ -14,7 +14,6 @@
 package com.sas.sling.resource.query;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -28,15 +27,15 @@ public class ComparisonFactory {
 	public static Predicate<Resource> toPredicate(Node node, Function<Resource, Object> leftHandStatement,
 			List<Function<Resource, Object>> arguments) {
 
-		Optional<ComparisonOperators> op = ComparisonOperators.getSimpleOperator(node.getValue());
+		ComparisonOperator op = node.comparisonOp;
 
 		Function<Resource, Object> rightHandStatement = arguments.get(0);
 
-		switch (op.get()) {
+		switch (op) {
 		case EQUAL:
 			return ComparisonPredicates.is(leftHandStatement, rightHandStatement);
 		case NOT_EQUAL:
-			return  ComparisonPredicates.is(leftHandStatement, rightHandStatement).negate();
+			return ComparisonPredicates.is(leftHandStatement, rightHandStatement).negate();
 		case GREATER_THAN:
 			return ComparisonPredicates.gt(leftHandStatement, rightHandStatement);
 		case GREATER_THAN_OR_EQUAL:
@@ -58,11 +57,8 @@ public class ComparisonFactory {
 		case NOT_IN:
 			return ComparisonPredicates.in(leftHandStatement, rightHandStatement).negate();
 		}
-
 		System.out.println(rightHandStatement + "is not  been found");
 		return null;
 	}
-
-
 
 }

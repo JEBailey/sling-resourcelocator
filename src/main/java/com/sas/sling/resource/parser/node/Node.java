@@ -19,15 +19,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.sas.sling.resource.query.ComparisonOperator;
+
 /**
  * 
  */
 public class Node implements Iterable<Node> {
 
-	private List<Node> children = Collections.emptyList();
-	private NodeType type;
-	private Node left;
-	private String value;
+	public String value;
+	public NodeType type;
+	public Node leftNode;
+	public List<Node> children = Collections.emptyList();
+	public ComparisonOperator comparisonOp = null;
 
 	/**
 	 * creates a node which represents a String Literal value
@@ -44,7 +47,7 @@ public class Node implements Iterable<Node> {
 
 	public Node(String value, Node lhs, List<Node> children) {
 		this(value, NodeType.COMPARISON, children);
-		this.left = lhs;
+		this.leftNode = lhs;
 	}
 
 	public Node(String value, NodeType type, List<Node> children) {
@@ -55,41 +58,15 @@ public class Node implements Iterable<Node> {
 		}
 	}
 
-	/**
-	 * Accepts the visitor, calls its <tt>visit()</tt> method and returns a result.
-	 *
-	 * <p>
-	 * Each implementation must implement this methods exactly as listed:
-	 * 
-	 * <pre>
-	 * {@code
-	 * public <R, A> R accept(RSQLVisitor<R, A> visitor, A param) {
-	 *     return visitor.visit(this, param);
-	 * }
-	 * }
-	 * </pre>
-	 *
-	 * @param visitor
-	 *            The visitor whose appropriate method will be called.
-	 * @param param
-	 *            An optional parameter to pass to the visitor.
-	 * @param <R>
-	 *            Return type of the visitor's method.
-	 * @param <A>
-	 *            Type of an optional parameter passed to the visitor's method.
-	 * @return An object returned by the visitor (may be <tt>null</tt>).
-	 */
+	public Node(ComparisonOperator op, Node leftHandStatement, List<Node> arguments) {
+		this(op.toString(),leftHandStatement,arguments);
+		this.comparisonOp = op;
+	}
+
 	public <R, A> R accept(Visitor<R, A> visitor, A param) {
 		return visitor.visit(this, param);
 	}
 
-	/**
-	 * Accepts the visitor, calls its <tt>visit()</tt> method and returns the
-	 * result.
-	 *
-	 * This method should just call {@link #accept(Visitor, Object)} with
-	 * <tt>null</tt> as the second argument.
-	 */
 	<R, A> R accept(Visitor<R, A> visitor) {
 		return accept(visitor, null);
 	}
@@ -135,18 +112,6 @@ public class Node implements Iterable<Node> {
 
 	public List<Node> getRightOperands() {
 		return new ArrayList<>(children);
-	}
-
-	public NodeType getType() {
-		return type;
-	}
-
-	public void setType(NodeType type) {
-		this.type = type;
-	}
-
-	public Node getLeftOperand() {
-		return left;
 	}
 
 	public String getValue() {
