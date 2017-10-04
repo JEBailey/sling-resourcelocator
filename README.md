@@ -44,7 +44,7 @@ Derivative of JCR-SQL2.
 | and        | NA              | Logical AND                                |
 | &&         | NA              | Logical AND                                |
 | or         | NA              | Logical OR                                 |
-| \|\|       | NA              | Logical OR                                 |
+|&#124;&#124;| NA              | Logical OR                                 |
 | ==         | String          | Equal operator for Strings                 |
 | <          | Numeric         | Less than operator for Numbers             |
 | <=         | Numeric         | Less than or equal operator for Numbers    |
