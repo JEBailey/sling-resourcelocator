@@ -207,20 +207,20 @@ Node Group() :
 
 Node Comparison() :
 {
-  Node sel;
+  Node leftValue;
   String op = null;
-  List < Node > args;
+  Node rightValue;
 }
 {
-  sel = Argument() 
-  op = Operator() 
-  args = Arguments()
+  leftValue = Argument()
+  op = Operator()
+  rightValue = Argument()
   {
-    Optional<ComparisonOperators> oper = ComparisonOperators.getSimpleOperator(op);
+    Optional<ComparisonOperator> oper = ComparisonOperator.getSimpleOperator(op);
     if (!oper.isPresent()) {
       throw new TokenMgrError(op + " is not a valid comparison", TokenMgrError.LEXICAL_ERROR);
     }
-    return factory.createComparisonNode(oper.get(), sel, args);
+    return factory.createComparisonNode(oper.get(), leftValue, rightValue);
   }
 }
 

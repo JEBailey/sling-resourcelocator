@@ -13,51 +13,44 @@
  */
 package com.sas.sling.resource.query;
 
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.predicates.ComparisonPredicates;
 
 public class ComparisonFactory {
 
-	public static Predicate<Resource> toPredicate(Node node, Function<Resource, Object> leftHandStatement,
-			List<Function<Resource, Object>> arguments) {
-
-		ComparisonOperator op = node.comparisonOp;
-
-		Function<Resource, Object> rightHandStatement = arguments.get(0);
-
+	public static Predicate<Resource> toPredicate(ComparisonOperator op, Function<Resource, Object> leftValue,
+			Function<Resource, Object> rightValue) {
 		switch (op) {
 		case EQUAL:
-			return ComparisonPredicates.is(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.is(leftValue, rightValue);
 		case NOT_EQUAL:
-			return ComparisonPredicates.is(leftHandStatement, rightHandStatement).negate();
+			return ComparisonPredicates.is(leftValue, rightValue).negate();
 		case GREATER_THAN:
-			return ComparisonPredicates.gt(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.gt(leftValue, rightValue);
 		case GREATER_THAN_OR_EQUAL:
-			return ComparisonPredicates.gte(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.gte(leftValue, rightValue);
 		case LESS_THAN:
-			return ComparisonPredicates.lt(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.lt(leftValue, rightValue);
 		case LESS_THAN_OR_EQUAL:
-			return ComparisonPredicates.lte(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.lte(leftValue, rightValue);
 		case LIKE:
-			return ComparisonPredicates.like(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.like(leftValue, rightValue);
 		case CONTAINS:
-			return ComparisonPredicates.contains(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.contains(leftValue, rightValue);
 		case CONTAINS_NOT:
-			return ComparisonPredicates.contains(leftHandStatement, rightHandStatement).negate();
+			return ComparisonPredicates.contains(leftValue, rightValue).negate();
 		case CONTAINS_ANY:
-			return ComparisonPredicates.containsAny(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.containsAny(leftValue, rightValue);
 		case IN:
-			return ComparisonPredicates.in(leftHandStatement, rightHandStatement);
+			return ComparisonPredicates.in(leftValue, rightValue);
 		case NOT_IN:
-			return ComparisonPredicates.in(leftHandStatement, rightHandStatement).negate();
+			return ComparisonPredicates.in(leftValue, rightValue).negate();
 		}
-		System.out.println(rightHandStatement + "is not  been found");
+		System.out.println(rightValue + "is not  been found");
 		return null;
 	}
 

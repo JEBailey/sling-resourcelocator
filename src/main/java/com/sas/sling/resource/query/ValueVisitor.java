@@ -45,7 +45,7 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 		case NUMBER:
 			Number numericValue = null;
 			{
-				String numberText = node.getValue();
+				String numberText = node.text;
 				try {
 					numericValue = Integer.valueOf(numberText);
 				} catch (NumberFormatException nfe1) {
@@ -60,7 +60,7 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 			return resource -> numericReply;
 		case PROPERTY:
 			return resource -> {
-				Object value = valueMapOf(resource).get(node.getValue());
+				Object value = valueMapOf(resource).get(node.text);
 				if (value instanceof Boolean) {
 					return value.toString();
 				}
@@ -70,10 +70,10 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 				return value;
 			};
 		default:
-			return resource -> node.getValue();
+			return resource -> node.text;
 		}
 		// will only get here in the case of the 'FUNCTION' switch case
-		switch (node.getValue()) {
+		switch (node.text) {
 		case "name":
 			return resource -> resource.getName();
 		case "date":
@@ -81,7 +81,7 @@ public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 		case "path":
 			return resource -> resource.getPath();
 		default:
-			ValueProvider temp = functions.get(node.getValue());
+			ValueProvider temp = functions.get(node.text);
 			if (temp !=  null){
 				return temp.provision(node.visitChildren(this, null));
 			}

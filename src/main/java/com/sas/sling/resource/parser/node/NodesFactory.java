@@ -69,8 +69,8 @@ public class NodesFactory implements ParserConstants {
 	 * @throws UnknownOperatorException
 	 *             If no operator for the specified operator token exists.
 	 */
-	public Node createComparisonNode(ComparisonOperator op, Node leftHandStatement, List<Node> arguments) {
-		return new Node(op, leftHandStatement, arguments);
+	public Node createComparisonNode(ComparisonOperator op, Node leftValue, Node rightValue) {
+		return new Node(op, leftValue, rightValue);
 	}
 
 	public Node createArgument(int kind, String literal) {
@@ -93,7 +93,7 @@ public class NodesFactory implements ParserConstants {
 	}
 
 	public Node createFunction(Node functionName, List<Node> children) {
-		return new Node(functionName.getValue(), NodeType.FUNCTION, children);
+		return new Node(functionName.text, NodeType.FUNCTION, children);
 	}
 
 	public Node createPropertySelector(String image) {

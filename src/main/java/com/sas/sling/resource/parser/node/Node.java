@@ -26,9 +26,10 @@ import com.sas.sling.resource.query.ComparisonOperator;
  */
 public class Node implements Iterable<Node> {
 
-	public String value;
+	public String text;
 	public NodeType type;
 	public Node leftNode;
+	public Node rightNode;
 	public List<Node> children = Collections.emptyList();
 	public ComparisonOperator comparisonOp = null;
 
@@ -51,15 +52,17 @@ public class Node implements Iterable<Node> {
 	}
 
 	public Node(String value, NodeType type, List<Node> children) {
-		this.value = value;
+		this.text = value;
 		this.type = type;
 		if (children != null) {
 			this.children = children;
 		}
 	}
 
-	public Node(ComparisonOperator op, Node leftHandStatement, List<Node> arguments) {
-		this(op.toString(),leftHandStatement,arguments);
+	public Node(ComparisonOperator op, Node leftValue, Node rightValue) {
+		this(op.toString(),NodeType.COMPARISON);
+		this.leftNode = leftValue;
+		this.rightNode = rightValue;
 		this.comparisonOp = op;
 	}
 
@@ -72,7 +75,7 @@ public class Node implements Iterable<Node> {
 	}
 
 	public Node withChildren(List<Node> children) {
-		return new Node(this.value, this.type, children);
+		return new Node(this.text, this.type, children);
 	}
 
 	/**
@@ -84,8 +87,8 @@ public class Node implements Iterable<Node> {
 
 	@Override
 	public String toString() {
-		return value + children.stream().map(item -> item.toString())
-				.collect(Collectors.joining(value.toString(), "(", ")"));
+		return text + children.stream().map(item -> item.toString())
+				.collect(Collectors.joining(text.toString(), "(", ")"));
 	}
 
 	@Override
@@ -96,13 +99,13 @@ public class Node implements Iterable<Node> {
 			return false;
 		Node nodes = (Node) o;
 
-		return children.equals(nodes.children) && value == nodes.value;
+		return children.equals(nodes.children) && text == nodes.text;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = children.hashCode();
-		result = 31 * result + value.hashCode();
+		result = 31 * result + text.hashCode();
 		return result;
 	}
 
@@ -110,11 +113,4 @@ public class Node implements Iterable<Node> {
 		return children.stream().map(child -> child.accept(visitor, param)).collect(Collectors.toList());
 	}
 
-	public List<Node> getRightOperands() {
-		return new ArrayList<>(children);
-	}
-
-	public String getValue() {
-		return value;
-	}
 }

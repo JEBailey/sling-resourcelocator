@@ -13,8 +13,6 @@
  */
 package com.sas.sling.resource.query;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -36,24 +34,22 @@ public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
 
 	@Override
 	public Predicate<Resource> visit(Node node, Void locator) {
-		List<Function<Resource, Object>> arguments = Collections.emptyList();
 		switch (node.type) {
 		case AND:
-			return createAndPredicate(node, locator);
+			return createAndPredicate(node);
 		case OR:
-			return createOrPredicate(node, locator);
+			return createOrPredicate(node);
 		case COMPARISON:
-			arguments = node.visitChildren(new ValueVisitor(), locator);
-			return createComparisonPredicate(node, arguments, locator);
+			return createComparisonPredicate(node);
 		default:
 			// no action
 		}
 		return null;
 	}
 
-	private Predicate<Resource> createAndPredicate(Node node, Void locator) {
-		return node.getRightOperands().stream().map(child -> {
-			return visit(child, locator);
+	private Predicate<Resource> createAndPredicate(Node node) {
+		return node.children.stream().map(child -> {
+			return visit(child, null);
 		}).reduce(null, (predicate, accumulator) -> {
 			if (predicate == null) {
 				return accumulator;
@@ -69,9 +65,9 @@ public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
 	 * @param param
 	 * @return
 	 */
-	private Predicate<Resource> createOrPredicate(Node node, Void param) {
-		return node.getRightOperands().stream().map(child -> {
-			return visit(child, param);
+	private Predicate<Resource> createOrPredicate(Node node ) {
+		return node.children.stream().map(child -> {
+			return visit(child, null);
 		}).reduce(null, (predicate, accumulator) -> {
 			if (predicate == null) {
 				return accumulator;
@@ -80,10 +76,10 @@ public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
 		});
 	}
 
-	private Predicate<Resource> createComparisonPredicate(Node comparisonNode,
-			List<Function<Resource, Object>> arguments, Void locator) {
-		Function<Resource, Object> leftHandStatement = comparisonNode.leftNode.accept(valueVisitor, locator);
-		return ComparisonFactory.toPredicate(comparisonNode, leftHandStatement, arguments);
+	private Predicate<Resource> createComparisonPredicate(Node comparisonNode) {
+		Function<Resource, Object> leftValue = comparisonNode.leftNode.accept(valueVisitor, null);
+		Function<Resource, Object> rightValue = comparisonNode.rightNode.accept(valueVisitor, null);
+		return ComparisonFactory.toPredicate(comparisonNode.comparisonOp, leftValue, rightValue);
 	}
 
 	public ValueVisitor getValueVisitor() {

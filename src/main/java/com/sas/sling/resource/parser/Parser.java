@@ -101,17 +101,17 @@ public final class Parser implements ParserConstants {
   }
 
   final public Node Comparison() throws ParseException {
-  Node sel;
+  Node leftValue;
   String op = null;
-  List < Node > args;
-    sel = Argument();
+  Node rightValue;
+    leftValue = Argument();
     op = Operator();
-    args = Arguments();
+    rightValue = Argument();
     Optional<ComparisonOperator> oper = ComparisonOperator.getSimpleOperator(op);
     if (!oper.isPresent()) {
       {if (true) throw new TokenMgrError(op + " is not a valid comparison", TokenMgrError.LEXICAL_ERROR);}
     }
-    {if (true) return factory.createComparisonNode(oper.get(), sel, args);}
+    {if (true) return factory.createComparisonNode(oper.get(), leftValue, rightValue);}
     throw new Error("Missing return statement in function");
   }
 
