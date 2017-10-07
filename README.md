@@ -1,5 +1,7 @@
 # Resource Locator Utility
 
+[![Join the chat at https://gitter.im/sling-resourcelocator/Lobby](https://badges.gitter.im/sling-resourcelocator/Lobby.svg)](https://gitter.im/sling-resourcelocator/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 * Resource Locator Utility for Apache Sling 
 * Fluent interface for filtering of a resource tree.
 * Predefined predicates for Resources and Properties
