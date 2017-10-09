@@ -26,22 +26,20 @@ import com.sas.sling.resource.parser.conversion.ConversionHandler;
 import com.sas.sling.resource.parser.conversion.Null;
 
 /**
- * Provides property based predicates. The method follows the following
- * conventions
- * 
- * <br>
- * is = equal to argument<br>
- * isNot = not equal to argument<br>
- * isIn = property is a single value which matches one of the arguments passed
- * in for comparison<br>
- * contains = property is an array which contains all of the arguments passed
- * in<br>
- * 
- * @author J.E. Bailey
+ * Predicates to handle comparisons that are defined in the filter language
  *
  */
 public class ComparisonPredicates {
 
+	/**
+	 * Values are converted to Strings.
+	 * 
+	 * @param lhs
+	 *            Function which provides value for comparison
+	 * @param rhs
+	 *            Function which provides value for comparison
+	 * @return true if right hand String is equal to left hand String
+	 */
 	public static Predicate<Resource> is(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
@@ -55,8 +53,15 @@ public class ComparisonPredicates {
 
 	}
 
-	/*
-	
+	/**
+	 * Values are converted to Strings. Right hand value is treated as a Regular
+	 * expression.
+	 * 
+	 * @param lhs
+	 *            Function which provides value for comparison
+	 * @param rhs
+	 *            Function which provides value for comparison
+	 * @return true if right hand value pattern matches the left hand value
 	 */
 	public static Predicate<Resource> like(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "value may not be null");
@@ -71,9 +76,15 @@ public class ComparisonPredicates {
 
 	}
 
-	/*
-	 * Generic greater then method that is accessed via public methods that have
-	 * specific types
+	/**
+	 * Values are converted to a Number, and then additionally converted to a common
+	 * type as the basis of comparison
+	 * 
+	 * @param lhs
+	 *            Function which provides value for comparison
+	 * @param rhs
+	 *            Function which provides value for comparison
+	 * @return true if left hand value is greater than right hand value
 	 */
 	@SuppressWarnings("unchecked")
 	public static Predicate<Resource> gt(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
@@ -94,6 +105,16 @@ public class ComparisonPredicates {
 
 	}
 
+	/**
+	 * Values are converted to a Number, and then additionally converted to a common
+	 * type as the basis of comparison
+	 * 
+	 * @param lhs
+	 *            Function which provides value for comparison
+	 * @param rhs
+	 *            Function which provides value for comparison
+	 * @return true if left hand value is greater than or equal to right hand value
+	 */
 	@SuppressWarnings("unchecked")
 	public static Predicate<Resource> gte(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
@@ -112,9 +133,15 @@ public class ComparisonPredicates {
 		};
 	}
 
-	/*
-	 * Generic greater then method that is accessed via public methods that have
-	 * specific types
+	/**
+	 * Values are converted to a Number, and then additionally converted to a common
+	 * type as the basis of comparison
+	 * 
+	 * @param lhs
+	 *            Function which provides value for comparison
+	 * @param rhs
+	 *            Function which provides value for comparison
+	 * @return true if left hand value is less than right hand value
 	 */
 	@SuppressWarnings("unchecked")
 	public static Predicate<Resource> lt(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
@@ -135,9 +162,15 @@ public class ComparisonPredicates {
 
 	}
 
-	/*
-	 * Generic greater then method that is accessed via public methods that have
-	 * specific types
+	/**
+	 * Values are converted to a Number, and then additionally converted to a common
+	 * type as the basis of comparison
+	 * 
+	 * @param lhs
+	 *            Function which provides value for comparison
+	 * @param rhs
+	 *            Function which provides value for comparison
+	 * @return true if left hand value is less than or equal to right hand value
 	 */
 	@SuppressWarnings("unchecked")
 	public static Predicate<Resource> lte(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
@@ -157,6 +190,15 @@ public class ComparisonPredicates {
 		};
 	}
 
+	/**
+	 * Right and Left values are converted to String arrays
+	 * 
+	 * @param lhs
+	 *            Function which provides value for comparison
+	 * @param rhs
+	 *            Function which provides value for comparison
+	 * @return true if left hand values are a subset of right hand values
+	 */
 	public static Predicate<Resource> contains(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
@@ -165,7 +207,7 @@ public class ComparisonPredicates {
 			if (lhValues == null || rhValues == null) {
 				return false;
 			}
-			if (lhValues.length < rhValues.length ) {
+			if (lhValues.length < rhValues.length) {
 				return false;
 			}
 			for (String rhValue : rhValues) {
@@ -184,6 +226,15 @@ public class ComparisonPredicates {
 		};
 	}
 
+	/**
+	 * Right and Left values are converted to String arrays
+	 * 
+	 * @param lhs
+	 *            Function which provides comparison value
+	 * @param rhs
+	 *            Function which provides comparison value
+	 * @return true if the left hand values matches any of the right hand values
+	 */
 	public static Predicate<Resource> containsAny(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		return resource -> {
 			String[] lhValues = adaptToArray(lhs.apply(resource));
@@ -202,6 +253,15 @@ public class ComparisonPredicates {
 		};
 	}
 
+	/**
+	 * Right and Left values are converted to String arrays
+	 * 
+	 * @param lhs
+	 *            Function which provides value for comparison
+	 * @param rhs
+	 *            Function which provides value for comparison
+	 * @return true if left hand values are a subset of right hand values
+	 */
 	public static Predicate<Resource> in(Function<Resource, Object> lhs, Function<Resource, Object> rhs) {
 		Objects.requireNonNull(rhs, "statement may not be null");
 		return resource -> {
