@@ -26,7 +26,7 @@ import org.junit.Test;
 import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.ParseException;
 
-public class ScriptTestAnd {
+public class ScriptAndOrTest {
 
 	@Rule
 	public final SlingContext context = new SlingContext();
@@ -42,15 +42,23 @@ public class ScriptTestAnd {
 	
 	@Test
 	public void testDateAndProperty() throws ParseException {
-		String query = "[jcr:content/created] < '2013-08-08T16:32:59' and [jcr:content/jcr:title] == 'Mongolian'";
+		String query = "[jcr:content/created] > '2013-08-08T16:32:59' and [jcr:content/jcr:title] == 'Mongolian'";
 		List<Resource> found = handle(START_PATH, query);
-		assertEquals(3, found.size());
+		assertEquals(1, found.size());
 	}
+	
 	@Test
-	public void testDateAndPropertyTwice() throws ParseException {
+	public void testDateAndPropertyGrouping1() throws ParseException {
 		String query = "([jcr:content/created] < '2013-08-08T16:32' and [jcr:content/jcr:title] == 'English') or [jcr:content/jcr:title] == 'Mongolian'";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(4, found.size());
+	}
+	
+	@Test
+	public void testDateAndPropertyGrouping2() throws ParseException {
+		String query = "[jcr:content/created] < '2013-08-08T16:32' and ([jcr:content/jcr:title] == 'English' or [jcr:content/jcr:title] == 'Mongolian')";
+		List<Resource> found = handle(START_PATH, query);
+		assertEquals(3, found.size());
 	}
 	
 	@Test

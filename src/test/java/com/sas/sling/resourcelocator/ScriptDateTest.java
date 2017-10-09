@@ -28,7 +28,7 @@ import org.junit.Test;
 import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.ParseException;
 
-public class ScriptTestDate {
+public class ScriptDateTest {
 
 	@Rule
 	public final SlingContext context = new SlingContext();

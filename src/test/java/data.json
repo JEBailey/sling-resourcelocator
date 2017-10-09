@@ -90,7 +90,7 @@
 			"sling:resourceType": "sample/components/homepage",
 			"views" : 3,
 			"jcr:createdBy": "admin",
-			"created": "Thu Aug 07 2015 16:32:59 GMT+0200",
+			"created": "Thu Aug 07 2015 16:30:59 GMT+0200",
 			"par": {
 				"jcr:primaryType": "nt:unstructured",
 				"sling:resourceType": "foundation/components/parsys",
