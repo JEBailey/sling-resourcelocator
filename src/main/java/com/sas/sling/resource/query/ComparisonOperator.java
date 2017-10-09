@@ -21,7 +21,7 @@ import java.util.Optional;
  * types
  */
 public enum ComparisonOperator {
-	EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, LIKE, CONTAINS, CONTAINS_NOT, CONTAINS_ANY, IN, NOT_IN;
+	EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, LIKE, LIKE_NOT, CONTAINS, CONTAINS_NOT, CONTAINS_ANY, CONTAINS_NOT_ANY, IN, NOT_IN;
 
 	
 	/**
@@ -31,36 +31,42 @@ public enum ComparisonOperator {
 	 * @return Optional Enum which represents the comparison.
 	 */
 	public static Optional<ComparisonOperator> getSimpleOperator(String operation) {
+		ComparisonOperator op = null;
 		switch (operation) {
 		case "==":
 		case " is":
-			return Optional.of(EQUAL);
+			op = EQUAL;
 		case "!=":
 		case " is not":
-			return Optional.of(NOT_EQUAL);
+			op = NOT_EQUAL;
 		case ">":
 		case " greater than":
-			return Optional.of(GREATER_THAN);
+			op = GREATER_THAN;
 		case ">=":
-			return Optional.of(GREATER_THAN_OR_EQUAL);
+			op = GREATER_THAN_OR_EQUAL;
 		case "<":
 		case " less than":
-			return Optional.of(LESS_THAN);
+			op = LESS_THAN;
 		case "<=":
-			return Optional.of(LESS_THAN_OR_EQUAL);
+			op = LESS_THAN_OR_EQUAL;
 		case " like":
-			return Optional.of(LIKE);
+			op = LIKE;
+		case " like not":
+		case " not like":
+			op = LIKE_NOT;
 		case " contains":
-			return Optional.of(CONTAINS);
+			op = CONTAINS;
 		case " contains not":
-			return Optional.of(CONTAINS_NOT);
+			op = CONTAINS_NOT;
 		case " contains any":
-			return Optional.of(CONTAINS_ANY);
+			op = CONTAINS_ANY;
+		case " contains not any":
+			op = CONTAINS_NOT_ANY;
 		case " in":
-			return Optional.of(IN);
+			op = IN;
 		case " not in":
-			return Optional.of(NOT_IN);
+			op = NOT_IN;
 		}
-		return Optional.empty();
+		return Optional.ofNullable(op);
 	}
 }

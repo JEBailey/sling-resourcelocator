@@ -48,19 +48,22 @@ Derivative of JCR-SQL2.
 | or         | NA              | Logical OR                                 |
 |&#124;&#124;| NA              | Logical OR                                 |
 | ==         | String          | Equal operator for Strings                 |
-| <          | Numeric         | Less than operator for Numbers             |
-| <=         | Numeric         | Less than or equal operator for Numbers    |
-| >          | Numeric         | Greater than operator for Numbers          |
-| >=         | Numeric         | Greater than or equal operator for Numbers |
+| <          | Number         | Less than operator for Numbers             |
+| <=         | Number         | Less than or equal operator for Numbers    |
+| >          | Number         | Greater than operator for Numbers          |
+| >=         | Number         | Greater than or equal operator for Numbers |
 | !=         | String          | Is not equal to for Strings                |
-| less than  | Numeric         | less than operator for Numbers             |
-| greater than| Numeric        | greater than operator for Numbers          |
+| less than  | Number         | less than operator for Numbers             |
+| greater than| Number        | greater than operator for Numbers          |
 | is          | String         | Equal operator for Strings                 |
 | is not      | String         | Is not equal operator for Strings          |
-| like        | String         | Regex match against String                 |
-| contains    | String         | Is matching for one or more items in array |
-| contains not| String         | is right hand value not in left hand values|
-
+| like        | String | Regex  | Regex match against String                |
+| like not    | String | Regex  | Regex match against String                |
+| not like    | String | Regex  | Same as 'like not'               |
+| contains         | String[] | String[] | String[] contains all of items |
+| contains not     | String[] | String[] | String[] does not contain all of the items |
+| contains any     | String[] | String[] | String[] contains at least one of items |
+| contains not any | String[] | String[] | String[] does not contain any of the items |
 ### Logical Operators
 The 'and' and 'or' operators are logical operators that string together conditions. 'And' operators take precedence. 'Or' operators evaluate from left to right
 

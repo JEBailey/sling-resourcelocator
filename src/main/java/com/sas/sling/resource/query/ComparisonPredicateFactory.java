@@ -20,7 +20,7 @@ import org.apache.sling.api.resource.Resource;
 
 import com.sas.sling.resource.parser.predicates.ComparisonPredicates;
 
-public class ComparisonFactory {
+public class ComparisonPredicateFactory {
 
 	public static Predicate<Resource> toPredicate(ComparisonOperator op, Function<Resource, Object> leftValue,
 			Function<Resource, Object> rightValue) {
@@ -39,12 +39,16 @@ public class ComparisonFactory {
 			return ComparisonPredicates.lte(leftValue, rightValue);
 		case LIKE:
 			return ComparisonPredicates.like(leftValue, rightValue);
+		case LIKE_NOT:
+			return ComparisonPredicates.like(leftValue, rightValue).negate();
 		case CONTAINS:
 			return ComparisonPredicates.contains(leftValue, rightValue);
 		case CONTAINS_NOT:
 			return ComparisonPredicates.contains(leftValue, rightValue).negate();
 		case CONTAINS_ANY:
 			return ComparisonPredicates.containsAny(leftValue, rightValue);
+		case CONTAINS_NOT_ANY:
+			return ComparisonPredicates.containsAny(leftValue, rightValue).negate();
 		case IN:
 			return ComparisonPredicates.in(leftValue, rightValue);
 		case NOT_IN:

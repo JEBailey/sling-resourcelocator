@@ -79,7 +79,7 @@ public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
 	private Predicate<Resource> createComparisonPredicate(Node comparisonNode) {
 		Function<Resource, Object> leftValue = comparisonNode.leftNode.accept(valueVisitor, null);
 		Function<Resource, Object> rightValue = comparisonNode.rightNode.accept(valueVisitor, null);
-		return ComparisonFactory.toPredicate(comparisonNode.comparisonOp, leftValue, rightValue);
+		return ComparisonPredicateFactory.toPredicate(comparisonNode.comparisonOp, leftValue, rightValue);
 	}
 
 	public ValueVisitor getValueVisitor() {

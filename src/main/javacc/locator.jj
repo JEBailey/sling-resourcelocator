@@ -186,8 +186,7 @@ Node Constraint() :
 {
   (
     node = Group()
-  | 
-    node = Comparison()
+  | node = Comparison()
   )
   {
     return node;
@@ -207,6 +206,17 @@ Node Group() :
 
 Node Comparison() :
 {
+  Node comparison;
+}
+{
+  < LPAREN > comparison = Comparison() < RPAREN >
+  {
+    return comparison;
+  }
+}
+
+Node Not() :
+{
   Node leftValue;
   Token op;
   Node rightValue;
@@ -224,6 +234,7 @@ Node Comparison() :
     return factory.createComparisonNode(oper.get(), leftValue, rightValue);
   }
 }
+
 
 String Operator() :
 {}
