@@ -23,6 +23,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -49,10 +50,10 @@ public class ResourceLocator {
 
 	private Optional<Predicate<Resource>> traversalControl = Optional.empty();
 
-	private long limit = Long.MAX_VALUE;
+	private long limit = 0;
 
 	private long startOfRange;
-	
+
 	private LogicVisitor logicVisitor = null;
 
 	/**
@@ -202,42 +203,7 @@ public class ResourceLocator {
 	 * @return List of matching resource or empty list if callback is enabled
 	 */
 	public List<Resource> locateResources(Predicate<Resource> condition) {
-		LinkedList<Resource> resourcesToReturn = new LinkedList<>();
-		LinkedList<Resource> resourcesToCheck = new LinkedList<>();
-		LinkedList<Resource> approvedChildren = new LinkedList<>();
-
-		resourcesToCheck.add(resource);
-
-		long count = 0;
-		long max = startOfRange + limit;
-
-		if (max < 0) {
-			max = Long.MAX_VALUE;
-		}
-
-		while (!resourcesToCheck.isEmpty()) {
-			Resource current = resourcesToCheck.pop();
-			if (condition.test(current)) {
-				++count;
-				if (count > startOfRange) {
-					callback.orElse(e -> resourcesToReturn.add(e)).accept(current);
-				}
-			}
-			Iterator<Resource> children = current.listChildren();
-			approvedChildren.clear();
-			
-			children.forEachRemaining(child -> {
-				if (traversalControl.orElse(e -> true).test(child)) {
-					approvedChildren.add(child);
-				}
-			});
-			resourcesToCheck.addAll(0, approvedChildren);
-			
-			if (count > max) {
-				break;
-			}
-		}
-		return resourcesToReturn;
+		return stream(condition).collect(Collectors.toList());
 	}
 
 	/**
@@ -252,10 +218,9 @@ public class ResourceLocator {
 	 * @throws ParseException
 	 */
 	public List<Resource> locateResources(String condition) throws ParseException {
-		Predicate<Resource> predicate = parse(condition);
-		return locateResources(predicate);
+		return locateResources(parse(condition));
 	}
-
+	
 	/**
 	 * Provides a stream of resources starting from the initiator resource and
 	 * traversing through it's descendants The only fluent api check it performs is
@@ -264,6 +229,29 @@ public class ResourceLocator {
 	 * @return self closing {@code Stream<Resource>} of unknown size.
 	 */
 	public Stream<Resource> stream() {
+		return stream(resource -> true);
+	}
+	
+	/**
+	 * Provides a stream of resources starting from the initiator resource and
+	 * traversing through it's descendants The only fluent api check it performs is
+	 * of the traversal predicate.
+	 * 
+	 * @return self closing {@code Stream<Resource>} of unknown size.
+	 */
+	public Stream<Resource> stream(String condition) throws ParseException  {
+		return stream(parse(condition));
+	}
+
+
+	/**
+	 * Provides a stream of resources starting from the initiator resource and
+	 * traversing through it's descendants The only fluent api check it performs is
+	 * of the traversal predicate.
+	 * 
+	 * @return self closing {@code Stream<Resource>} of unknown size.
+	 */
+	public Stream<Resource> stream(Predicate<Resource> condition) {
 		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(new Iterator<Resource>() {
 
 			LinkedList<Resource> resourcesToCheck = new LinkedList<>();
@@ -273,45 +261,51 @@ public class ResourceLocator {
 				resourcesToCheck.addFirst(resource);
 			}
 
+			Resource current;
+
 			@Override
 			public boolean hasNext() {
-				return !resourcesToCheck.isEmpty();
+				do {
+					if (resourcesToCheck.isEmpty()) {
+						return false;
+					}
+
+					current = resourcesToCheck.removeFirst();
+
+					current.listChildren().forEachRemaining(child -> {
+						if (traversalControl.orElse(e -> true).test(child)) {
+							approvedChildren.push(child);
+						}
+					});
+					
+					resourcesToCheck.addAll(0, approvedChildren);
+					approvedChildren.clear();
+
+					if (startOfRange > 0) {
+						--startOfRange;
+					}
+					if (limit > 0 && startOfRange == 0) {
+						if (--limit == 0) {
+							resourcesToCheck.clear();
+						}
+					}
+				} while (startOfRange > 0 || !condition.test(current));
+				return true;
 			}
 
 			@Override
 			public Resource next() {
-				Resource current = resourcesToCheck.removeFirst();
-				
-				approvedChildren.clear();
-				current.listChildren().forEachRemaining(child -> {
-					if (traversalControl.orElse(e -> true).test(child)) {
-						approvedChildren.push(child);
-					}
-				});
-				resourcesToCheck.addAll(0, approvedChildren);
-				
+				callback.ifPresent(consumer -> consumer.accept(resource));
 				return current;
 			}
 		}, Spliterator.ORDERED | Spliterator.IMMUTABLE), false);
 	}
 
-	/**
-	 * Provides a stream of resources starting from the initiator resource and
-	 * traversing through it's descendants The only fluent api check it performs is
-	 * of the traversal predicate.
-	 * 
-	 * @return self closing {@code Stream<Resource>} of unknown size.
-	 */
-	public Stream<Resource> stream(Predicate<Resource> traversalConstraint) {
-		this.traversalControl = Optional.of(traversalConstraint);
-		return stream();
-	}
-	
-	public Predicate<Resource> parse(String filter) throws ParseException{
+	public Predicate<Resource> parse(String filter) throws ParseException {
 		Node rootNode = new Parser(new ByteArrayInputStream(filter.getBytes())).Input();
-		return rootNode.accept(getVisitor(),null);
+		return rootNode.accept(getVisitor(), null);
 	}
-	
+
 	private LogicVisitor getVisitor() {
 		if (logicVisitor == null) {
 			logicVisitor = new LogicVisitor();

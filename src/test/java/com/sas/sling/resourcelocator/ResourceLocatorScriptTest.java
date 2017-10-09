@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import com.sas.sling.resource.ResourceLocator;
 import com.sas.sling.resource.parser.ParseException;
+import com.sas.sling.resource.parser.TokenMgrError;
 
 public class ResourceLocatorScriptTest {
 
@@ -107,6 +108,14 @@ public class ResourceLocatorScriptTest {
 	public void testDateAsString() throws ParseException {
 		String query = "[jcr:content/created] < '2013-08-08T16:32'";
 		List<Resource> found = handle(START_PATH, query);
+		assertEquals(3, found.size());
+	}
+	
+	@Test
+	public void testNullPropertyAndLimit() throws ParseException {
+		String query = "[jcr:content/foo] == null ";
+		Resource resource = context.resourceResolver().getResource(START_PATH);
+		List<Resource> found = ResourceLocator.startFrom(resource).limit(3).locateResources(query);
 		assertEquals(3, found.size());
 	}
 	
@@ -227,6 +236,18 @@ public class ResourceLocatorScriptTest {
 		String query = "'fish' not in [jcr:content/monkey]";
 		List<Resource> found = handle(START_PATH, query);
 		assertEquals(19, found.size());
+	}
+	
+	@Test
+	public void testInNotException() throws ParseException {
+		TokenMgrError error = null;
+		try {
+			String query = "'fish' in not [jcr:content/monkey]";
+			handle(START_PATH, query);
+		} catch (TokenMgrError e) {
+			error = e;
+		}
+		assertEquals("' in not' is not a valid comparison", error.getMessage());
 	}
 	
 	private List<Resource> handle(String path, String filter) throws ParseException {

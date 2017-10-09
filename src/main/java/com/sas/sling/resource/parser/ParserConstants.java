@@ -51,7 +51,7 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int COMMA = 22;
   /** RegularExpression Id. */
-  int COMP_ALT = 23;
+  int COMP = 23;
   /** RegularExpression Id. */
   int NUMBER = 24;
   /** RegularExpression Id. */
@@ -91,7 +91,7 @@ public interface ParserConstants {
     "\"[\"",
     "\"]\"",
     "\",\"",
-    "<COMP_ALT>",
+    "<COMP>",
     "<NUMBER>",
     "<INTEGER>",
     "<FRACTIONAL_DIGITS>",

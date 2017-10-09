@@ -102,21 +102,22 @@ public final class Parser implements ParserConstants {
 
   final public Node Comparison() throws ParseException {
   Node leftValue;
-  String op = null;
+  Token op;
   Node rightValue;
     leftValue = Argument();
-    op = Operator();
+    op = jj_consume_token(COMP);
     rightValue = Argument();
-    Optional<ComparisonOperator> oper = ComparisonOperator.getSimpleOperator(op);
+    String comparison = op.image;
+    Optional<ComparisonOperator> oper = ComparisonOperator.getSimpleOperator(comparison);
     if (!oper.isPresent()) {
-      {if (true) throw new TokenMgrError(op + " is not a valid comparison", TokenMgrError.LEXICAL_ERROR);}
+      {if (true) throw new TokenMgrError("'" + comparison + "' is not a valid comparison", TokenMgrError.LEXICAL_ERROR);}
     }
     {if (true) return factory.createComparisonNode(oper.get(), leftValue, rightValue);}
     throw new Error("Missing return statement in function");
   }
 
   final public String Operator() throws ParseException {
-    jj_consume_token(COMP_ALT);
+    jj_consume_token(COMP);
     {if (true) return token.image;}
     throw new Error("Missing return statement in function");
   }

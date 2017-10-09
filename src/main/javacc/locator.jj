@@ -98,7 +98,7 @@ TOKEN :
 | < LBRACKET : "[" >
 | < RBRACKET : "]" >
 | < COMMA : "," >
-| < COMP_ALT :
+| < COMP :
     (
       ">"
     | "<"
@@ -208,17 +208,18 @@ Node Group() :
 Node Comparison() :
 {
   Node leftValue;
-  String op = null;
+  Token op;
   Node rightValue;
 }
 {
   leftValue = Argument()
-  op = Operator()
+  op = < COMP >
   rightValue = Argument()
   {
-    Optional<ComparisonOperator> oper = ComparisonOperator.getSimpleOperator(op);
+    String comparison = op.image;
+    Optional<ComparisonOperator> oper = ComparisonOperator.getSimpleOperator(comparison);
     if (!oper.isPresent()) {
-      throw new TokenMgrError(op + " is not a valid comparison", TokenMgrError.LEXICAL_ERROR);
+      throw new TokenMgrError("'" + comparison + "' is not a valid comparison", TokenMgrError.LEXICAL_ERROR);
     }
     return factory.createComparisonNode(oper.get(), leftValue, rightValue);
   }
@@ -227,7 +228,7 @@ Node Comparison() :
 String Operator() :
 {}
 {
-  < COMP_ALT >
+  < COMP >
   {
     return token.image;
   }
