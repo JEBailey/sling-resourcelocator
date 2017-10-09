@@ -206,17 +206,6 @@ Node Group() :
 
 Node Comparison() :
 {
-  Node comparison;
-}
-{
-  < LPAREN > comparison = Comparison() < RPAREN >
-  {
-    return comparison;
-  }
-}
-
-Node Not() :
-{
   Node leftValue;
   Token op;
   Node rightValue;

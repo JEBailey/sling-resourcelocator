@@ -36,36 +36,50 @@ public enum ComparisonOperator {
 		case "==":
 		case " is":
 			op = EQUAL;
+			break;
 		case "!=":
 		case " is not":
 			op = NOT_EQUAL;
+			break;
 		case ">":
 		case " greater than":
 			op = GREATER_THAN;
+			break;
 		case ">=":
 			op = GREATER_THAN_OR_EQUAL;
+			break;
 		case "<":
 		case " less than":
 			op = LESS_THAN;
+			break;
 		case "<=":
 			op = LESS_THAN_OR_EQUAL;
+			break;
 		case " like":
 			op = LIKE;
+			break;
 		case " like not":
 		case " not like":
 			op = LIKE_NOT;
+			break;
 		case " contains":
 			op = CONTAINS;
+			break;
 		case " contains not":
 			op = CONTAINS_NOT;
+			break;
 		case " contains any":
 			op = CONTAINS_ANY;
+			break;
 		case " contains not any":
 			op = CONTAINS_NOT_ANY;
+			break;
 		case " in":
 			op = IN;
+			break;
 		case " not in":
 			op = NOT_IN;
+			break;
 		}
 		return Optional.ofNullable(op);
 	}

@@ -81,7 +81,7 @@ Values for comparison are obtained through multiple methods
 ### Types
 All types are converted to either a String or a Number. For direct equivalence the comparison is done as a String. For relational comparisons the object will be adapted to a number.
 
-### Dates
+### Dates/Instants
 Dates are a special, there are multiple ways to enter a date.
 
 Inline, as part of the query, a date can be identified as a string that conforms to a standard ISO-8601 date time.
@@ -112,7 +112,7 @@ Functions provide the ability to add additional functionality to the Filter lang
 
 > string '(' comma, separated, list() ')'
 
-All functions must return either a String, a Number, or a Calendar instance.
+All functions MUST return either a String, a Number, or an Instant. Strings are assumed to be using the default UTF encoding.
 
 OOTB Functions are:
 
