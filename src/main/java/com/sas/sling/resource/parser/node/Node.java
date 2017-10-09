@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.sas.sling.resource.query.ComparisonOperator;
+import com.sas.sling.resource.parser.predicates.ComparisonOperator;
 
 /**
  * 

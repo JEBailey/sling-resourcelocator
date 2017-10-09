@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import com.sas.sling.resource.parser.node.*;
 import com.sas.sling.resource.parser.predicates.*;
-import com.sas.sling.resource.query.*;
 
 /** Token Manager. */
 public class ParserTokenManager implements ParserConstants

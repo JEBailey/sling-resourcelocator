@@ -16,7 +16,7 @@ package com.sas.sling.resource.parser.node;
 import java.util.List;
 
 import com.sas.sling.resource.parser.ParserConstants;
-import com.sas.sling.resource.query.ComparisonOperator;
+import com.sas.sling.resource.parser.predicates.ComparisonOperator;
 
 /**
  * Factory that creates {@link Node} instances for the parser.

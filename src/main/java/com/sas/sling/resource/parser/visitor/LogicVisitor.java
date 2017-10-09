@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sas.sling.resource.query;
+package com.sas.sling.resource.parser.visitor;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -20,12 +20,14 @@ import org.apache.sling.api.resource.Resource;
 
 import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.node.Visitor;
+import com.sas.sling.resource.parser.predicates.ComparisonPredicateFactory;
 
 /**
  * Visitor implementation that handles the high level handling of logic between
  * statements that define the comparisons that would be performed.
  * 
- * In practical terms this handles the "and" and "or" predicates
+ * In practical terms this handles the "and" and "or" predicates, if it
+ * encounters a COMPARSON node, it then hands off the internal ValueVisitor
  * 
  */
 public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
@@ -65,7 +67,7 @@ public class LogicVisitor implements Visitor<Predicate<Resource>, Void> {
 	 * @param param
 	 * @return
 	 */
-	private Predicate<Resource> createOrPredicate(Node node ) {
+	private Predicate<Resource> createOrPredicate(Node node) {
 		return node.children.stream().map(child -> {
 			return visit(child, null);
 		}).reduce(null, (predicate, accumulator) -> {

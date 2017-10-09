@@ -32,7 +32,7 @@ import org.apache.sling.api.resource.Resource;
 import com.sas.sling.resource.parser.ParseException;
 import com.sas.sling.resource.parser.Parser;
 import com.sas.sling.resource.parser.node.Node;
-import com.sas.sling.resource.query.LogicVisitor;
+import com.sas.sling.resource.parser.visitor.LogicVisitor;
 
 /**
  * Base class from which a fluent api can be created or which can be defined

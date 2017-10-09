@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sas.sling.resource.query;
+package com.sas.sling.resource.parser.visitor;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -26,8 +26,8 @@ import org.apache.sling.api.resource.ValueMap;
 import com.sas.sling.resource.parser.conversion.Null;
 import com.sas.sling.resource.parser.node.Node;
 import com.sas.sling.resource.parser.node.Visitor;
-import com.sas.sling.resource.query.function.InstantProvider;
-import com.sas.sling.resource.query.function.ValueProvider;
+import com.sas.sling.resource.parser.provider.InstantProvider;
+import com.sas.sling.resource.parser.provider.ValueProvider;
 
 public class ValueVisitor implements Visitor<Function<Resource, Object>, Void> {
 

@@ -11,14 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sas.sling.resource.query;
+package com.sas.sling.resource.parser.predicates;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.sling.api.resource.Resource;
-
-import com.sas.sling.resource.parser.predicates.ComparisonPredicates;
 
 public class ComparisonPredicateFactory {
 
