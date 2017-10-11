@@ -15,7 +15,6 @@ package com.sas.sling.resourcelocator;
 
 import static org.junit.Assert.assertEquals;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -36,14 +35,11 @@ public class ScriptDateTest {
 	private static String START_PATH = "/content/sample/en";
 	private Date midPoint;
 	
-	private static String DATE_STRING = "Thu Aug 07 2013 16:32:59 GMT+0200";
 	private static String NEW_DATE = "2013-08-08T16:32:59.000+02:00";
-	private static String DATE_FORMAT = "EEE MMM dd yyyy HH:mm:ss 'GMT'Z";
 
 	@Before
 	public void setUp() throws ParseException, java.text.ParseException {
 		context.load().json("/data.json", "/content/sample/en");
-		midPoint = new SimpleDateFormat(DATE_FORMAT).parse(DATE_STRING);
 	}
 
 	@Test
