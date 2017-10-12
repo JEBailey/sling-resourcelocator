@@ -57,13 +57,13 @@ Derivative of JCR-SQL2.
 | greater than| Number        | greater than operator for Numbers          |
 | is          | String         | Equal operator for Strings                 |
 | is not      | String         | Is not equal operator for Strings          |
-| like        | String &#124; Regex  | Regex match against String                |
-| like not    | String &#124; Regex  | Regex match against String                |
-| not like    | String &#124; Regex  | Same as 'like not'               |
+| like        | String - Regex  | Regex match against String                |
+| like not    | String - Regex  | Regex match against String                |
+| not like    | String - Regex  | Same as 'like not'               |
 | contains         | String[] &#124; String[] | String[] contains all of items |
-| contains not     | String[] &#124; String[] | String[] does not contain all of the items |
-| contains any     | String[] &#124; String[] | String[] contains at least one of items |
-| contains not any | String[] &#124; String[] | String[] does not contain any of the items |
+| contains not     | String[] | String[] does not contain all of the items |
+| contains any     | String[] | String[] contains at least one of items |
+| contains not any | String[] | String[] does not contain any of the items |
 ### Logical Operators
 The 'and' and 'or' operators are logical operators that string together conditions. 'And' operators take precedence. 'Or' operators evaluate from left to right
 
