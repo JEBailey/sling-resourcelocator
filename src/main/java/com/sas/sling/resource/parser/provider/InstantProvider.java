@@ -23,6 +23,20 @@ import java.util.function.Function;
 
 import org.apache.sling.api.resource.Resource;
 
+/**
+ * Implementation of {@link ValueProvider} for the 'date' function.
+ * 
+ * The following combination of arguments are supported
+ * <pre>
+ * arguments      results
+ * ======================================================
+ * none     | current system time
+ * one      | ISO88601 String with offset
+ * two      | Date String followed by Date Format String
+ * 
+ * </pre>
+ *
+ */
 public class InstantProvider implements ValueProvider {
 
 	@Override

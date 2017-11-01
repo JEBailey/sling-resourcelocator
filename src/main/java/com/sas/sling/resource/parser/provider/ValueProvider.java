@@ -19,20 +19,20 @@ import java.util.function.Function;
 import org.apache.sling.api.resource.Resource;
 
 /**
- * Defines the method used to obtain the function which resolves to a value
+ * A ValueProvider implementation is used to provide the result of a function
  * 
  */
 public interface ValueProvider {
 
 	/**
-	 * This method provides a Function which accepts the resource being tested and
-	 * returns an Object to be used as part of the comparison. The returned Object
-	 * is not necessarily tied to the resource
+	 * This method returns a {@code Function} which accepts the resource being
+	 * tested and returns an Object to be used as part of the comparison.
 	 * 
 	 * @param arguments
-	 *            A list of Value Providers which represent the arguments.
-	 * @return Function object which will provide a String, Instant, or Number based
-	 *         Object to be used as part of a comparison or Function
+	 *            A list of {@code Function}'s which provides the arguments defined
+	 *            in the script
+	 * @return A {@code Function} which will provide a String, Instant, or Number to
+	 *         be used as part of a comparison or Function
 	 */
 	Function<Resource, Object> provision(List<Function<Resource, Object>> arguments);
 
