@@ -1,43 +1,35 @@
-# Resource Locator Utility
+# Resource Stream Support
 
-[![Join the chat at https://gitter.im/sling-resourcelocator/Lobby](https://badges.gitter.im/sling-resourcelocator/Lobby.svg)](https://gitter.im/sling-resourcelocator/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-* Resource Locator Utility for Apache Sling 
-* Fluent interface for filtering of a resource tree.
+* Resource Stream 
+* Fluent interface for creation of a Predicate<Resource> for use with Collections and Streams
 * Predefined predicates for Resources and Properties
-* Filter language to easily define predicates
+* Filter language for creation of a Predciate<Resource> for use with Collections and Streams
 
-Example of a traversal.
+Example of a stream.
 
 ```java
-ResourceLocator
-	.startFrom(resource)
-	.traversalControl(
+ResourceStream
+	.from(resource)
+	.stream(
 		where(property("jcr:primaryType").is("cq:Page")))
-	.locateResources(
-		where(aChildResource("jcr:content")
-			.has(property("sling:resourceType")
-			.isNot("sas/components/page/folder"))));
+   .filter(
+      aChildResource("jcr:content")
+          .has(property("sling:resourceType")
+		    .isNot("sas/components/page/folder")));
 ```
 
-same results using the filter language
+same results using the filter script
 
 ```java
-ResourceLocator
-    .startFrom(resource)
-    .traversalControl("[jcr:primaryType] == 'cq:Page'")
-    .locateResources("[jcr:content/sling:resourceType] != 'sas/components/page/folder'");
+ResourceStream
+    .from(resource)
+    .stream("[jcr:primaryType] == 'cq:Page'")
+    .filter("[jcr:content/sling:resourceType] != 'apps/components/page/folder'");
 ```
 
 
-The ResourceLocator provides 
 
-1. The ResourceLocator which provides a fluent interface to perform a recursive traversal of a given resource tree with the ability to set specific constraints and predicates.
-2. A series of predicates have been defined around the Resource object(s) to assist in filtering out unwanted resources. These predicates are independent of the ResourceLocator
-3. A domain specific language to create a predicate which filters the streamed resources.
-
-## Filter Language
-Derivative of JCR-SQL2.
+## ResourceFilter Script
 
 ### Operators
 
